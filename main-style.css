@@ -1,0 +1,15 @@
+:root {
+    --standard-page-width: 680px;
+    --lightblue: rgb(123, 168, 237);
+    --darkblue: #3b5998;
+    --hover-lightblue: rgb(134, 197, 231);
+    --button-color: rgb(83, 148, 232);
+    --input-color: #c8c8e6;
+    --main-font: tahoma;
+}
+
+.main-pagebox {
+    border: 1px solid var(--darkblue);
+    width: var(--standard-page-width);
+    margin: 0 auto;
+}

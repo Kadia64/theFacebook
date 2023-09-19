@@ -29,7 +29,24 @@ class Content {
         ';       
     }
     public function BottomContent() { }
-    public function LeftLoginForm() { }
+    public function LeftLoginForm() {
+        echo '
+            <div class="left-login-box">
+                <form method="POST" action="" class="left-login-form">
+                    <div class="left-login-box-input">
+                        <label for="left-email" class="left-login-label">Email:</label>
+                        <input type="email" id="left-email" name="left-email" class="left-login-email-input" required>
+                        <label for="left-password" class="left-login-label">Password:</label>
+                        <input type="password" id="left-password" name="left-password" class="left-login-password-input">
+                    </div>
+                    <div class="left-login-buttons">
+                        <input type="submit" name="left-login-button" value="login" class="left-login-button">
+                        <a href="">register</a>
+                    </div>
+                </form>
+            </div>
+        ';            
+    }
     public function LeftLoginLinks() { }
 }
 class Styles {

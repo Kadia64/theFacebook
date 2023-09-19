@@ -30,12 +30,15 @@
             <!-- LEFT LOGIN FORM -->
 
             <div class="right-main-window welcome-page-window">
+                <?php $content->WindowText('Welcome to Thefacebook!'); ?>
+                <h4>[ Welcome to Thefacebook ]</h4>                
+            
                 <p>testing</p>
             </div>            
         </div>
 
         <!-- BOTTOM CONTENT -->
-        <?php $content->BottomContent(); ?>
+        <?php $content->BottomContent(); ?>        
         <!-- BOTTOM CONTENT -->
 
     </div>

@@ -1,6 +1,12 @@
 <?php 
 class Content {
-
+    public function WindowText($text) {
+        echo '
+            <div class="window-text">
+                <span>' . $text . '</span>
+            </div>
+        ';
+    }
     public function Startup($title) {
         echo '
             <meta charset="UTF-8">
@@ -28,7 +34,22 @@ class Content {
             </div>
         ';       
     }
-    public function BottomContent() { }
+    public function BottomContent() { 
+        echo '
+            <div class="bottom-content">
+                <a href="">about</a>
+                <a href="">contact</a>
+                <a href="">jobs</a>
+                <a href="">faq</a>
+                <a href="">terms</a>
+                <a href="">policy</a>
+                <div>
+                    <p>a Mark Zuckerberg production</p>
+                    <p>Thefacebook © 2004</p>
+                </div>
+            </div>
+        ';   
+    }
     public function LeftLoginForm() {
         echo '
             <div class="left-login-box">

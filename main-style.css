@@ -12,21 +12,32 @@
 .main-pagebox {
     border: 1px solid var(--darkblue);
     width: var(--standard-page-width);
-    height: 500px;
-    
     margin: 0 auto;
 }
-.main-page-flexbox {    
+.main-page-flexbox {        
     padding: 2px;
     display: flex;
     gap: 2px;
 }
 .right-main-window {
     flex: 3.48;
+    align-self: flex-end;
     border: 1px solid var(--darkblue);
 }
 
-
+.right-main-window h4 {
+    font-family: var(--font);    
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+.window-text {
+    font-family: var(--font);
+    font-size: var(--font-size);
+    background-color: var(--darkblue);
+    color: white;
+    padding: 2px;
+}
 
 /* TopContent(); */
 .main-top-box {
@@ -42,7 +53,7 @@
     margin-left: 4px;
 }
 .main-top-content div a {
-    font-family: var(--font);    
+    font-family: var(--font);
     font-size: var(--font-size);
     color: white;
     text-decoration: none;
@@ -53,9 +64,40 @@
 }
 /* TopContent(); */
 
+
+
+
+
+
+
+
+
+/* Bottom Content */
+.bottom-content {
+    font-family: var(--font);
+    font-size: var(--font-size);    
+    line-height: 4px;
+    padding: 12px 0px 2px 0px;
+    text-align: center;
+}
+.bottom-content a {
+    color: var(--lightblue);
+    text-decoration: none;
+}
+/* Bottom Content */
+
+
+
+
+
+
+
+
+
 /* LeftLoginForm() */
 .left-login-box {
     flex: 1;
+    align-self: flex-start;
     border: 1px dashed var(--lightblue);
     padding-top: 3px;
 }

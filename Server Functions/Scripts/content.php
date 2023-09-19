@@ -10,7 +10,24 @@ class Content {
             <title>[ theFacebook ] ' . $title . '</title>
         ';
     }
-    public function TopContent() { }
+    public function TopContent() { 
+        echo '
+            <div class="main-top-box">
+                <div class="main-top-content">
+                    <img src="../../Images/thefacebook-left.jpg">
+                </div>
+                <div class="main-top-content">
+                    <img src="../../Images/thefacebook-logo.jpg">
+                    <br>
+                    <div>
+                        <a href="">login</a>
+                        <a href="">register</a>
+                        <a href="">about</a>                    
+                    </div>          
+                </div>            
+            </div>
+        ';       
+    }
     public function BottomContent() { }
     public function LeftLoginForm() { }
     public function LeftLoginLinks() { }

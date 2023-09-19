@@ -5,11 +5,41 @@
     --hover-lightblue: rgb(134, 197, 231);
     --button-color: rgb(83, 148, 232);
     --input-color: #c8c8e6;
-    --main-font: tahoma;
+    --font: tahoma;
+    --font-size: 12px;
 }
 
 .main-pagebox {
     border: 1px solid var(--darkblue);
     width: var(--standard-page-width);
+
+    height: 500px;
+
     margin: 0 auto;
 }
+
+
+/* TopContent(); */
+.main-top-box {
+    display: flex;
+    background-color: var(--darkblue);
+    height: 71px;
+}
+.main-top-content {
+    flex: 1;
+}
+.main-top-content div {
+    margin-top: -3px;
+    margin-left: 4px;
+}
+.main-top-content div a {
+    font-family: var(--font);    
+    font-size: var(--font-size);
+    color: white;
+    text-decoration: none;
+    padding: 0px 3px 0px 3px;
+}
+.main-top-content div a:hover {
+    text-decoration: underline;
+}
+/* TopContent(); */

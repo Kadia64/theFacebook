@@ -16,7 +16,9 @@
 </head>
 <body>
     <div class="main-pagebox">
-        
+        <!-- TOP CONTENT -->
+        <?php $content->TopContent(); ?>
+        <!-- TOP CONTENT -->
     </div>
 </body>
 </html>

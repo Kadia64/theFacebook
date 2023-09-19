@@ -74,7 +74,32 @@ class Styles {
     public function LoginStyle() { }
     public function RegisterAboutUserStyle() { }
     public function RegisterUserStyle() { }
-    public function WelcomeStyle() { }
+    public function WelcomeStyle() {
+        echo '
+            <style>
+                .welcome-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .welcome-page-buttons {
+                    text-align: center;
+                    padding-bottom:  10px;
+                }
+                .welcome-page-buttons a {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);            
+                }
+                .welcome-page-content ul {
+                    margin: -10px 0px 0px -15px;
+                }
+                .welcome-page-content p,
+                .welcome-page-content ul li {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                }
+            </style>
+        ';
+    }
     public function EnableCookiesStyle() { }
     public function MainProfilePageStyle() { }    
 }

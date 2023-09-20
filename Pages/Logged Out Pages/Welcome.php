@@ -14,17 +14,9 @@
 </head>
 <body>
     <div class="main-pagebox">
-
-        <!-- TOP CONTENT -->
         <?php $content->TopContent(); ?>
-        <!-- TOP CONTENT -->
-
         <div class="main-page-flexbox">
-
-            <!-- LEFT LOGIN FORM -->
             <?php $content->LeftLoginForm(); ?>
-            <!-- LEFT LOGIN FORM -->
-
             <div class="right-main-window">
                 <?php $content->WindowText('Welcome to Thefacebook!'); ?>
                 <h4>[ Welcome to Thefacebook ]</h4>
@@ -46,13 +38,9 @@
                         <?php $content->Link('Login', $pages->LOGIN, PageData::BUTTON_CLASS); ?>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
-
-        <!-- BOTTOM CONTENT -->
-        <?php $content->BottomContent(); ?>        
-        <!-- BOTTOM CONTENT -->
-
+        <?php $content->BottomContent(); ?>
     </div>
 </body>
 </html>

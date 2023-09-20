@@ -68,7 +68,23 @@ class Content {
             </div>
         ';            
     }
-    public function LeftLoginLinks() { }
+    public function LeftLoginLinks() {
+        echo '
+            <div class="left-login-links">
+                <div class="left-login-flexbox">
+                    <div>
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Welcome.php">[ main ]</a>
+                    </div>
+                    <div>
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Login.php">[ login ]</a>
+                    </div>
+                    <div>
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">[ register ]</a>
+                    </div>
+                </div>
+            </div>
+        ';
+    }
     public function Link($text, $page, $class = '') {
         $output = '<a href="' . $page . '"';
         if ($class != '') {
@@ -79,7 +95,74 @@ class Content {
     }
 }
 class Styles {
-    public function LoginStyle() { }
+    public function LoginStyle() {
+        echo '
+            <style>
+                .login-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .login-page-content {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    display: flex;
+                    flex-direction: column;            
+                }
+                .login-page-form div {
+                    width: 280px;
+                    margin: 0 auto;
+                    flex: 1;
+                    display: grid;
+                    grid-template-columns: 23% 78%;
+                }
+                .login-page-form div div {
+                    height: 20px;
+                }
+                .login-page-form div div:nth-child(odd) {
+                    margin-top: 2px;
+                }
+                .login-page-form div div label {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    padding-top: -10px;
+                }
+                .email-input,
+                .password-input {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    background-color: var(--input-color);            
+                    border: 1px solid black;
+                    width: 180px;            
+                }
+                .login-buttons {
+                    margin: 0 auto!important;            
+                    margin-top: 10px!important;
+                    width: 100px!important;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;    
+                    gap: 50px;        
+                }
+                .login-buttons div {
+                    flex: 1;
+                }
+                .login-buttons div input {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    color: white;
+                    background-color: var(--button-color);
+                    border: 1.5px ridge;
+                }
+                .login-buttons div a {
+                    height: 14.5px;
+                }
+                .login-page-text {
+                    margin: 0 auto;
+                    flex: 1;
+                }
+            </style>
+        ';
+     }
     public function RegisterAboutUserStyle() { }
     public function RegisterUserStyle() {
         echo '

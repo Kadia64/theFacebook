@@ -39,6 +39,7 @@
     padding: 2px;
 }
 .link-button {
+    text-align: center;
     font-family: var(--font);
     font-size: var(--font-size);
     text-decoration: none;
@@ -146,3 +147,31 @@
     cursor: default;
 }
 /* LeftLoginForm() */
+
+/* LeftLoginLinks() */
+.left-login-links {
+    flex: 1;
+    align-self: flex-start;
+    border: 1px dashed var(--lightblue);
+}
+.left-login-flexbox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0px 8px 0px;    
+}
+.left-login-links .left-login-flexbox div {    
+    flex: 1;
+}
+.left-login-links .left-login-flexbox div a {
+    font-family: var(--font);
+    font-size: var(--font-size);
+    color: var(--lightblue);
+    text-decoration: none;
+}
+.left-login-links .left-login-flexbox div a:hover {
+    color: var(--hover-lightblue);
+    text-decoration: underline;
+}
+/* LeftLoginLinks() */

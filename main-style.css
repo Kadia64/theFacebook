@@ -74,14 +74,6 @@
 }
 /* TopContent(); */
 
-
-
-
-
-
-
-
-
 /* Bottom Content */
 .bottom-content {
     font-family: var(--font);
@@ -93,16 +85,13 @@
 .bottom-content a {
     color: var(--lightblue);
     text-decoration: none;
+    padding: 0px 3px 0px 3px;    
+}
+.bottom-content a:hover {
+    color: var(--hover-lightblue);
+    text-decoration: underline;
 }
 /* Bottom Content */
-
-
-
-
-
-
-
-
 
 /* LeftLoginForm() */
 .left-login-box {

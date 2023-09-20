@@ -3,6 +3,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
     $content = new Content();
     $styles = new Styles();
+    $pages = new PageData();
     session_start();
 ?>
 <!DOCTYPE html>
@@ -21,10 +22,10 @@
         <div class="main-page-flexbox">
 
             <!-- LEFT LOGIN FORM -->
-            <?php $content->LeftLoginForm(); ?>            
+            <?php $content->LeftLoginForm(); ?>
             <!-- LEFT LOGIN FORM -->
 
-            <div class="right-main-window welcome-page-window">
+            <div class="right-main-window">
                 <?php $content->WindowText('Welcome to Thefacebook!'); ?>
                 <h4>[ Welcome to Thefacebook ]</h4>
                 <div class="welcome-page-window">
@@ -41,8 +42,8 @@
                         <p>To get started, click below to register. If you have already registered, you can log in.</p>                        
                     </div>
                     <div class="welcome-page-buttons">
-                        <a href="" class="link-button">Register</a>
-                        <a href="" class="link-button">Login</a>
+                        <?php $content->Link('Register', $pages->REGISTER_USER, PageData::BUTTON_CLASS); ?>
+                        <?php $content->Link('Login', $pages->LOGIN, PageData::BUTTON_CLASS); ?>
                     </div>
                 </div>
             </div>            

@@ -20,15 +20,15 @@ class Content {
         echo '
             <div class="main-top-box">
                 <div class="main-top-content">
-                    <img src="../../Images/thefacebook-left.jpg">
+                    <img src="' . PageData::ROOT . '/Images/thefacebook-left.jpg">
                 </div>
                 <div class="main-top-content">
-                    <img src="../../Images/thefacebook-logo.jpg">
+                    <img src="' . PageData::ROOT . '/Images/thefacebook-logo.jpg">
                     <br>
                     <div>
-                        <a href="">login</a>
-                        <a href="">register</a>
-                        <a href="">about</a>                    
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Login.php">login</a>
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">register</a>
+                        <a href="' . PageData::ROOT . '/Pages/Annual Pages/About.php">about</a>
                     </div>          
                 </div>            
             </div>
@@ -37,12 +37,12 @@ class Content {
     public function BottomContent() { 
         echo '
             <div class="bottom-content">
-                <a href="">about</a>
-                <a href="">contact</a>
-                <a href="">jobs</a>
-                <a href="">faq</a>
-                <a href="">terms</a>
-                <a href="">policy</a>
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/About.php">about</a>
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/ContactUs.php">contact</a>                
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/JobDescriptions.php">jobs</a>                
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/faqPage.php">faq</a>
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/TermsAndConditions.php">terms</a>
+                <a href="' . PageData::ROOT . '/Pages/Annual Pages/PrivacyPolicy.php">policy</a>
                 <div>
                     <p>a Mark Zuckerberg production</p>
                     <p>Thefacebook © 2004</p>
@@ -62,13 +62,21 @@ class Content {
                     </div>
                     <div class="left-login-buttons">
                         <input type="submit" name="left-login-button" value="login" class="left-login-button">
-                        <a href="">register</a>
+                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">register</a>
                     </div>
                 </form>
             </div>
         ';            
     }
     public function LeftLoginLinks() { }
+    public function Link($text, $page, $class = '') {
+        $output = '<a href="' . $page . '"';
+        if ($class != '') {
+            $output = $output . ' class="' . $class . '">';
+        }
+        $output = $output . $text . '</a>';
+        echo $output;
+    }
 }
 class Styles {
     public function LoginStyle() { }
@@ -87,7 +95,7 @@ class Styles {
                 }
                 .welcome-page-buttons a {
                     font-family: var(--font);
-                    font-size: var(--content-font-size);            
+                    font-size: var(--content-font-size);
                 }
                 .welcome-page-content ul {
                     margin: -10px 0px 0px -15px;
@@ -101,6 +109,19 @@ class Styles {
         ';
     }
     public function EnableCookiesStyle() { }
-    public function MainProfilePageStyle() { }    
+    public function MainProfilePageStyle() { }
+}
+class PageData {
+    public const ROOT = '/Projects/TheFacebook/Git/theFacebook/';
+    public const BUTTON_CLASS = 'link-button';
+    public $REGISTER_USER;
+    public $WELCOME;
+    public $LOGIN;
+
+    public function __construct() {
+        $this->REGISTER_USER = PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php';
+        $this->LOGIN = PageData::ROOT . '/Pages/Logged Out Pages/Login.php';
+        $this->WELCOME = PageData::ROOT . '/Pages/Logged Out Pages/Login.php';
+    }
 }
 ?>

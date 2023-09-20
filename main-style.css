@@ -48,6 +48,14 @@
     padding: 2px 5px 2px 5px;
     border: 1.5px ridge;
 }
+.standard-link {
+    color: var(--lightblue);
+    text-decoration: none;
+}
+.standard-link:hover {
+    color: var(--hover-lightblue);
+    text-decoration: underline;
+}
 
 /* TopContent(); */
 .main-top-box {

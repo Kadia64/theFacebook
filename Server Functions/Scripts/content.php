@@ -81,7 +81,87 @@ class Content {
 class Styles {
     public function LoginStyle() { }
     public function RegisterAboutUserStyle() { }
-    public function RegisterUserStyle() { }
+    public function RegisterUserStyle() {
+        echo '
+            <style>
+                .register-page-window {
+                    width: calc(var(--standard-page-width) - 200px);
+                    margin: 0 auto;
+                }
+                .register-page-content p,
+                .register-page-content label {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                }
+                .register-page-middle {
+                    width: calc(var(--standard-page-width) - 360px);
+                    margin: 0 auto;
+                }
+                .register-page-form {            
+                
+                }
+                .register-page-grid {
+                    display: grid;
+                    grid-template-columns: 40% 60%;
+                }
+                .register-page-grid div {
+                    height: 20px;
+                }
+                .register-username,
+                .register-status,
+                .register-email,
+                .register-password {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    background-color: var(--input-color);
+                    border: 1px solid black;
+                }
+                .register-username,
+                .register-email,
+                .register-password {
+                    width: 180px;
+                }
+                .register-status {
+                    width: 130px;
+                }
+                .register-page-checkbox {
+                    display: flex;
+                    gap: 5px;
+                    margin-bottom: -12px;
+                }
+                .register-page-checkbox p {
+                    flex: 11;            
+                }
+                .register-page-checkbox input {
+                    flex: 0.5;
+                }
+                .register-page-password {
+                    display: flex;
+                    margin-left: 8px;
+                }
+                .register-page-password p:first-child {
+                    flex: 0.5;
+                    margin-top: 15px;
+                    font-weight: bold;
+                }
+                .register-page-password p:last-child {
+                    flex : 10;
+                }
+                .register-page-button {
+                    text-align: center;
+                    padding-bottom: 10px;
+                }
+                .register-page-button input {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    color: white;
+                    background-color: var(--button-color);
+                    border: 1.5px ridge;
+                    padding: 2px 4px 2px 4px
+                }
+            </style>
+        ';
+    }
     public function WelcomeStyle() {
         echo '
             <style>
@@ -113,15 +193,29 @@ class Styles {
 }
 class PageData {
     public const ROOT = '/Projects/TheFacebook/Git/theFacebook/';
-    public const BUTTON_CLASS = 'link-button';
+    public const LINK_CLASS = 'standard-link';
+    public const BUTTON_CLASS = 'link-button';    
+    public $LOGIN;
+    public $REGISTER_ABOUT_USER;
     public $REGISTER_USER;
     public $WELCOME;
-    public $LOGIN;
+
+    public $ABOUT;
+    public $CONTACT_US;
+    public $FAQ_PAGE;
+    public $PRIVACY_POLICY;
+    public $TERMS_AND_CONDITIONS;
 
     public function __construct() {
-        $this->REGISTER_USER = PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php';
         $this->LOGIN = PageData::ROOT . '/Pages/Logged Out Pages/Login.php';
+        $this->REGISTER_ABOUT_USER = PageData::ROOT . '/Pages/Logged Out Pages/RegisterAboutUser.php';
+        $this->REGISTER_USER = PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php';
         $this->WELCOME = PageData::ROOT . '/Pages/Logged Out Pages/Login.php';
+        $this->ABOUT = PageData::ROOT . '/Pages/Annual Pages/About.php';
+        $this->CONTACT_US = PageData::ROOT . '/Pages/Annual Pages/ContactUs.php';
+        $this->FAQ_PAGE = PageData::ROOT . '/Pages/Annual Pages/faqPage.php';
+        $this->PRIVACY_POLICY = PageData::ROOT . '/Pages/Annual Pages/PrivacyPolicy.php';
+        $this->TERMS_AND_CONDITIONS = PageData::ROOT . '/Pages/Annual Pages/TermsAndConditions.php';
     }
 }
 ?>

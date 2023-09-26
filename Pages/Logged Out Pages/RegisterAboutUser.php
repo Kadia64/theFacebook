@@ -26,7 +26,7 @@
                                 <p>Registering with us is quick and easy. Simply fill out the form below to create your account. Once you've completed the registration process, you'll have access to all the features and benefits of being a member of our community.</p>
                             </div>
                             <div class="register-about-page-form">
-                                <form method="POST" action="">
+                                <form method="POST" action="<?php echo PageData::ROOT; ?>/Server Functions/register-user.php">
                                     <div class="register-form-grid">
                                         <div>
                                             <label><b>Basic Info:</b></label>
@@ -36,13 +36,13 @@
                                             <label for="first-name-input">First Name:</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="first-name-input" name="first-name" required>
+                                            <input type="text" id="first-name-input" name="first-name"> <!-- *required* -->
                                         </div>
                                         <div>
                                             <label for="last-name-input">Last Name:</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="last-name-input" name="last-name" required>
+                                            <input type="text" id="last-name-input" name="last-name"> <!-- *required* -->
                                         </div>
                                         <div>
                                             <label for="sex-input">Sex:</label>
@@ -127,7 +127,7 @@
                                             <label for="interests-input">Interests:</label>
                                         </div>
                                         <div>
-                                            <textarea name="interests"></textarea>
+                                            <textarea id="interests-input" name="interests"></textarea>
                                         </div>
                                         <div>
                                             <label for="favorite-music-input">Favorite Music:</label>

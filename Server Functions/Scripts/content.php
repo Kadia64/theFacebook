@@ -66,7 +66,7 @@ class Content {
                     </div>
                 </form>
             </div>
-        ';            
+        ';
     }
     public function LeftLoginLinks() {
         echo '
@@ -114,9 +114,10 @@ class Styles {
                     flex: 1;
                     display: grid;
                     grid-template-columns: 23% 78%;
+                    row-gap: 3px;
                 }
                 .login-page-form div div {
-                    height: 20px;
+                    height: 20px;                    
                 }
                 .login-page-form div div:nth-child(odd) {
                     margin-top: 2px;
@@ -162,8 +163,67 @@ class Styles {
                 }
             </style>
         ';
-     }
-    public function RegisterAboutUserStyle() { }
+    }
+    public function RegisterAboutUserStyle() {
+        echo '
+            <style>
+                .register-about-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .register-about-content {
+                }
+                .register-about-page-middle {
+                    width: calc(var(--standard-page-width) - 270px);
+                    margin: 0 auto;
+                }
+                .register-about-page-text {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    text-align: center;
+                }
+                .register-form-grid {
+                    display: grid;
+                    grid-template-columns: 40% 60%;
+                    column-gap: 15px;
+                    row-gap: 4px;
+                    margin: 0 auto;
+                    width: 290px;
+                }
+                .register-form-grid label {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                }
+                .register-form-grid input,
+                .register-form-grid select,
+                .register-form-grid textarea {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    background-color: var(--input-color);
+                    border: 1px solid black;
+                    width: 130px;
+                }
+                .register-form-grid textarea {
+                    resize: none;
+                    height: 42px;
+                    width: 150px;
+                }        
+                .register-button {            
+                    text-align: center;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+                .register-button input {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    background-color: var(--button-color);
+                    color: white;
+                    border: 1.5px ridge;
+                    padding: 4px;
+                }
+            </style>
+        ';
+    }
     public function RegisterUserStyle() {
         echo '
             <style>

@@ -24,13 +24,13 @@
                         <form method="POST" action="" class="login-page-form">
                             <div>
                                 <div>
-                                    <label>Email:</label>
+                                    <label for="email">Email:</label>
                                 </div>
                                 <div>
                                     <input type="text" id="email" name="email" class="email-input">
                                 </div>
                                 <div>
-                                    <label>Password: </label>                                
+                                    <label for="password">Password:</label>
                                 </div>
                                 <div>
                                     <input type="password" id="password" name="password" class="password-input">

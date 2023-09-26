@@ -1784,11 +1784,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\wesgl\\OneDrive\\Desktop\\Kill myself\\SQL Terminal\\SQL Terminal.csproj",
+      "projectUniqueName": "\\\\10.0.0.139\\xampp - htdocs\\htdocs\\Projects\\TheFacebook\\Git\\theFacebook\\SQL Terminal\\SQL Terminal.csproj",
       "projectName": "SQL Terminal",
-      "projectPath": "C:\\Users\\wesgl\\OneDrive\\Desktop\\Kill myself\\SQL Terminal\\SQL Terminal.csproj",
+      "projectPath": "\\\\10.0.0.139\\xampp - htdocs\\htdocs\\Projects\\TheFacebook\\Git\\theFacebook\\SQL Terminal\\SQL Terminal.csproj",
       "packagesPath": "C:\\Users\\wesgl\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\wesgl\\OneDrive\\Desktop\\Kill myself\\SQL Terminal\\obj\\",
+      "outputPath": "\\\\10.0.0.139\\xampp - htdocs\\htdocs\\Projects\\TheFacebook\\Git\\theFacebook\\SQL Terminal\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

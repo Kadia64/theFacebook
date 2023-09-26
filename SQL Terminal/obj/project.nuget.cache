@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HeY2DUAPNakOItsnLLuwEilFa0J2uHWtwnWLJg0nfNV0U7DKzKff9fLa96HI9263CG4oNNs1cJdOkbwS9rqTeg==",
+  "dgSpecHash": "olEOJCvl9uwzBMqlpo+ROzl/w2q3DKUJNVO7Gr7uNUaVHAp6bR58zbKevS77+TWZ8KX8wXVAnw+mxdDOSpeukw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\wesgl\\OneDrive\\Desktop\\Kill myself\\SQL Terminal\\SQL Terminal.csproj",
+  "projectFilePath": "\\\\10.0.0.139\\xampp - htdocs\\htdocs\\Projects\\TheFacebook\\Git\\theFacebook\\SQL Terminal\\SQL Terminal.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\wesgl\\.nuget\\packages\\google.protobuf\\3.21.9\\google.protobuf.3.21.9.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\k4os.compression.lz4\\1.3.5\\k4os.compression.lz4.1.3.5.nupkg.sha512",

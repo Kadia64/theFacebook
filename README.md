@@ -8,6 +8,9 @@ When committing changes, I open my workspace of my project only (not the entire 
 
 When cloning this repository, my current folder structure looks like this: 'htdocs/Projects/TheFacebook/Git/' and this is the folder structure you need to add in order for the PHP files to reference each other correctly. When you have cloned this repository, it should make an extra folder named 'theFacebook', and thats all you need to do.
 
+## The Database
+This project was originally created with XAMPP, but you can use any type of server hosting software for this project that provides mySQL support. You will be able to create your own user base with their registered data. If this is your first time cloning the repository, you may need to run the c# terminal and create the default structure for the database in order for everything to work properly. 
+
 ## The SQL Terminal
 This is a basic terminal with some commands that is able to interact with the MySQL database. It can be used to type quick commands to create dozens of fake user accounts within seconds. It can also instanly delete all data, create a default structure for the database and it's tables, and it can edit certain values of a particular user/database attribute. 
 

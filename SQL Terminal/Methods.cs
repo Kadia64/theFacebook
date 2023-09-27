@@ -27,7 +27,7 @@ namespace SQL_Terminal {
                 if (extra_lines) Console.WriteLine("\n");                
             }
         }
-        public void HelpOutput(string description, string[] flags, string[]? alias = null, string? parameter_example = null, string[]? parameters = null) {
+        public void HelpOutput(string description, string[] flags, string[]? alias = null, string[]? parameters = null) {
             Console.WriteLine();
             
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -56,11 +56,11 @@ namespace SQL_Terminal {
             }
 
             Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"\nParameters: {parameter_example}");
+            Console.WriteLine($"\nParameters:");
             Console.ResetColor();
             if (parameters != null) {
                 for (int i = 0; i < parameters.Length; ++i) {
-                    Console.WriteLine(parameters[i]);
+                    Console.WriteLine($"-- {parameters[i]}");
                     Thread.Sleep(10);
                 }
             } else {
@@ -108,11 +108,26 @@ namespace SQL_Terminal {
                 }                
             }
         }
+        public List<string> ValueOutput(string[] parameters) {
+            List<string> values = new List<string>();            
+            for (int i = 0; i < parameters.Length; ++i) {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"  {parameters[i]}: ");
+
+                Console.ResetColor();
+                string input = Console.ReadLine();
+                values.Add(input);
+            }
+            return values;
+        }
         public void Print(string text, int speed = 10) {
             foreach (char c in text) {
                 Console.Write(c);
                 Thread.Sleep(speed);
             }
+        }
+        public string RandCharacters(int length) {
+            return new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());            
         }
     }
     public class SQL {
@@ -122,8 +137,14 @@ namespace SQL_Terminal {
         public string Database;
         public string Username;
         public string Password;
-
+        public string[] AccountInfo = { "username", "email", "password", "mobile", "full_name" };
+        public string[] AccountSettings = { "allow_mentions", "activity_status", "suggest_account" };
+        public string[] AccountStats = { "login_count", "logout_count", "last_login_timestamp", "last_logout_timestamp", "password_attempts", "last_password_attempt_timestamp", "password_change_count", "last_password_change_timestamp", "member_since", "member_since_time", "last_update", "last_update_time" };
+        public string[] PersonalInfo = { "first_name", "last_name", "birthday", "sex", "address", "home_town", "highschool", "education_status", "website", "looking_for", "interested_in", "relationship_status", "political_views", "interests", "favorite_music", "favorite_movies", "about_me" };
+        public string[] SocialStats = { "friend_count", "friend_email_list", "blocked_count", "blocked_username_list", "reported_count", "message_all_count", "unread_message_count", "message_sent_count", "message_received_count", "verification_request_count", "verification_request_last_timestamp" };
+        private Methods methods;
         public SQL(string ip_address, int port, string database, string username, string password) {
+            this.methods = new Methods();
             this.IP_Address = ip_address;
             this.Port = port;
             this.Database = database;
@@ -160,7 +181,7 @@ namespace SQL_Terminal {
                 string dropTable = $"DROP TABLE {tableName}";
                 this.Query(dropTable);
             }
-        }
+        }        
 
         public void CreateDefaultStructure() {
             this.Query(@"
@@ -171,7 +192,7 @@ namespace SQL_Terminal {
   	                suggest_account BOOLEAN
                 );
                 CREATE TABLE account_stats (
-                    stats_id INT PRIMARY KEY AUTO_INCREMENT,
+                    account_stats_id INT PRIMARY KEY AUTO_INCREMENT,
                     login_count INT UNSIGNED,
                     logout_count INT UNSIGNED,
                     last_login_timestamp VARCHAR(32),
@@ -183,7 +204,10 @@ namespace SQL_Terminal {
                     member_since VARCHAR(32),
                     member_since_time VARCHAR(32),
                     last_update VARCHAR(32),
-                    last_update_time VARCHAR(32),
+                    last_update_time VARCHAR(32)                    
+                );
+                CREATE TABLE social_stats (
+                    social_stats_id INT PRIMARY KEY AUTO_INCREMENT,
                     friend_count INT UNSIGNED,
                     friend_email_list VARCHAR(512),
                     blocked_count INT UNSIGNED,
@@ -219,7 +243,8 @@ namespace SQL_Terminal {
                 CREATE TABLE account_info (
                     account_id INT PRIMARY KEY AUTO_INCREMENT,
                     settings_id INT, 
-                    stats_id INT, 
+                    account_stats_id INT, 
+                    social_stats_id INT,
                     personal_info_id INT,
                     username VARCHAR(128),
                     email VARCHAR(128),
@@ -228,8 +253,10 @@ namespace SQL_Terminal {
                     full_name VARCHAR(128),    
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),
-                    CONSTRAINT account_stats_fk FOREIGN KEY (stats_id)
-                    	REFERENCES account_stats (stats_id),
+                    CONSTRAINT account_stats_fk FOREIGN KEY (account_stats_id)
+                    	REFERENCES account_stats (account_stats_id),
+                    CONSTRAINT social_stats_fk FOREIGN KEY (social_stats_id)
+                        REFERENCES social_stats (social_stats_id),
                     CONSTRAINT personal_info_fk FOREIGN KEY (personal_info_id)
                     	REFERENCES personal_info (personal_info_id)
                 );
@@ -239,15 +266,40 @@ namespace SQL_Terminal {
             this.Query(@"
                 ALTER TABLE account_info DROP FOREIGN KEY account_settings_fk;
                 ALTER TABLE account_info DROP FOREIGN KEY account_stats_fk;
+                ALTER TABLE account_info DROP FOREIGN KEY social_stats_fk;
                 ALTER TABLE account_info DROP FOREIGN KEY personal_info_fk;
                 TRUNCATE TABLE account_settings;
                 TRUNCATE TABLE account_stats;
+                TRUNCATE TABLE social_stats;
                 TRUNCATE TABLE personal_info;
                 TRUNCATE TABLE account_info;
                 ALTER TABLE account_info ADD CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) REFERENCES account_settings(settings_id);
-                ALTER TABLE account_info ADD CONSTRAINT account_stats_fk FOREIGN KEY (stats_id) REFERENCES account_stats(stats_id);
+                ALTER TABLE account_info ADD CONSTRAINT account_stats_fk FOREIGN KEY (account_stats_id) REFERENCES account_stats(account_stats_id);
+                ALTER TABLE account_info ADD CONSTRAINT social_stats_fk FOREIGN KEY (social_stats_id) REFERENCES social_stats(social_stats_id);
                 ALTER TABLE account_info ADD CONSTRAINT personal_info_fk FOREIGN KEY (personal_info_id) REFERENCES personal_info(personal_info_id);
             ");
+        }
+        public void CreateUserAccount(string[] values) { 
+            
+        }       
+        public void CreateNullUserAccount() {
+            string query = $@"
+                INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
+                SET @last_settings_id = LAST_INSERT_ID();
+                INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, member_since_time, last_update, last_update_time) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                SET @last_account_stats_id = LAST_INSERT_ID();
+                INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                SET @last_social_stats_id = LAST_INSERT_ID();
+                INSERT INTO personal_info (first_name, last_name, birthday, sex, address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                SET @last_personal_info_id = LAST_INSERT_ID();
+                INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL);
+            ";
+            MySqlCommand command = new MySqlCommand(query, this.Connection);
+            command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+            command.Parameters.Add("@last_account_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+            command.Parameters.Add("@last_social_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+            command.Parameters.Add("@last_personal_info_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+            command.ExecuteNonQuery();
         }
     }
 }

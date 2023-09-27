@@ -9,10 +9,13 @@ namespace SQL_Terminal {
     public class Run {
 
         private string[] CommandList = {
-            "commands", "list commands", "cmds", "clear", "cls", "exit",
+            "commands", "list commands", "list", "cmds", "clear", "cls", "exit",
             "connect", "con", "disconnect",
             "cleardb", "clear databases", "remove tables", "delete tables",
+            "whipe tables", "truncate tables", "truncate",
             "create default",
+            "create account", 
+            "create null account", "create null"
         };
         private bool Connected = false;
         private string? CurrentCommand = null;
@@ -28,6 +31,9 @@ namespace SQL_Terminal {
             bool running = true;
             string[] inputTokens = new string[] { };
             ConsoleColor color = ConsoleColor.White;
+            int inputAmount = 0;
+
+            string[] account_inputs = sql.AccountInfo.Concat(sql.PersonalInfo).ToArray();
 
             while (running) {
                 if (!Connected) {
@@ -36,8 +42,11 @@ namespace SQL_Terminal {
                     methods.PrintCursor(ConsoleColor.Blue);
                 }
                 string cmd = Console.ReadLine();
-                bool pass = false;                
-                if (this.CheckCommand(cmd)) pass = true;
+                bool pass = false;
+                if (this.CheckCommand(cmd)) {
+                    if (int.TryParse(this.CommandInput, out inputAmount)) { }
+                    pass = true;
+                }                
                 
                 try {
                     inputTokens = this.CommandInput.Split(' ');
@@ -64,6 +73,7 @@ namespace SQL_Terminal {
                         Environment.Exit(0);
                         break;
                     case "list commands":
+                    case "list":
                     case "cmds":
                         if (this.Help) {
                             methods.HelpOutput("Will give a list of each command displayed to the console", new string[] { HELP_INFO }, new string[] { "list commands", "cmds" });
@@ -120,6 +130,20 @@ namespace SQL_Terminal {
                         }
                         if (execute || this.Skip) sql.ClearDatabase();
                         break;
+                    case "whipe tables":
+                    case "truncate tables":
+                    case "truncate":
+                        if (this.Help) {
+                            methods.HelpOutput("Will whipe all existing data from all of the tables, but the database will still have it's basic structure.", new string[] { HELP_INFO, SKIP_INFO }, new string[] { "clear tables", "truncate tables", "truncate" });
+                            break;
+                        }
+                        if (!this.Skip) {
+                            if (this.Connected) {
+                                if (methods.Hault("Are you sure you would like to delete all data from all of the tables?", ConsoleColor.Red)) execute = true;
+                            } else methods.ErrorOutput("You are not connected to the database!");
+                        }
+                        if (execute || this.Skip) sql.TruncateAllRelationalTables();
+                        break;
                     case "create default":
                         if (this.Help) {
                             methods.HelpOutput("Will create a default structure for your database, and it will include the related tables.\nThis will delete all existing data fields from your database?", new string[] { HELP_INFO, SKIP_INFO }, new string[] { "create default" });
@@ -132,6 +156,36 @@ namespace SQL_Terminal {
                         }
                         if (execute || this.Skip) sql.CreateDefaultStructure();
                         break;
+                    case "create null account":
+                    case "create null":
+                        if (this.Help) {
+                            methods.HelpOutput("Will create a new account and every value will be null.", new string[] { HELP_INFO, "<count> ~ the amount of times you want to create an account." }, new string[] { "create null account", "create null" });
+                            break;
+                        }
+                        if (this.Connected) {
+                            if (inputAmount != 0) {
+                                for (int i = 0; i < inputAmount; ++i) {
+                                    sql.CreateNullUserAccount();
+                                }
+                            } else sql.CreateNullUserAccount();
+                        } else methods.ErrorOutput("Not connected to the database!");
+                        break;
+                    case "create account":
+                        if (this.Help) {
+                            methods.HelpOutput("Will create an account in the database with certain values that you fill in.", new string[] { HELP_INFO }, new string[] { "create account" }, account_inputs );
+                            break;
+                        }
+                        /*if (!this.NullValues) {
+                            if (this.Connected) {
+                                List<string> inputs = methods.ValueOutput(account_inputs);
+                            } else methods.ErrorOutput("You are not connected to the database!");
+                        } else if (this.NullValues && this.Connected) {
+
+                            sql.CreateUserAccount(new string[] { });
+                            Console.WriteLine("success, lol");
+                        } else methods.ErrorOutput("You are not connected to the database!");
+                        break;*/
+                        break;                    
                 }
                 this.Reset();
             }

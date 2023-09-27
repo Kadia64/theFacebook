@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "olEOJCvl9uwzBMqlpo+ROzl/w2q3DKUJNVO7Gr7uNUaVHAp6bR58zbKevS77+TWZ8KX8wXVAnw+mxdDOSpeukw==",
+  "dgSpecHash": "nbVKrWA/LBYRW1RLF02Fwbod1TDgY70AuSqeHI4exFTStOZ5cIXX5Dh7k1r72eYPtsx3Yo/bmXWIgljdcSMcrw==",
   "success": true,
   "projectFilePath": "\\\\10.0.0.139\\xampp - htdocs\\htdocs\\Projects\\TheFacebook\\Git\\theFacebook\\SQL Terminal\\SQL Terminal.csproj",
   "expectedPackageFiles": [
@@ -12,6 +12,7 @@
     "C:\\Users\\wesgl\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\microsoft.win32.systemevents\\4.7.0\\microsoft.win32.systemevents.4.7.0.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\mysql.data\\8.1.0\\mysql.data.8.1.0.nupkg.sha512",
+    "C:\\Users\\wesgl\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
     "C:\\Users\\wesgl\\.nuget\\packages\\system.configuration.configurationmanager\\4.4.1\\system.configuration.configurationmanager.4.4.1.nupkg.sha512",

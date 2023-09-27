@@ -1,0 +1,9 @@
+{
+  "Database-Credentials": {
+    "IP-Address": "10.0.0.139",
+    "Port": 3306,
+    "Database": "thefacebook",
+    "Username": "laptop",
+    "Password": ""
+  }
+}

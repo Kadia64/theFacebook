@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Newtonsoft;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SQL_Terminal {
     public class Methods {
@@ -129,7 +132,13 @@ namespace SQL_Terminal {
         public string RandCharacters(int length) {
             return new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());            
         }
+        public string GetFilePath(string filePath) {
+            string projectDirectory = Directory.GetCurrentDirectory();
+            for (int i = 0; i < 3; ++i) projectDirectory = Directory.GetParent(projectDirectory).FullName;
+            return Path.Combine(projectDirectory, filePath);
+        }
     }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
     public class SQL {
         public MySqlConnection Connection;
         public string IP_Address;
@@ -143,13 +152,14 @@ namespace SQL_Terminal {
         public string[] PersonalInfo = { "first_name", "last_name", "birthday", "sex", "address", "home_town", "highschool", "education_status", "website", "looking_for", "interested_in", "relationship_status", "political_views", "interests", "favorite_music", "favorite_movies", "about_me" };
         public string[] SocialStats = { "friend_count", "friend_email_list", "blocked_count", "blocked_username_list", "reported_count", "message_all_count", "unread_message_count", "message_sent_count", "message_received_count", "verification_request_count", "verification_request_last_timestamp" };
         private Methods methods;
-        public SQL(string ip_address, int port, string database, string username, string password) {
+        public SQL() {
             this.methods = new Methods();
-            this.IP_Address = ip_address;
-            this.Port = port;
-            this.Database = database;
-            this.Username = username;
-            this.Password = password;
+            var jo = JObject.Parse(File.ReadAllText(methods.GetFilePath("config.json")));
+            this.IP_Address = jo["Database-Credentials"]["IP-Address"].ToString();
+            this.Port = Convert.ToInt32(jo["Database-Credentials"]["Port"]);
+            this.Database = jo["Database-Credentials"]["Database"].ToString();
+            this.Username = jo["Database-Credentials"]["Username"].ToString();
+            this.Password = jo["Database-Credentials"]["Password"].ToString();
         }
         public void Connect() {
             string connectionString = $"Server={this.IP_Address};Database={this.Database};Uid={this.Username};Pwd={this.Password}";
@@ -302,4 +312,5 @@ namespace SQL_Terminal {
             command.ExecuteNonQuery();
         }
     }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 }

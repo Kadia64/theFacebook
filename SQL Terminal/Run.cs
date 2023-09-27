@@ -27,7 +27,7 @@ namespace SQL_Terminal {
 
         public void MainLoop() {
             Methods methods = new Methods();
-            SQL sql = new SQL("10.0.0.139", 3306, "thefacebook", "terminal", "");
+            SQL sql = new SQL();
             bool running = true;
             string[] inputTokens = new string[] { };
             ConsoleColor color = ConsoleColor.White;

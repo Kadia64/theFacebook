@@ -78,3 +78,4 @@ C:\Users\wesgl\OneDrive\Desktop\Kill myself\SQL Terminal\obj\Debug\net7.0\ref\SQ
 \\10.0.0.139\xampp - htdocs\htdocs\Projects\TheFacebook\Git\theFacebook\SQL Terminal\obj\Debug\net7.0\SQL Terminal.pdb
 \\10.0.0.139\xampp - htdocs\htdocs\Projects\TheFacebook\Git\theFacebook\SQL Terminal\obj\Debug\net7.0\SQL Terminal.genruntimeconfig.cache
 \\10.0.0.139\xampp - htdocs\htdocs\Projects\TheFacebook\Git\theFacebook\SQL Terminal\obj\Debug\net7.0\ref\SQL Terminal.dll
+\\10.0.0.139\xampp - htdocs\htdocs\Projects\TheFacebook\Git\theFacebook\SQL Terminal\bin\Debug\net7.0\Newtonsoft.Json.dll

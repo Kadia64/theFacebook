@@ -1,6 +1,6 @@
 <?php 
 class FileHandle {
-
+    public const ROOT = '/Projects/TheFacebook/Git/theFacebook/';
     public $_BASE_PATH_;
     public function __construct() {
         $this->_BASE_PATH_ = $_SERVER['DOCUMENT_ROOT'] . '/Projects/TheFacebook/Git/thefacebook/';

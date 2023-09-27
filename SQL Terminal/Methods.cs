@@ -205,16 +205,16 @@ namespace SQL_Terminal {
                     account_stats_id INT PRIMARY KEY AUTO_INCREMENT,
                     login_count INT UNSIGNED,
                     logout_count INT UNSIGNED,
-                    last_login_timestamp VARCHAR(32),
-                    last_logout_timestamp VARCHAR(32),
+                    last_login_timestamp DATETIME,
+                    last_logout_timestamp DATETIME,
                     password_attempts INT UNSIGNED,
-                    last_password_attempt_timestamp VARCHAR(32),
+                    last_password_attempt_timestamp DATETIME,
                     password_change_count INT UNSIGNED,
-                    last_password_changed_timestamp VARCHAR(32),
-                    member_since VARCHAR(32),
-                    member_since_time VARCHAR(32),
-                    last_update VARCHAR(32),
-                    last_update_time VARCHAR(32)                    
+                    last_password_changed_timestamp DATETIME,
+                    member_since DATE,
+                    member_since_time DATETIME,
+                    last_update DATE,
+                    last_update_time DATETIME                    
                 );
                 CREATE TABLE social_stats (
                     social_stats_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -228,7 +228,7 @@ namespace SQL_Terminal {
                     message_sent_count INT UNSIGNED, 
                     message_received_count INT UNSIGNED, 
                     verification_request_count INT UNSIGNED, 
-                    verification_request_last_timestamp VARCHAR(32)
+                    verification_request_last_timestamp DATETIME
                 );
                 CREATE TABLE personal_info (
                     personal_info_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -236,7 +236,7 @@ namespace SQL_Terminal {
                     last_name VARCHAR(128),
                     birthday DATE,
                     sex VARCHAR(32),
-                    address VARCHAR(128),
+                    home_address VARCHAR(128),
                     home_town VARCHAR(128),
                     highschool VARCHAR(128),
                     education_status VARCHAR(32),

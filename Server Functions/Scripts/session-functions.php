@@ -25,9 +25,15 @@ class SessionHandle {
             'favorite-music' => $_POST['favorite-music'],
             'favorite-movies' => $_POST['favorite-movies'],
             'about-me' => $_POST['about-me']
-        ];        
+        ];
     }
-
-
+    public function Redirect($page, $type = 'PHP') {
+        $root = $this->files->_BASE_PATH_;
+        if ($type == 'PHP') {
+            header('Location: ../' . $page);
+        } else if ($type = 'js') {
+            echo "<script>window.location.href = \"../" . $page . "\";</script>";
+        }
+    }
 }
 ?>

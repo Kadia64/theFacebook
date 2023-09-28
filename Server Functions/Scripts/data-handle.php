@@ -7,7 +7,11 @@ class DataHandle {
         $this->files = new FileHandle();
     }
     public function CreateAccount($sql, $register_data, $account_data) {
-        $sql->InsertAccountRow($register_data, $account_data);
+        if ($sql->CheckConnection()) {
+            $sql->InsertAccountRow($register_data, $account_data);
+        } else {
+            echo 'not connected to database';
+        }
     }
     public function CheckExistingAccount($sql, $username, $email) {
         $username_flag = false;

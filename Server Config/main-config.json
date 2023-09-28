@@ -4,5 +4,8 @@
 		"Database": "thefacebook",
 		"Username": "root",
 		"Password": ""
+	},
+	"Server-Configuration": {
+		"Absolute-Path": "http://10.0.0.139/Projects/TheFacebook/Git/theFacebook/"
 	}
 }

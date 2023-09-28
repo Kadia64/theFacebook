@@ -13,7 +13,7 @@ class SQLHandle {
     public function __construct() {
         $this->files = new FileHandle();
         $this->dh = new DataHandle();
-        $sql_info = json_decode($this->files->ReadFile('Server Config/main-config.json'));        
+        $sql_info = $this->files->ServerConfig;
         $this->Server = $sql_info->{"MySQL-Credentials"}->{"Server"};
         $this->Database = $sql_info->{"MySQL-Credentials"}->{"Database"};
         $this->Username = $sql_info->{"MySQL-Credentials"}->{"Username"};

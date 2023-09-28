@@ -30,7 +30,7 @@ class SessionHandle {
     public function Redirect($page, $type = 'PHP') {
         $root = $this->files->_BASE_PATH_;
         if ($type == 'PHP') {
-            header('Location: ../' . $page);
+            header('Location: ' . $this->files->_SERVER_PATH_ . $page);
         } else if ($type = 'js') {
             echo "<script>window.location.href = \"../" . $page . "\";</script>";
         }

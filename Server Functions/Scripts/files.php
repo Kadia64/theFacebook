@@ -2,8 +2,12 @@
 class FileHandle {
     public const ROOT = '/Projects/TheFacebook/Git/theFacebook/';
     public $_BASE_PATH_;
+    public $_SERVER_PATH_;
+    public $ServerConfig;
     public function __construct() {
-        $this->_BASE_PATH_ = $_SERVER['DOCUMENT_ROOT'] . '/Projects/TheFacebook/Git/thefacebook/';
+        $this->_BASE_PATH_ = $_SERVER['DOCUMENT_ROOT'] . '/Projects/TheFacebook/Git/thefacebook/';        
+        $this->ServerConfig = json_decode($this->ReadFile('Server Config/main-config.json'));
+        $this->_SERVER_PATH_ = $this->ServerConfig->{'Server-Configuration'}->{'Absolute-Path'};
     }
 
     public function ReadFile($fileName) {

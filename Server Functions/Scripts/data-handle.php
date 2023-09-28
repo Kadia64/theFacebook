@@ -9,6 +9,30 @@ class DataHandle {
     public function CreateAccount($sql, $register_data, $account_data) {
         $sql->InsertAccountRow($register_data, $account_data);
     }
+    public function CheckExistingAccount($sql, $username, $email) {
+        $username_flag = false;
+        $email_flag = false;
+        $usernames = $sql->GetTableData('username', 'account_info');
+        $emails = $sql->GetTableData('email', 'account_info');
+
+        for ($i = 0; $i < count($usernames); ++$i) {
+            if ($usernames[$i] == $username) {
+                $username_flag = true;
+            }
+        }
+        for ($i = 0; $i < count($emails); ++$i) {
+            if ($emails[$i] == $email) {
+                $email_flag = true;
+            }
+        }
+        if ($username_flag && $email_flag) {
+            return 'both';
+        } else if ($username_flag) {
+            return 'username';
+        } else if ($email_flag) {
+            return 'email';
+        }
+    }
 
     public function GetTimeStamp($type) {
         if ($type == 0) {                   // 2023-09-27
@@ -20,6 +44,9 @@ class DataHandle {
         } else if ($type == 9) {
             return date('c', time());
         }
+    }
+    public function Alert($text) {
+        echo '<script>alert("' . $text . '");</script>';
     }
 }
 class UpdateData {

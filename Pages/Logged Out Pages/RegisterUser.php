@@ -1,10 +1,25 @@
 <?php 
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
+    $dh = new DataHandle();
+    $sh = new SessionHandle();
     session_start();
+
+    if (isset($_GET['account-create-fail'])) {
+        if ($_GET['account-create-fail'] == 'username') {
+            $dh->Alert('Username already exists!');
+        } else if ($_GET['account-create-fail'] == 'email') {
+            $dh->Alert('Email already exists!');
+        } else if ($_GET['account-create-fail'] == 'both') {
+            $dh->Alert('Both the username and email exist!');
+        }
+        $sh->Redirect('Logged Out Pages/RegisterUser.php', 'js');
+    }        
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -42,6 +42,15 @@ class SQLHandle {
         mysqli_query($this->connection, 'SET @last_personal_info_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $this->Nullable($personal_info['first-name']) . ' ' .  $this->Nullable($personal_info['last-name']) . ');');
     }
+    public function GetTableData($attribute, $table) {
+        $result = mysqli_query($this->connection, 'SELECT ' . $attribute . ' FROM ' . $table);
+        $values = [];
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $values[] = $row[$attribute];
+        }
+        return $values;
+    }    
     public function Nullable($val) {
         if ($val == '') {
             return 'NULL';

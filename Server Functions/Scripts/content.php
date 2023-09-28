@@ -331,7 +331,33 @@ class Styles {
             </style>
         ';
     }
-    public function EnableCookiesStyle() { }
+    public function EnableCookiesStyle() {        
+        echo '
+            <style>
+                .enable-cookies-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .enable-cookies-page-content {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                }
+                .enable-cookies-page-link {
+                    width: 100px;
+                    margin: 0 auto;
+                    padding-top: 10px;
+                    padding-bottom: 20px;
+                }
+                .enable-cookies-page-link a {
+                    color: white;
+                    background-color: var(--button-color);
+                    text-decoration: none;
+                    border: 1.5px ridge;
+                    padding: 3px;
+                }
+            </style>
+        ';
+    }
     public function MainProfilePageStyle() { }
 }
 class PageData {

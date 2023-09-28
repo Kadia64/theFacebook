@@ -35,5 +35,13 @@ class SessionHandle {
             echo "<script>window.location.href = \"../" . $page . "\";</script>";
         }
     }
+    public function CookiesEnabled() {
+        setcookie('cookies_enabled', 'test', time() + 3600, '/');
+        if (isset($_COOKIE['cookies_enabled'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }    
 }
 ?>

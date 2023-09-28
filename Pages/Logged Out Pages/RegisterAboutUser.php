@@ -36,13 +36,13 @@
                                             <label for="first-name-input">First Name:</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="first-name-input" name="first-name"> <!-- *required* -->
+                                            <input type="text" id="first-name-input" name="first-name" required>
                                         </div>
                                         <div>
                                             <label for="last-name-input">Last Name:</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="last-name-input" name="last-name"> <!-- *required* -->
+                                            <input type="text" id="last-name-input" name="last-name" required>
                                         </div>
                                         <div>
                                             <label for="sex-input">Sex:</label>
@@ -57,7 +57,7 @@
                                             <label for="birthday-input">Birthday</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="birthday-input" name="birthday">
+                                            <input type="date" id="birthday-input" name="birthday">
                                         </div>
                                         <div>
                                             <label for="home-address-input">Home Address:</label>
@@ -87,7 +87,7 @@
                                             <label for="website-input">Website:</label>
                                         </div>
                                         <div>
-                                            <input type="text" id="website-input" name="website">
+                                            <input type="url" id="website-input" name="website">
                                         </div>
                                         <div>
                                             <label><b>Personal Info:</b></label>
@@ -149,7 +149,7 @@
                                         </div>
                                     </div>
                                     <div class="register-button">
-                                        <input type="submit" value="Registar Now!">
+                                        <input type="submit" value="Register Now!">
                                     </div>
                                 </form>
                             </div>

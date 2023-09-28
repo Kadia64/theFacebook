@@ -20,15 +20,15 @@ class Content {
         echo '
             <div class="main-top-box">
                 <div class="main-top-content">
-                    <img src="' . PageData::ROOT . '/Images/thefacebook-left.jpg">
+                    <img src="' . PageData::ROOT . 'Images/thefacebook-left.jpg">
                 </div>
                 <div class="main-top-content">
-                    <img src="' . PageData::ROOT . '/Images/thefacebook-logo.jpg">
+                    <img src="' . PageData::ROOT . 'Images/thefacebook-logo.jpg">
                     <br>
                     <div>
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Login.php">login</a>
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">register</a>
-                        <a href="' . PageData::ROOT . '/Pages/Annual Pages/About.php">about</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Login.php">login</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">register</a>
+                        <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
                     </div>          
                 </div>            
             </div>
@@ -37,12 +37,12 @@ class Content {
     public function BottomContent() { 
         echo '
             <div class="bottom-content">
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/About.php">about</a>
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/ContactUs.php">contact</a>                
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/JobDescriptions.php">jobs</a>                
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/faqPage.php">faq</a>
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/TermsAndConditions.php">terms</a>
-                <a href="' . PageData::ROOT . '/Pages/Annual Pages/PrivacyPolicy.php">policy</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/ContactUs.php">contact</a>                
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/JobDescriptions.php">jobs</a>                
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/faqPage.php">faq</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/TermsAndConditions.php">terms</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/PrivacyPolicy.php">policy</a>
                 <div>
                     <p>a Mark Zuckerberg production</p>
                     <p>Thefacebook © 2004</p>
@@ -62,7 +62,7 @@ class Content {
                     </div>
                     <div class="left-login-buttons">
                         <input type="submit" name="left-login-button" value="login" class="left-login-button">
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">register</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">register</a>
                     </div>
                 </form>
             </div>
@@ -73,13 +73,13 @@ class Content {
             <div class="left-login-links">
                 <div class="left-login-flexbox">
                     <div>
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Welcome.php">[ main ]</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Welcome.php">[ main ]</a>
                     </div>
                     <div>
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/Login.php">[ login ]</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Login.php">[ login ]</a>
                     </div>
                     <div>
-                        <a href="' . PageData::ROOT . '/Pages/Logged Out Pages/RegisterUser.php">[ register ]</a>
+                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">[ register ]</a>
                     </div>
                 </div>
             </div>

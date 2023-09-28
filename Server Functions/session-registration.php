@@ -9,8 +9,13 @@ $sql = new SQLHandle();
 
 session_start();
 $sql->Connect();
+$link = null;
+if (isset($_GET['prev-page'])) {
+    $link = $_GET['prev-page'];
+}
+
 if (!$sf->CookiesEnabled()) {
-    $sf->Redirect('Pages/EnableCookies.php');
+    $sf->Redirect('Pages/EnableCookies.php?prev-page=' . $link);
     exit;
 } else {
     $username = $_POST['username'];
@@ -21,10 +26,8 @@ if (!$sf->CookiesEnabled()) {
         $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=email');
     } else if ($dh->CheckExistingAccount($sql, $username, $email) == 'both') {
         $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=both');
-    } else {        
-        // free username & email
+    } else {                
         $sql->CloseConnection();
-
         $_SESSION['username'] = $_POST['username'];
         $_SESSION['status'] = $_POST['status'];
         $_SESSION['email'] = $_POST['email'];

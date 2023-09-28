@@ -38,7 +38,7 @@
                     <div class="register-page-content">
                         <p>To register for thefacebook.com, just fill out the four fields below. You will have a chance to enter additional information and submit a picture once you have registered.</p>
                         <div class="register-page-middle">
-                            <form method="POST" action="<?php echo PageData::ROOT; ?>/Server Functions/session-registration.php" class="register-page-form">
+                            <form method="POST" action="<?php echo PageData::ROOT; ?>/Server Functions/session-registration.php?prev-page=<?php echo 'Pages/Logged Out Pages/RegisterAboutUser.php'; ?>" class="register-page-form">
                                 <div class="register-page-grid">
                                     <div>
                                         <label>Username:</label>

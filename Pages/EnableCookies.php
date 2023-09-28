@@ -5,8 +5,6 @@
     $styles = new Styles();
     $pages = new PageData();
     session_start();
-
-    // the page to go to after the enable cookies page
     $link = $_GET['prev-page'];
 ?>
 <!DOCTYPE html>
@@ -26,7 +24,7 @@
                     <div class="enable-cookies-page-content">
                         <p>Our website requires the use of cookies to function properly. Cookies are small text files that are stored on your device and allow us to remember your preferences and personalize your experience. Please enable cookies in your browser settings to continue using our website.</p>
                         <div class="enable-cookies-page-link">
-                            <a href="">Cookies Enabled!</a>
+                            <a href="<?php echo PageData::ROOT . $link; ?>">Cookies Enabled!</a>
                         </div>
                     </div>
                 </div>

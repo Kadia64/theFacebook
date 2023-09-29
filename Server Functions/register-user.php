@@ -11,11 +11,13 @@ $sql->Connect();
 session_unset();
 session_start();
 
+$salt = $dh->RandomCharacters(32);
 $account_info = [
     'username' => $_SESSION['username'],
     'status' => $_SESSION['status'],
     'email' => $_SESSION['email'],
-    'password' => $_SESSION['password']
+    'password' => hash('sha256', $_SESSION['password'] . $salt),
+    'salt' => $salt
 ];
 $register_data = $sh->GetRegisterData();
 

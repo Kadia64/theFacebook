@@ -43,7 +43,36 @@ class DataHandle {
             return 'email';
         }
     }
-
+    public function Login($sql, $email, $password) {
+        $email_list = $sql->GetTableFieldData('email', 'account_info');
+        $password_list = $sql->GetTableFieldData('password', 'account_info');
+        $inc = 0;        
+        for ($i = 0; $i < count($email_list); ++$i) {
+            if ($email_list[$i] == $email) {
+                ++$inc;
+                break;
+            }
+        }
+        for ($i = 0; $i < count($password_list); ++$i) {
+            if ($password_list[$i] == $password) {
+                ++$inc;
+                break;
+            }
+        }
+        if ($inc == 2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function RandomCharacters($length) {
+        $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $rand = null;
+        for ($i = 0; $i < $length; ++$i) {
+            $rand .= $letters[mt_rand(0, strlen($letters) - 1)];            
+        }
+        return $rand;
+    }
     public function GetTimeStamp($type) {
         if ($type == 0) {                   // 2023-09-27
             return date('Y-m-d');

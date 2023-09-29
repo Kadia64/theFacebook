@@ -261,9 +261,10 @@ namespace SQL_Terminal {
                     personal_info_id INT,
                     username VARCHAR(128),
                     email VARCHAR(128),
-                    password VARCHAR(128),    
+                    password VARCHAR(128),
                     mobile VARCHAR(128),
-                    full_name VARCHAR(128),    
+                    full_name VARCHAR(128),
+                    password_salt VARCHAR(32),
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),
                     CONSTRAINT account_stats_fk FOREIGN KEY (account_stats_id)

@@ -41,7 +41,7 @@ class Content {
                 <a href="">social net</a>
                 <a href="">invite</a>
                 <a href="">faq</a>
-                <a href="">logout</a>
+                <a href="' . PageData::ROOT . 'Server Functions/logout.php">logout</a>
             ';
         }        
         echo '

@@ -21,7 +21,7 @@
                 <h4>[ Login ]</h4>
                 <div class="login-page-window">
                     <div class="login-page-content">
-                        <form method="POST" action="" class="login-page-form">
+                        <form method="POST" action="<?php echo PageData::ROOT . 'Server Functions/login-user.php'?>" class="login-page-form">
                             <div>
                                 <div>
                                     <label for="email">Email:</label>

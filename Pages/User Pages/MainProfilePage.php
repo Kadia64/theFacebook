@@ -18,14 +18,16 @@
     }
 
     $friend_count = 0;
+    $email = null;
 
-    // ask the database if you just created an account, or if you just logged in
+    // ask the database if you just created an account, or if you just logged in    
     if ($_GET['return-status'] == 'account-created' || $_GET['return-status'] == 'logged-in') {
+        $email = $_SESSION['email'];
         $sql->Connect();
-        $account_data = $sql->GetDataByEmail('account_info', $_SESSION['email']);
-        $user_data = $sql->GetDataByEmail('personal_info', $_SESSION['email']);
-        $account_stats = $sql->GetDataByEmail('account_stats', $_SESSION['email']);                
-        $display_array = array_slice(array_values($sql->GetDataByEmail('personal_info', $_SESSION['email'], true)), 3);
+        $account_data = $sql->GetDataByEmail('account_info', $email);
+        $user_data = $sql->GetDataByEmail('personal_info', $email);
+        $account_stats = $sql->GetDataByEmail('account_stats', $email);
+        $display_array = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, true)), 3);
         array_unshift($display_array,
             $account_data->{'full_name'},
             $account_stats->{'member_since'},

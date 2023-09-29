@@ -44,7 +44,7 @@ class SQLHandle {
         mysqli_query($this->connection, 'SET @last_social_stats_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO personal_info (first_name, last_name, birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (' . $this->Nullable($personal_info['first-name']) . ',' . $this->Nullable($personal_info['last-name']) . ',' . $this->Nullable($personal_info['birthday']) . ',' . $this->Nullable($personal_info['sex']) . ',' . $this->Nullable($personal_info['home-address']) . ',' . $this->Nullable($personal_info['home-town']) . ',' . $this->Nullable($personal_info['highschool']) . ',' . $this->Nullable($account_info['status']) . ',' . $this->Nullable($personal_info['website']) . ',' . $this->Nullable($personal_info['looking-for']) . ',' . $this->Nullable($personal_info['interested-in']) . ',' . $this->Nullable($personal_info['relationship-status']) . ',' . $this->Nullable($personal_info['political-views']) . ',' . $this->Nullable($personal_info['interests']) . ',' . $this->Nullable($personal_info['favorite-music']) . ',' . $this->Nullable($personal_info['favorite-movies']) . ',' . $this->Nullable($personal_info['about-me']) . ');');
         mysqli_query($this->connection, 'SET @last_personal_info_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $full_name . ');');
+        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name, password_salt) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $full_name . ', ' . $this->Nullable($account_info['salt']) . ');');
     }
     public function GetTableFieldData($attribute, $table) {
         $result = mysqli_query($this->connection, 'SELECT ' . $attribute . ' FROM ' . $table);
@@ -60,6 +60,18 @@ class SQLHandle {
         JOIN account_info AS ai ON pi." . $this->_tables->GetID($table) . " = ai." . $this->_tables->GetID($table) . "
         WHERE ai." . $selector . " = '" . $value . "';";
     }
+    public function RelationalValuesQuery($value, $table, $selector, $selector_value) {
+        // return 'SELECT pi.' . $value . '
+        // FROM personal_info pi
+        // JOIN account_info ai ON pi.personal_info_id = ai.personal_info_id
+        // WHERE ai.username = 'kadia64';'
+        $id = $this->_tables->GetID($table);
+        return " SELECT selector." . $value . "
+        FROM " . $table . " selector
+        JOIN account_info ai ON selector." . $id . " = ai." . $id . "
+        WHERE ai." . $selector . " = '" . $selector_value . "';";
+        
+    }
     public function GetDataByUsername($table, $username, $assoc = false) {
         $query = $this->JsonValuesQuery($table, 'username', $username);
         $result = mysqli_query($this->connection, $query);
@@ -71,6 +83,30 @@ class SQLHandle {
         $result = mysqli_query($this->connection, $query);
         $data = mysqli_fetch_assoc($result);
         return json_decode(json_encode($data), $assoc);
+    }
+    public function GetEmailByUsername($username) {        
+        $result = mysqli_query($this->connection, "SELECT email FROM account_info WHERE username = '" . $username . "'");
+        $row = mysqli_fetch_assoc($result);
+        if ($row) {
+            return $row['email'];
+        } else return null;
+    }
+    public function GetUsernameByEmail($email) {
+        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '" . $email . "'");
+        $row = mysqli_fetch_assoc($result);
+        if ($row) {
+            return $row['username'];
+        } else return null;        
+    }
+    public function GetValueByUsername($value, $table, $username) {
+        $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'username', $username));
+        $row = mysqli_fetch_assoc($result);
+        return $row[$value];
+    }
+    public function GetValueByEmail($value, $table, $email) {
+        $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'email', $email));
+        $row = mysqli_fetch_assoc($result);
+        return $row[$value];
     }
     public function Nullable($val) {
         if ($val == '') {

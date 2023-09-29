@@ -2,9 +2,13 @@
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class SessionHandle {
-    public $files;
+    public $_10minExpiration;
+    public $_5minExpiration;
+    private $files;
     public function __construct() {
-        $this->files = new FileHandle();        
+        $this->_10minExpiration = time() + (10 * 60);
+        $this->_5minExpiration = time() + (5 * 60);
+        $this->files = new FileHandle();      
     }
     public function GetRegisterData() {
         return [
@@ -42,6 +46,18 @@ class SessionHandle {
         } else {
             return false;
         }
-    }    
+    }
+    public function SetUserDataCookie($username, $email) {
+        if (isset($_COOKIE['user-token']) || !$this->CookiesEnabled()) return;
+        $obj = new class($username, $email) {
+            public $Username;
+            public $Email;
+            public function __construct($username, $email) {
+                $this->Username = $username;
+                $this->Email = $email;
+            }
+        };
+        setcookie('user-token', json_encode($obj), $this->_10minExpiration, '/');
+    }
 }
 ?>

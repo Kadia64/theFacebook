@@ -26,7 +26,7 @@
                                 <p>Registering with us is quick and easy. Simply fill out the form below to create your account. Once you've completed the registration process, you'll have access to all the features and benefits of being a member of our community.</p>
                             </div>
                             <div class="register-about-page-form">
-                                <form method="POST" action="<?php echo PageData::ROOT; ?>/Server Functions/register-user.php">
+                                <form method="POST" action="<?php echo PageData::ROOT; ?>Server Functions/register-user.php">
                                     <div class="register-form-grid">
                                         <div>
                                             <label><b>Basic Info:</b></label>

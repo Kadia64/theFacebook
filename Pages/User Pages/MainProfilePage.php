@@ -2,13 +2,20 @@
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
     $dh = new DataHandle();
+    $sh = new SessionHandle();
     $sql = new SQLHandle();
     session_start();
+
+    if (!isset($_COOKIE['user-token'])) {
+        $sh->Redirect('Pages/Logged Out Pages/Login.php');
+        exit;
+    }
 
     $friend_count = 0;
 
@@ -27,6 +34,8 @@
             $account_data->{'email'},
             $account_data->{'mobile'}
         );
+        
+        // set the user data cookie for the users personal info, and their settings
     } else {
         // else get your information from the cookie
         

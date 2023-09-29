@@ -8,6 +8,7 @@ $sh = new SessionHandle();
 $dh = new DataHandle();
 $sql = new SQLHandle();
 $sql->Connect();
+session_unset();
 session_start();
 
 $account_info = [

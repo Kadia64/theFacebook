@@ -1,11 +1,14 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 class DataHandle {
     public $AccountAttributes;
     private $files;
+    private $sh;
     public function __construct() {
         $this->files = new FileHandle();
+        $this->sh = new SessionHandle();
         $this->AccountAttributes = ['name', 'member since', 'last updated', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'high school', 'status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];
     }
     public function CreateAccount($sql, $register_data, $account_data) {
@@ -14,8 +17,7 @@ class DataHandle {
         } else {
             echo 'not connected to database';
         }
-
-        // SetCookie();
+        $this->sh->SetUserDataCookie($account_data['username'], $account_data['email']);
     }
     public function CheckExistingAccount($sql, $username, $email) {
         $username_flag = false;

@@ -16,12 +16,11 @@
         $sh->Redirect('Pages/Logged Out Pages/Login.php');
         exit;
     }
-
     $friend_count = 0;
     $email = null;
 
     // ask the database if you just created an account, or if you just logged in    
-    if ($_GET['return-status'] == 'account-created' || $_GET['return-status'] == 'logged-in') {
+    if ($_GET['return-status'] == 'account-created' || $_GET['return-status'] == 'logged-in' || $_GET['return-status'] == 'traverse') {
         $email = $_SESSION['email'];
         $sql->Connect();
         $account_data = $sql->GetDataByEmail('account_info', $email);
@@ -35,8 +34,7 @@
             $account_data->{'username'},
             $account_data->{'email'},
             $account_data->{'mobile'}
-        );
-        
+        );        
         // set the user data cookie for the users personal info, and their settings
     } else {
         // else get your information from the cookie

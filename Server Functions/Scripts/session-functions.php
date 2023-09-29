@@ -39,6 +39,11 @@ class SessionHandle {
             echo "<script>window.location.href = \"" . $root . $page . "\";</script>";
         }
     }
+    public function CheckTraversal() {
+        if (isset($_COOKIE['user-token'])) {            
+            $this->Redirect('Pages/User Pages/MainProfilePage.php?return-status=traverse');
+        }
+    }
     public function CookiesEnabled() {
         setcookie('cookies_enabled', 'test', time() + 3600, '/');
         if (isset($_COOKIE['cookies_enabled'])) {

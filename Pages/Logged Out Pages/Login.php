@@ -1,10 +1,13 @@
 <?php 
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
+    $sh = new SessionHandle();
     session_start();
+    $sh->CheckTraversal();
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -9,6 +9,7 @@
     $dh = new DataHandle();
     $sh = new SessionHandle();
     session_start();
+    $sh->CheckTraversal();
 
     if (isset($_GET['account-create-fail'])) {
         if ($_GET['account-create-fail'] == 'username') {

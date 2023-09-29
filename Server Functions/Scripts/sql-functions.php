@@ -33,7 +33,6 @@ class SQLHandle {
             return true;
         } else return false;
     }
-
     public function InsertAccountRow($personal_info, $account_info) {
         $full_name = '"' . $this->Nullable($personal_info['first-name']) . ' ' .  $this->Nullable($personal_info['last-name']) . '"';
         mysqli_query($this->connection, 'INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (\'People You Follow\', true, true)');
@@ -55,22 +54,13 @@ class SQLHandle {
         }
         return $values;
     }
-    public function JsonValuesQuery($table, $selector, $value) {        
-        return "SELECT pi.* FROM " . $table . " AS pi
-        JOIN account_info AS ai ON pi." . $this->_tables->GetID($table) . " = ai." . $this->_tables->GetID($table) . "
-        WHERE ai." . $selector . " = '" . $value . "';";
+    public function JsonValuesQuery($table, $selector, $value) {     
+        $id = $this->_tables->GetID($table);   
+        return "SELECT pi.* FROM " . $table . " AS pi JOIN account_info AS ai ON pi." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $value . "';";
     }
-    public function RelationalValuesQuery($value, $table, $selector, $selector_value) {
-        // return 'SELECT pi.' . $value . '
-        // FROM personal_info pi
-        // JOIN account_info ai ON pi.personal_info_id = ai.personal_info_id
-        // WHERE ai.username = 'kadia64';'
+    public function RelationalValuesQuery($value, $table, $selector, $selector_value) {        
         $id = $this->_tables->GetID($table);
-        return " SELECT selector." . $value . "
-        FROM " . $table . " selector
-        JOIN account_info ai ON selector." . $id . " = ai." . $id . "
-        WHERE ai." . $selector . " = '" . $selector_value . "';";
-        
+        return " SELECT selector." . $value . " FROM " . $table . " selector JOIN account_info ai ON selector." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $selector_value . "';";
     }
     public function GetDataByUsername($table, $username, $assoc = false) {
         $query = $this->JsonValuesQuery($table, 'username', $username);
@@ -104,7 +94,7 @@ class SQLHandle {
         return $row[$value];
     }
     public function GetValueByEmail($value, $table, $email) {
-        $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'email', $email));
+        $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'email', $email));        
         $row = mysqli_fetch_assoc($result);
         return $row[$value];
     }

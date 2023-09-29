@@ -28,11 +28,11 @@ class SessionHandle {
         ];
     }
     public function Redirect($page, $type = 'PHP') {
-        $root = $this->files->_BASE_PATH_;
+        $root = $this->files->_SERVER_PATH_; 
         if ($type == 'PHP') {
-            header('Location: ' . $this->files->_SERVER_PATH_ . $page);
+            header('Location: ' . $root . $page);
         } else if ($type = 'js') {
-            echo "<script>window.location.href = \"../" . $page . "\";</script>";
+            echo "<script>window.location.href = \"" . $root . $page . "\";</script>";
         }
     }
     public function CookiesEnabled() {

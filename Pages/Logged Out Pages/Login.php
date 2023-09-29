@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="main-pagebox">
-        <?php $content->TopContent(); ?>
+        <?php $content->TopContent(false); ?>
         <div class="main-page-flexbox">
             <?php $content->LeftLoginLinks(); ?>
             <div class="right-main-window">

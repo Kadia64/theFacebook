@@ -10,12 +10,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>    
-    <?php $content->Startup('Template'); ?>
+    <?php $content->Startup('Enable Cookies'); ?>
     <?php $styles->EnableCookiesStyle(); ?>    
 </head>
 <body>
     <div class="main-pagebox">
-        <?php $content->TopContent(); ?>
+        <?php $content->TopContent(false); ?>
         <div class="main-page-flexbox">
             <?php $content->LeftLoginForm(); ?>
             <div class="right-main-window">

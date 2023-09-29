@@ -2,7 +2,8 @@
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
-class SQLHandle {    
+class SQLHandle {
+    public const ENABLED = true;
     public $Server;
     public $Database;
     public $Username;
@@ -10,9 +11,11 @@ class SQLHandle {
     public $connection;
     private $files;
     private $dh;
+    private $_tables;
     public function __construct() {
         $this->files = new FileHandle();
         $this->dh = new DataHandle();
+        $this->_tables = new SQLTables();
         $sql_info = $this->files->ServerConfig;
         $this->Server = $sql_info->{"MySQL-Credentials"}->{"Server"};
         $this->Database = $sql_info->{"MySQL-Credentials"}->{"Database"};
@@ -32,17 +35,18 @@ class SQLHandle {
     }
 
     public function InsertAccountRow($personal_info, $account_info) {
+        $full_name = '"' . $this->Nullable($personal_info['first-name']) . ' ' .  $this->Nullable($personal_info['last-name']) . '"';
         mysqli_query($this->connection, 'INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (\'People You Follow\', true, true)');
         mysqli_query($this->connection, 'SET @last_settings_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, member_since_time, last_update, last_update_time) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, \'' . $this->dh->GetTimeStamp(0) . '\', \'' . $this->dh->GetTimeStamp(2) . '\', \'' . $this->dh->GetTimeStamp(0) . '\', \'' . $this->dh->GetTimeStamp(2) . '\');');
+        mysqli_query($this->connection, 'INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, \'' . $this->dh->GetTimeStamp(0) . '\', \'' . $this->dh->GetTimeStamp(0) . '\');');
         mysqli_query($this->connection, 'SET @last_account_stats_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (0, NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL);');
         mysqli_query($this->connection, 'SET @last_social_stats_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO personal_info (first_name, last_name, birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (' . $this->Nullable($personal_info['first-name']) . ',' . $this->Nullable($personal_info['last-name']) . ',' . $this->Nullable($personal_info['birthday']) . ',' . $this->Nullable($personal_info['sex']) . ',' . $this->Nullable($personal_info['home-address']) . ',' . $this->Nullable($personal_info['home-town']) . ',' . $this->Nullable($personal_info['highschool']) . ',' . $this->Nullable($account_info['status']) . ',' . $this->Nullable($personal_info['website']) . ',' . $this->Nullable($personal_info['looking-for']) . ',' . $this->Nullable($personal_info['interested-in']) . ',' . $this->Nullable($personal_info['relationship-status']) . ',' . $this->Nullable($personal_info['political-views']) . ',' . $this->Nullable($personal_info['interests']) . ',' . $this->Nullable($personal_info['favorite-music']) . ',' . $this->Nullable($personal_info['favorite-movies']) . ',' . $this->Nullable($personal_info['about-me']) . ');');
         mysqli_query($this->connection, 'SET @last_personal_info_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $this->Nullable($personal_info['first-name']) . ' ' .  $this->Nullable($personal_info['last-name']) . ');');
+        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $full_name . ');');
     }
-    public function GetTableData($attribute, $table) {
+    public function GetTableFieldData($attribute, $table) {
         $result = mysqli_query($this->connection, 'SELECT ' . $attribute . ' FROM ' . $table);
         $values = [];
 
@@ -50,12 +54,44 @@ class SQLHandle {
             $values[] = $row[$attribute];
         }
         return $values;
-    }    
+    }
+    public function JsonValuesQuery($table, $selector, $value) {        
+        return "SELECT pi.* FROM " . $table . " AS pi
+        JOIN account_info AS ai ON pi." . $this->_tables->GetID($table) . " = ai." . $this->_tables->GetID($table) . "
+        WHERE ai." . $selector . " = '" . $value . "';";
+    }
+    public function GetDataByUsername($table, $username, $assoc = false) {
+        $query = $this->JsonValuesQuery($table, 'username', $username);
+        $result = mysqli_query($this->connection, $query);
+        $data = mysqli_fetch_assoc($result);
+        return json_decode(json_encode($data), $assoc);
+    }
+    public function GetDataByEmail($table, $email, $assoc = false) {
+        $query = $this->JsonValuesQuery($table, 'email', $email);
+        $result = mysqli_query($this->connection, $query);
+        $data = mysqli_fetch_assoc($result);
+        return json_decode(json_encode($data), $assoc);
+    }
     public function Nullable($val) {
         if ($val == '') {
             return 'NULL';
         } else {
-            return '\'' . $val . '\'';
+            return '\'' . mysqli_real_escape_string($this->connection, $val) . '\'';
+        }
+    }
+}
+class SQLTables {
+    public function GetID($table) {
+        if ($table == 'account_info') {
+            return 'account_id';
+        } else if ($table == 'account_settings') {
+            return 'settings_id';
+        } else if ($table == 'account_stats') {
+            return 'account_stats_id';
+        } else if ($table == 'personal_info') {
+            return 'personal_info_id';
+        } else if ($table == 'social_stats') {
+            return 'social_stats_id';
         }
     }
 }

@@ -174,10 +174,15 @@ namespace SQL_Terminal {
                 return true;
             } else return false;                
         }
-        public void Query(string query_string) {
-            using (MySqlCommand command = new MySqlCommand(query_string, this.Connection)) {
-                command.ExecuteNonQuery();
+        public string Query(string query_string) {
+            try {
+                using (MySqlCommand command = new MySqlCommand(query_string, this.Connection)) {
+                    command.ExecuteNonQuery();
+                }
+            } catch (Exception e) {
+                return e.Message;
             }
+            return "";
         }
         public void ClearDatabase() {
             List<string> tableNames = new List<string>();
@@ -194,7 +199,7 @@ namespace SQL_Terminal {
         }        
 
         public void CreateDefaultStructure() {
-            this.Query(@"
+            string output = this.Query(@"
                 CREATE TABLE account_settings (
   	                settings_id INT PRIMARY KEY AUTO_INCREMENT,
   	                allow_mentions VARCHAR(255),
@@ -205,16 +210,14 @@ namespace SQL_Terminal {
                     account_stats_id INT PRIMARY KEY AUTO_INCREMENT,
                     login_count INT UNSIGNED,
                     logout_count INT UNSIGNED,
-                    last_login_timestamp DATETIME,
-                    last_logout_timestamp DATETIME,
+                    last_login_timestamp VARCHAR(32),
+                    last_logout_timestamp VARCHAR(32),
                     password_attempts INT UNSIGNED,
-                    last_password_attempt_timestamp DATETIME,
+                    last_password_attempt_timestamp VARCHAR(32),
                     password_change_count INT UNSIGNED,
-                    last_password_changed_timestamp DATETIME,
-                    member_since DATE,
-                    member_since_time DATETIME,
-                    last_update DATE,
-                    last_update_time DATETIME                    
+                    last_password_changed_timestamp VARCHAR(32),
+                    member_since VARCHAR(32),
+                    last_update VARCHAR(32)
                 );
                 CREATE TABLE social_stats (
                     social_stats_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -228,13 +231,13 @@ namespace SQL_Terminal {
                     message_sent_count INT UNSIGNED, 
                     message_received_count INT UNSIGNED, 
                     verification_request_count INT UNSIGNED, 
-                    verification_request_last_timestamp DATETIME
+                    verification_request_last_timestamp VARCHAR(32)
                 );
                 CREATE TABLE personal_info (
                     personal_info_id INT PRIMARY KEY AUTO_INCREMENT,
                     first_name VARCHAR(128),
                     last_name VARCHAR(128),
-                    birthday DATE,
+                    birthday VARCHAR(32),
                     sex VARCHAR(32),
                     home_address VARCHAR(128),
                     home_town VARCHAR(128),
@@ -271,6 +274,7 @@ namespace SQL_Terminal {
                     	REFERENCES personal_info (personal_info_id)
                 );
             ");
+            Console.WriteLine(output);
         }
         public void TruncateAllRelationalTables() {
             this.Query(@"

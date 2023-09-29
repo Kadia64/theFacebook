@@ -2,9 +2,11 @@
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class DataHandle {
+    public $AccountAttributes;
     private $files;
     public function __construct() {
         $this->files = new FileHandle();
+        $this->AccountAttributes = ['name', 'member since', 'last updated', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'high school', 'status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];
     }
     public function CreateAccount($sql, $register_data, $account_data) {
         if ($sql->CheckConnection()) {
@@ -12,12 +14,14 @@ class DataHandle {
         } else {
             echo 'not connected to database';
         }
+
+        // SetCookie();
     }
     public function CheckExistingAccount($sql, $username, $email) {
         $username_flag = false;
         $email_flag = false;
-        $usernames = $sql->GetTableData('username', 'account_info');
-        $emails = $sql->GetTableData('email', 'account_info');
+        $usernames = $sql->GetTableFieldData('username', 'account_info');
+        $emails = $sql->GetTableFieldData('email', 'account_info');
 
         for ($i = 0; $i < count($usernames); ++$i) {
             if ($usernames[$i] == $username) {
@@ -48,6 +52,17 @@ class DataHandle {
         } else if ($type == 9) {
             return date('c', time());
         }
+    }
+    public function InfoField($data, $blue = false) {
+        $class = null;
+        if ($blue) {
+            $class = 'class="profile-blue-info"';
+        }
+        if ($data == '') {
+            return '<p ' . $class . '>................................</p>';
+        } else {
+            return '<p ' . $class . '>' . $data . '</p>';
+        }        
     }
     public function Alert($text) {
         echo '<script>alert("' . $text . '");</script>';

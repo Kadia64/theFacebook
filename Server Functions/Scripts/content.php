@@ -1,11 +1,20 @@
 <?php 
 class Content {
-    public function WindowText($text) {
-        echo '
+    public function WindowText($text, $right_text = null, $get = false) {
+        if ($right_text != null)  {
+            $right_text = '<span class="window-text-right">' . $right_text . '</span>';
+        }        
+        $data = '
             <div class="window-text">
                 <span>' . $text . '</span>
+                ' . $right_text . '
             </div>
         ';
+        if (!$get) {
+            echo $data;
+        } else {
+            return $data;
+        }
     }
     public function Startup($title) {
         echo '
@@ -16,7 +25,25 @@ class Content {
             <title>[ theFacebook ] ' . $title . '</title>
         ';
     }
-    public function TopContent() { 
+    public function TopContent($logged_in) { 
+        $links = null;    
+        if (!$logged_in) {
+            $links = '        
+                <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Login.php">login</a>
+                <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">register</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
+            ';
+        } else {
+            $links = '
+                <a href="">home</a>
+                <a href="">search</a>
+                <a href="">global</a>
+                <a href="">social net</a>
+                <a href="">invite</a>
+                <a href="">faq</a>
+                <a href="">logout</a>
+            ';
+        }        
         echo '
             <div class="main-top-box">
                 <div class="main-top-content">
@@ -26,9 +53,7 @@ class Content {
                     <img src="' . PageData::ROOT . 'Images/thefacebook-logo.jpg">
                     <br>
                     <div>
-                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Login.php">login</a>
-                        <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">register</a>
-                        <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
+                        ' . $links . '
                     </div>          
                 </div>            
             </div>
@@ -81,6 +106,37 @@ class Content {
                     <div>
                         <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">[ register ]</a>
                     </div>
+                </div>
+            </div>
+        ';
+    }
+    public function LeftProfileLinks() {
+        echo '
+            <div class="left-profile-links">
+                <div class="left-profile-links-search">
+                    <form method="" action="">
+                        <div class="left-profile-links-search-bar">
+                            <input type="text">
+                        </div>
+                        <div class="left-profile-links-button">
+                            <div>
+                                <label for="search-submit">quick search</label>
+                            </div>
+                            <div>
+                                <input type="submit" id="search-submit" name="search" value="go">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="left-profile-links-box">
+                    <ul>
+                        <li><a href="">My Profile</a><a href="">[ edit ]</a></li>
+                        <li><a href="">My Friends</a></li>
+                        <li><a href="">My Groups</a></li>
+                        <li><a href="">My Messages</a></li>
+                        <li><a href="">My Account</a></li>
+                        <li><a href="">My Privacy</a></li>
+                    </ul>
                 </div>
             </div>
         ';
@@ -358,7 +414,100 @@ class Styles {
             </style>
         ';
     }
-    public function MainProfilePageStyle() { }
+    public function MainProfilePageStyle() {
+        echo '
+            <style>
+                .main-profile-page-window {
+                    width: calc(var(--standard-page-width) - 180px);
+                    margin: 0 auto;
+                }
+                .main-profile-page-flexbox {
+                    display: flex;
+                    padding: 10px;
+                    width: 480px;
+                    margin: 0 auto;
+                    gap: 10px;
+                }
+                .main-profile-page-left {         
+                    flex: 1.35;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                }
+                .main-profile-page-right {
+                    flex: 2;
+                }
+                .window-content:first-child {
+                    overflow: hidden;    
+                }
+                .profile-image-window img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .profile-links-window {
+                    height: 78px;
+                }
+                .profile-links-window ul {
+                    margin-left: -40px;
+                    margin-top: 0px;
+                    list-style-type: none;
+                }
+                .profile-links-window ul li:nth-child(odd):not(.profile-links-window ul li:first-child) {
+                    border-top: 1px solid var(--darkblue);
+                }
+                .profile-links-window ul li:first-child {
+                    border-bottom: 1px solid var(--darkblue);
+                }
+                .profile-links-window ul li:last-child {
+                    border-top:  1px solid var(--darkblue);
+                }
+                .profile-links-window ul li a {
+                    font-family: var(--font);
+                    font-size: calc(var(--font-size) + 1.5px);
+                    color: var(--lightblue);
+                    text-decoration: none;
+                    margin-left: 4px;
+                }
+                .profile-links-window ul li a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+                .empty-connection-window,
+                .empty-friends-window {
+                    text-align: center;
+                }
+                .window-text {
+                    text-align: left!important;
+                }
+                .empty-connection-window p,
+                .empty-friends-window p {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    padding: 10px;
+                }
+                .main-profile-page-info-grid {
+                    margin: 10px 0px 10px 0px;
+                    display: grid;
+                    grid-template-columns: 45% 35%;
+                    column-gap: 10px;
+                    row-gap: 4px;
+                    width: 265px;            
+                    float: right;
+                    overflow: auto!important;
+                    word-wrap: break-word!important;
+                }
+                .main-profile-page-info-grid div {
+                    width: 120px;
+                }
+                .main-profile-page-info-grid p {
+                    font-family: var(--font);
+                    font-size: calc(var(--font-size) + 1.2px);
+                    display: inline;            
+                }
+            </style>
+        ';
+    }
 }
 class PageData {
     public const ROOT = '/Projects/TheFacebook/Git/theFacebook/';

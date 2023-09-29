@@ -18,8 +18,8 @@ $account_info = [
 ];
 $register_data = $sh->GetRegisterData();
 
-//$dh->CreateAccount($sql, $register_data, $account_info);
-$sh->Redirect('Pages/User Pages/MainProfilePage.php');
+$dh->CreateAccount($sql, $register_data, $account_info);
+$sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=account-created');
 
 $sql->CloseConnection();
 exit;

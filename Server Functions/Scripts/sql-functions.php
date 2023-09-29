@@ -91,12 +91,16 @@ class SQLHandle {
     public function GetValueByUsername($value, $table, $username) {
         $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'username', $username));
         $row = mysqli_fetch_assoc($result);
-        return $row[$value];
+        if ($row) {
+            return $row[$value];
+        } else return null;
     }
     public function GetValueByEmail($value, $table, $email) {
         $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'email', $email));        
         $row = mysqli_fetch_assoc($result);
-        return $row[$value];
+        if ($row) {
+            return $row[$value];
+        } else return null;
     }
     public function Nullable($val) {
         if ($val == '') {

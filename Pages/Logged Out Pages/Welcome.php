@@ -19,7 +19,7 @@
     <div class="main-pagebox">
         <?php $content->TopContent(false); ?>
         <div class="main-page-flexbox">
-            <?php $content->LeftLoginForm(); ?>
+            <?php $content->LeftLoginForm('Pages/Logged Out Pages/Welcome.php'); ?>
             <div class="right-main-window">
                 <?php $content->WindowText('Welcome to Thefacebook!'); ?>
                 <h4>[ Welcome to Thefacebook ]</h4>

@@ -75,15 +75,15 @@ class Content {
             </div>
         ';   
     }
-    public function LeftLoginForm() {
+    public function LeftLoginForm($url) {
         echo '
             <div class="left-login-box">
-                <form method="POST" action="" class="left-login-form">
+                <form method="POST" action="' . PageData::ROOT . 'Server Functions/login-user.php?prev-page=' . $url . '" class="left-login-form">
                     <div class="left-login-box-input">
                         <label for="left-email" class="left-login-label">Email:</label>
-                        <input type="email" id="left-email" name="left-email" class="left-login-email-input" required>
+                        <input type="email" id="left-email" name="email" class="left-login-email-input" required>
                         <label for="left-password" class="left-login-label">Password:</label>
-                        <input type="password" id="left-password" name="left-password" class="left-login-password-input">
+                        <input type="password" id="left-password" name="password" class="left-login-password-input">
                     </div>
                     <div class="left-login-buttons">
                         <input type="submit" name="left-login-button" value="login" class="left-login-button">

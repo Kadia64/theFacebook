@@ -52,7 +52,7 @@ class SessionHandle {
             return false;
         }
     }
-    public function SetUserDataCookie($username, $email) {
+    public function SetUserTokenCookie($username, $email) {
         if (isset($_COOKIE['user-token']) || !$this->CookiesEnabled()) return;
         $obj = new class($username, $email) {
             public $Username;
@@ -63,6 +63,9 @@ class SessionHandle {
             }
         };
         setcookie('user-token', json_encode($obj), $this->_10minExpiration, '/');
+    }
+    public function SetUserDataCookie($data) {
+        setcookie('user-data', json_encode($data), $this->_10minExpiration, '/');
     }
 }
 ?>

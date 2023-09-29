@@ -17,7 +17,7 @@ class DataHandle {
         } else {
             echo 'not connected to database';
         }
-        $this->sh->SetUserDataCookie($account_data['username'], $account_data['email']);
+        $this->sh->SetUserTokenCookie($account_data['username'], $account_data['email']);
     }
     public function CheckExistingAccount($sql, $username, $email) {
         $username_flag = false;
@@ -64,7 +64,7 @@ class DataHandle {
         } else {
             return false;
         }
-    }
+    }        
     public function RandomCharacters($length) {
         $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $rand = null;

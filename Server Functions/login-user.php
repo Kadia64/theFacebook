@@ -16,14 +16,13 @@ $password = hash('sha256', $_POST['password'] . $salt);
 if ($dh->Login($sql, $email, $password)) {
     $sql->CloseConnection();
     $_SESSION['email'] = $email;
-    $sh->SetUserDataCookie($username, $email);
+    $sh->SetUserTokenCookie($username, $email);
     $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in');
     exit;
 } else {
-
-    echo 'trash';
+    $sql->CloseConnection();
+    $dh->Alert('Username or password incorrect!');
+    $sh->Redirect($_GET['prev-page'], 'js');
+    exit;
 }
-
-$sql->CloseConnection();
-exit;
 ?>

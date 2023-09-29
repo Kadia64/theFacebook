@@ -19,7 +19,7 @@
     <div class="main-pagebox">
         <?php $content->TopContent(false); ?>
         <div class="main-page-flexbox">
-            <?php $content->LeftLoginForm(); ?>
+            <?php $content->LeftLoginForm('Pages/Logged Out Pages/RegisterAboutUser.php'); ?>
             <div class="right-main-window">
                 <?php $content->WindowText('About You'); ?>
                 <div class="register-about-window">

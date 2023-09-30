@@ -7,6 +7,7 @@
     $pages = new PageData();
     $sh = new SessionHandle();
     session_start();
+    session_unset();
     $sh->CheckTraversal();
 ?>
 <!DOCTYPE html>

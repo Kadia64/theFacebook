@@ -8,7 +8,6 @@ $sh = new SessionHandle();
 $dh = new DataHandle();
 $sql = new SQLHandle();
 $sql->Connect();
-//session_unset();
 session_start();
 
 $salt = $dh->RandomCharacters(32);
@@ -22,8 +21,7 @@ $account_info = [
 $register_data = $sh->GetRegisterData();
 
 $dh->CreateAccount($sql, $register_data, $account_info);
-$sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=account-created');
-
 $sql->CloseConnection();
+$sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=account-created');
 exit;
 ?>

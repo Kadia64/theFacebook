@@ -34,16 +34,36 @@ class SQLHandle {
         } else return false;
     }
     public function InsertAccountRow($personal_info, $account_info) {
-        $full_name = '"' . $this->Nullable($personal_info['first-name']) . ' ' .  $this->Nullable($personal_info['last-name']) . '"';
+        $full_name = $this->Nullable($personal_info['first-name'] . ' ' . $personal_info['last-name']);
         mysqli_query($this->connection, 'INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (\'People You Follow\', true, true)');
         mysqli_query($this->connection, 'SET @last_settings_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, \'' . $this->dh->GetTimeStamp(0) . '\', \'' . $this->dh->GetTimeStamp(0) . '\');');
         mysqli_query($this->connection, 'SET @last_account_stats_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (0, NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL);');
         mysqli_query($this->connection, 'SET @last_social_stats_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO personal_info (first_name, last_name, birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (' . $this->Nullable($personal_info['first-name']) . ',' . $this->Nullable($personal_info['last-name']) . ',' . $this->Nullable($personal_info['birthday']) . ',' . $this->Nullable($personal_info['sex']) . ',' . $this->Nullable($personal_info['home-address']) . ',' . $this->Nullable($personal_info['home-town']) . ',' . $this->Nullable($personal_info['highschool']) . ',' . $this->Nullable($account_info['status']) . ',' . $this->Nullable($personal_info['website']) . ',' . $this->Nullable($personal_info['looking-for']) . ',' . $this->Nullable($personal_info['interested-in']) . ',' . $this->Nullable($personal_info['relationship-status']) . ',' . $this->Nullable($personal_info['political-views']) . ',' . $this->Nullable($personal_info['interests']) . ',' . $this->Nullable($personal_info['favorite-music']) . ',' . $this->Nullable($personal_info['favorite-movies']) . ',' . $this->Nullable($personal_info['about-me']) . ');');
+        mysqli_query($this->connection, 'INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (' . $this->Nullable($personal_info['birthday']) . ',' . $this->Nullable($personal_info['sex']) . ',' . $this->Nullable($personal_info['home-address']) . ',' . $this->Nullable($personal_info['home-town']) . ',' . $this->Nullable($personal_info['highschool']) . ',' . $this->Nullable($account_info['status']) . ',' . $this->Nullable($personal_info['website']) . ',' . $this->Nullable($personal_info['looking-for']) . ',' . $this->Nullable($personal_info['interested-in']) . ',' . $this->Nullable($personal_info['relationship-status']) . ',' . $this->Nullable($personal_info['political-views']) . ',' . $this->Nullable($personal_info['interests']) . ',' . $this->Nullable($personal_info['favorite-music']) . ',' . $this->Nullable($personal_info['favorite-movies']) . ',' . $this->Nullable($personal_info['about-me']) . ');');
         mysqli_query($this->connection, 'SET @last_personal_info_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name, password_salt) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $full_name . ', ' . $this->Nullable($account_info['salt']) . ');');
+        mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, first_name, last_name, full_name, password_salt) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $this->Nullable($personal_info['first-name']) . ', ' . $this->Nullable($personal_info['last-name']) . ', ' . $full_name . ', ' . $this->Nullable($account_info['salt']) . ');');
+    }
+    public function UpdateAccountRowByUsername($table, $attributes, $values, $selector_value) {
+        $id = $this->_tables->GetID($table);
+        // $query = "
+        //     UPDATE personal_info
+        //     JOIN account_info ON " . $table . "." . $id . " = account_info." . $id . "
+        //     SET
+        //         " . $table . ".first_name = 'NewFirstName',
+        //         personal_info.last_name = 'NewLastName',
+        //         personal_info.birthday = 'NewBirthday'            
+        // ";
+        // for ($i = 0; $i < count($attributes); ++$i) {
+        //     $query .= $table . "." . $attributes[$i] . " = '" . $values[$i] . "',";
+        // }
+        // $query .= "WHERE account_info.username = '" . $selector_value . "';";
+        $query = "";
+            
+
+
+        echo $query;
     }
     public function GetTableFieldData($attribute, $table) {
         $result = mysqli_query($this->connection, 'SELECT ' . $attribute . ' FROM ' . $table);

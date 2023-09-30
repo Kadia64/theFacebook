@@ -146,10 +146,10 @@ namespace SQL_Terminal {
         public string Database;
         public string Username;
         public string Password;
-        public string[] AccountInfo = { "username", "email", "password", "mobile", "full_name" };
+        public string[] AccountInfo = { "username", "email", "password", "mobile", "first_name", "last_name", "password_salt" };
         public string[] AccountSettings = { "allow_mentions", "activity_status", "suggest_account" };
         public string[] AccountStats = { "login_count", "logout_count", "last_login_timestamp", "last_logout_timestamp", "password_attempts", "last_password_attempt_timestamp", "password_change_count", "last_password_change_timestamp", "member_since", "member_since_time", "last_update", "last_update_time" };
-        public string[] PersonalInfo = { "first_name", "last_name", "birthday", "sex", "address", "home_town", "highschool", "education_status", "website", "looking_for", "interested_in", "relationship_status", "political_views", "interests", "favorite_music", "favorite_movies", "about_me" };
+        public string[] PersonalInfo = { "first_name", "last_name", "birthday", "sex", "home_address", "home_town", "highschool", "education_status", "website", "looking_for", "interested_in", "relationship_status", "political_views", "interests", "favorite_music", "favorite_movies", "about_me" };
         public string[] SocialStats = { "friend_count", "friend_email_list", "blocked_count", "blocked_username_list", "reported_count", "message_all_count", "unread_message_count", "message_sent_count", "message_received_count", "verification_request_count", "verification_request_last_timestamp" };
         private Methods methods;
         public SQL() {
@@ -235,8 +235,6 @@ namespace SQL_Terminal {
                 );
                 CREATE TABLE personal_info (
                     personal_info_id INT PRIMARY KEY AUTO_INCREMENT,
-                    first_name VARCHAR(128),
-                    last_name VARCHAR(128),
                     birthday VARCHAR(32),
                     sex VARCHAR(32),
                     home_address VARCHAR(128),
@@ -263,7 +261,9 @@ namespace SQL_Terminal {
                     email VARCHAR(128),
                     password VARCHAR(128),
                     mobile VARCHAR(128),
-                    full_name VARCHAR(128),
+                    first_name VARCHAR(128),
+                    last_name VARCHAR(128),
+                    full_name VARCHAR(255),
                     password_salt VARCHAR(32),
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),
@@ -301,13 +301,13 @@ namespace SQL_Terminal {
             string query = $@"
                 INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
                 SET @last_settings_id = LAST_INSERT_ID();
-                INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, member_since_time, last_update, last_update_time) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
                 SET @last_account_stats_id = LAST_INSERT_ID();
                 INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
                 SET @last_social_stats_id = LAST_INSERT_ID();
-                INSERT INTO personal_info (first_name, last_name, birthday, sex, address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
                 SET @last_personal_info_id = LAST_INSERT_ID();
-                INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, full_name) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL);
+                INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, first_name, last_name, full_name, password_salt) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL, NULL, NULL, NULL);
             ";
             MySqlCommand command = new MySqlCommand(query, this.Connection);
             command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;

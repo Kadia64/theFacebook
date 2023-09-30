@@ -3,13 +3,21 @@ $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 class DataHandle {
-    public $AccountAttributes;
+    public $PersonalInfoAttributes;              // table attributes for the 'personal_info' table
+    public $DisplayAccountAttributes;            // displays the account attributes of a user
+    public $DisplayUpdateAccountAttributes;      // displays the update account attributes when updating information
+    public $DatabaseAccountAttributes;           // the order of values that will be inserted to the database
     private $files;
     private $sh;
     public function __construct() {
         $this->files = new FileHandle();
         $this->sh = new SessionHandle();
-        $this->AccountAttributes = ['name', 'member since', 'last updated', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'high school', 'status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];
+        //$this->AccountAttributes = ['name', 'member since', 'last updated', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'high school', 'status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];
+        //$this->UpdateAccountAttributes = ['first-name', 'last-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'highschool', 'education status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];        
+        $this->PersonalInfoAttributes = [ 'birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about' ];
+        $this->DisplayAccountAttributes = [ 'Name', 'Member Since', 'Last Update', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
+        $this->DisplayUpdateAccountAttributes = [ 'First Name', 'Last Name', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
+        $this->DatabaseAccountAttributes = [ 'first-name', 'last-name', 'full-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home-address', 'home-town', 'highschool', 'education-status', 'website', 'looking-for', 'interested-in', 'relationship-status', 'political-views', 'interests', 'favorite-music', 'favorite-movies', 'about-me' ];
     }
     public function CreateAccount($sql, $register_data, $account_data) {
         if ($sql->CheckConnection()) {
@@ -64,7 +72,15 @@ class DataHandle {
         } else {
             return false;
         }
-    }        
+    }
+    public function UpdatePersonalInfo($sql, $old_data, $new_data) {
+
+        print_r($old_data);
+        echo '<br><br>';
+        print_r($new_data);
+
+        //$sql->UpdateAccountRowByUsername('personal_info', '', '', 'asd');
+    }
     public function RandomCharacters($length) {
         $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $rand = null;
@@ -78,8 +94,8 @@ class DataHandle {
             return date('Y-m-d');
         } else if ($type == 1) {            // 2023/09/27
             return date('Y/m/d');           
-        } else if ($type == 2) {            // 2023/09/27 09:40:29 am
-            return date('Y/m/d H:i:s a');  
+        } else if ($type == 2) {            // 2023/09/27 094029 am
+            return date('Y/m/d His a');  
         } else if ($type == 9) {
             return date('c', time());
         }

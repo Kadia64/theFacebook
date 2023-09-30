@@ -492,9 +492,8 @@ class Styles {
                     grid-template-columns: 45% 35%;
                     column-gap: 10px;
                     row-gap: 4px;
-                    width: 265px;            
+                    width: 265px;
                     float: right;
-                    overflow: auto!important;
                     word-wrap: break-word!important;
                 }
                 .main-profile-page-info-grid div {
@@ -504,6 +503,37 @@ class Styles {
                     font-family: var(--font);
                     font-size: calc(var(--font-size) + 1.2px);
                     display: inline;            
+                }
+                .main-profile-update-grid {
+                    display: grid;
+                    grid-template-columns: 45% 35%;
+                    column-gap: 25px;
+                    row-gap: 4px;
+                    width: 240px!important;
+                }
+                .main-profile-update-grid div {
+                    width: 120px!important;
+                }
+                .profile-update-input {
+                    margin-left: -10px;
+                }
+                .profile-update-input input {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    background-color: var(--input-color);
+                    border: 1px solid black;
+                }
+                .profile-update-info-button {
+                    text-align: center;
+                    margin: 10px 0px 0px 65px;                    
+                }
+                .profile-update-info-button input {
+                    background-color: var(--button-color);
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    color: white;
+                    border: 1.5px ridge;
+                    padding: 3px;
                 }
             </style>
         ';

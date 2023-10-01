@@ -73,13 +73,72 @@ class DataHandle {
             return false;
         }
     }
-    public function UpdatePersonalInfo($sql, $old_data, $new_data) {
+    public function UpdatePersonalInfo($sql, $display_array, $session_array) {
+        $new_data = null;
+        $old_data = null;
+        for ($i = 0; $i < count($this->DisplayUpdateAccountAttributes); ++$i) {
+            $new_data[] = $_GET[strtolower(str_replace(' ', '-', $this->DisplayUpdateAccountAttributes[$i]))];
+        }
+        array_splice($new_data, 2, 0, $new_data[0] . ' ' . $new_data[1]);
 
-        print_r($old_data);
-        echo '<br><br>';
-        print_r($new_data);
-
-        //$sql->UpdateAccountRowByUsername('personal_info', '', '', 'asd');
+        $k = 3;
+        while ($k < count($this->DatabaseAccountAttributes)) {
+            $old_data[] = $display_array[$k];
+            ++$k;
+        }
+        array_unshift($old_data, $session_array[0], $session_array[1], $session_array[2]);
+        for ($i = 0; $i < count($old_data); ++$i) {
+            if ($new_data[$i] != null) {
+                $old_data[$i] = $new_data[$i];
+            } else {
+                $new_data[$i] = 'NULL';
+            }
+        }
+        $old_data[2] = $old_data[0] . ' ' . $old_data[1];
+        $old_username = $session_array[5];
+        $old_email = $session_array[6];
+        
+        $query = '
+            UPDATE account_info AS a
+            JOIN personal_info AS p ON a.personal_info_id = p.personal_info_id
+            SET
+        ';
+        $db_attributes = $this->DatabaseAccountAttributes;
+        for ($i = 0; $i < count($old_data); ++$i) {
+            $variable = null;
+            if ($db_attributes[$i] == 'first-name' || $db_attributes[$i] == 'last-name' || $db_attributes[$i] == 'full-name' || $db_attributes[$i] == 'mobile' || $db_attributes[$i] == 'username' || $db_attributes[$i] == 'email') {
+                $variable = 'a';
+            } else {
+                $variable = 'p';
+            }
+            $query .= $variable . '.' . str_replace('-', '_', $db_attributes[$i]) . " = " . $sql->Nullable($old_data[$i]) . "";
+            if ($i != count($old_data) - 1) $query .= ', ';
+        }
+        $query .= " WHERE a.username = '" . $old_username . "';";
+        mysqli_query($sql->connection, $query);
+    }
+    public function GetDisplayAttributes($sql, $email, $account_data, $account_stats) {
+        $tmp = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, true)), 1);
+        array_unshift($tmp, $account_data->{'full_name'}, $account_stats->{'member_since'}, $account_stats->{'last_update'}, $account_data->{'username'}, $account_data->{'email'}, $account_data->{'mobile'});
+        return $tmp;
+    }
+    public function ResetDisplayAttributes($session_array) {
+        $tmp = $session_array;
+        unset($tmp[0]);
+        unset($tmp[1]);
+        return array_values($tmp);
+    }
+    public function GetSessionArray($display_array, $account_data) {
+        $tmp = $display_array;
+        array_unshift($tmp, $account_data->{'first_name'}, $account_data->{'last_name'});
+        return $tmp;
+    }
+    public function GetUpdateProfileCookieData($cookie_data) {
+        $tmp = $cookie_data;
+        unset($tmp[2]);
+        unset($tmp[3]);
+        unset($tmp[4]);
+        return array_values($tmp);
     }
     public function RandomCharacters($length) {
         $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

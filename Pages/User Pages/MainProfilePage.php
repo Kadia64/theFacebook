@@ -1,10 +1,12 @@
 <?php 
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/dynamic-content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
     $content = new Content();
+    $dynamic = new DynamicContent();
     $styles = new Styles();
     $pages = new PageData();
     $dh = new DataHandle();
@@ -24,44 +26,32 @@
     $edit_profile_link = PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=update-profile';          
 
     if (($return_status == 'account-created' || $return_status == 'logged-in') && !isset($_COOKIE['user-data'])) {
+        // if the user logged in or created their account
         $email = $_SESSION['email'];
         $sql->Connect();
         $account_data = $sql->GetDataByEmail('account_info', $email);
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
-        $display_array = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, true)), 1);
-        array_unshift($display_array, $account_data->{'full_name'}, $account_stats->{'member_since'}, $account_stats->{'last_update'}, $account_data->{'username'}, $account_data->{'email'}, $account_data->{'mobile'});
-
-        $session_array = $display_array;
-        array_unshift($session_array, $account_data->{'first_name'}, $account_data->{'last_name'});
+        $display_array = $dh->GetDisplayAttributes($sql, $email, $account_data, $account_stats);
+        $session_array = $dh->GetSessionArray($display_array, $account_data);
         $sh->SetUserDataCookie($session_array);
         $sql->CloseConnection();
     } else {
         if ($return_status == 'normal') {
-            // normal page load
-            $display_array = json_decode($_COOKIE['user-data']);
-            unset($display_array[0]);
-            unset($display_array[1]);
-            $display_array = array_values($display_array);
+            // normal page load            
+            $display_array = $dh->ResetDisplayAttributes(json_decode($_COOKIE['user-data']));
         } else if ($return_status == 'update-profile') {
             // update profile page
-            $update_profile = true;  
-
-            $cookie_array = array_values(json_decode($_COOKIE['user-data']));
-            unset($cookie_array[2]);
-            unset($cookie_array[3]);
-            unset($cookie_array[4]);
-            $cookie_array = array_values($cookie_array);            
+            $update_profile = true;
+            $cookie_array = $dh->GetUpdateProfileCookieData(array_values(json_decode($_COOKIE['user-data'])));
         } else if ($return_status == 'update-finished') {
             // will now reset the cookie and will get data from the database
             $sql->Connect();
-
             $session_array = json_decode($_COOKIE['user-data']);
             $old_username = $session_array[5];
             $old_email = $session_array[6];
             $new_username = $_GET['new-username'];
             $new_email = $_GET['new-email'];
-
             if ($new_username == null) {
                 $new_username = $old_username;
             }
@@ -72,8 +62,7 @@
             $account_data = $sql->GetDataByEmail('account_info', $new_email);
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
-            $display_array = array_slice(array_values($sql->GetDataByEmail('personal_info', $new_email, true)), 1);
-            array_unshift($display_array, $account_data->{'full_name'}, $account_stats->{'member_since'}, $account_stats->{'last_update'}, $account_data->{'username'}, $account_data->{'email'}, $account_data->{'mobile'});
+            $display_array = $dh->GetDisplayAttributes($sql, $new_email, $account_data, $account_stats);
 
             $session_array = $display_array;
             array_unshift($session_array, $account_data->{'first_name'}, $account_data->{'last_name'});
@@ -81,62 +70,15 @@
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
         } else {
-            echo 'page has returned sub-normal';
+            // unknown case
             $cookie_data = $_COOKIE['user-data'];
             $session_array = json_decode($cookie_data);
-            $display_array = $session_array;
-            unset($display_array[0]);
-            unset($display_array[1]);
-            $display_array = array_values($display_array);
+            $display_array = $dh->ResetDisplayAttributes($session_array);
         }
         if ($return_status == 'just-updated') {
             // back to profile, will now uddate database
             $sql->Connect();
-
-            $new_data = null;
-            $old_data = null;
-            for ($i = 0; $i < count($dh->DisplayUpdateAccountAttributes); ++$i) {
-                $new_data[] = $_GET[strtolower(str_replace(' ', '-', $dh->DisplayUpdateAccountAttributes[$i]))];
-            }
-            array_splice($new_data, 2, 0, $new_data[0] . ' ' . $new_data[1]);
-            
-            $k = 3;
-            while ($k < count($dh->DatabaseAccountAttributes)) {
-                $old_data[] = $display_array[$k];
-                ++$k;                
-            }
-            array_unshift($old_data, $session_array[0], $session_array[1], $session_array[2]);
-            for ($i = 0; $i < count($old_data); ++$i) {
-                if ($new_data[$i] != null) {
-                    $old_data[$i] = $new_data[$i];
-                } else {
-                    $new_data[$i] = 'NULL';
-                }
-            }
-            $old_data[2] = $old_data[0] . ' ' . $old_data[1];
-            $old_username = $session_array[5];
-            $old_email = $session_array[6];
-            
-            $query = '
-                UPDATE account_info AS a
-                JOIN personal_info AS p ON a.personal_info_id = p.personal_info_id
-                SET
-            ';
-            $db_attributes = $dh->DatabaseAccountAttributes;
-            for ($i = 0; $i < count($old_data); ++$i) {
-                $variable = null;
-                if ($db_attributes[$i] == 'first-name' || $db_attributes[$i] == 'last-name' || $db_attributes[$i] == 'full-name' || $db_attributes[$i] == 'mobile' || $db_attributes[$i] == 'username' || $db_attributes[$i] == 'email') {
-                    $variable = 'a';
-                } else {
-                    $variable = 'p';
-                }
-                $query .= $variable . '.' . str_replace('-', '_', $db_attributes[$i]) . " = " . $sql->Nullable($old_data[$i]) . "";
-                if ($i != count($old_data) - 1) $query .= ', ';                
-                //echo $old_data[$i] . '<br>';
-            }
-            $query .= " WHERE a.username = '" . $old_username . "';";
-            mysqli_query($sql->connection, $query);
-
+            $dh->UpdatePersonalInfo($sql, $display_array, $session_array);
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=update-finished&new-username=' . $_GET['username'] . '&new-email=' . $_GET['email']);           
             $sql->CloseConnection();
         }
@@ -224,7 +166,7 @@
                                             echo '
                                                 <form method="GET" action="' . PageData::ROOT . 'Pages/User Pages/MainProfilePage.php">
                                                     <div class="main-profile-update-grid">
-                                                    <input type="hidden" name="return-status" value="just-updated">
+                                                        <input type="hidden" name="return-status" value="just-updated">
                                             ';                                            
                                             for ($i = 0; $i < count($attributes_update_displays); ++$i) {
                                                 $attributes_update_displays[$i] = ucwords($attributes_update_displays[$i]) . ':';                                                
@@ -239,44 +181,7 @@
                                                         ParseField('Extended Info:');
                                                         break;
                                                 }
-
-                                                $current_attribute = strtolower(str_replace(' ', '-', $dh->DisplayUpdateAccountAttributes[$i]));
-                                                $id = $current_attribute . '-input';
-                                                $gender_index = ($cookie_array[$i] == 'male') ? 1 : 0;
-                                                $input_type = '<input type="text" id="' . $id . '" name="' . $current_attribute . '" style="width:120px!important" value="' . $cookie_array[$i] . '">';
-                                                if ($i == 5) {
-                                                    $input_type = '<input type="date" id="birthday-input" name="birthday">';
-                                                } else if ($i == 6) {
-                                                    $gender_selection = (($gender_index == 0) ? "selected" : "");
-                                                    $input_type = '
-                                                        <select id="' . $id . '" name="' . $current_attribute . '">                                                            
-                                                            <option value="male"' . $gender_selection . '>Male</option>
-                                                            <option value="female" ' . $gender_selection . '>Female</option>
-                                                        </select>
-                                                    ';
-                                                } else if ($i == 10) {
-                                                    $education_status_values = $dh->education_status_choices;
-                                                    $input_type = '<select id="' . $id . '" name="' . $current_attribute . '">';
-
-                                                    for ($j = 0; $j < count($education_status_values); ++$j) {
-                                                        $display = $education_status_values;
-                                                        $education_status_values[$j] = $education_status_values[$j]; //strtolower(str_replace(array(' ', '/'), '-', $education_status_values[$j]));
-                                                        if ($cookie_array[$i] == $education_status_values[$j]) {
-                                                            $input_type .= '<option value="' . ucwords($education_status_values[$j], '-') . '" selected>' . $display[$j] . '</option>';
-                                                        } else {
-                                                            $input_type .= '<option value="' . ucwords($education_status_values[$j], '-') . '">' . $display[$j] . '</option>';
-                                                        }
-                                                    }
-                                                    $input_type .= '</select>';                                                    
-                                                }
-                                                echo '
-                                                    <div>
-                                                        <p>' . $attributes_update_displays[$i] . '</p>
-                                                    </div>
-                                                    <div class="profile-update-input">
-                                                        ' . $input_type . '
-                                                    </div>
-                                                ';
+                                                $dynamic->DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays);                                                                                                
                                             }
 
                                             echo '
@@ -295,10 +200,7 @@
                                                 </div>
                                                 <div></div>
                                             ';
-                                        }
-                                        function ParseOptions($attribute, $options, $textarea = false) {
-
-                                        }
+                                        }                                        
                                     ?>                             
                                 </div>
                             </div>

@@ -7,17 +7,17 @@ class DataHandle {
     public $DisplayAccountAttributes;            // displays the account attributes of a user
     public $DisplayUpdateAccountAttributes;      // displays the update account attributes when updating information
     public $DatabaseAccountAttributes;           // the order of values that will be inserted to the database
+    public $education_status_choices;
     private $files;
     private $sh;
     public function __construct() {
         $this->files = new FileHandle();
         $this->sh = new SessionHandle();
-        //$this->AccountAttributes = ['name', 'member since', 'last updated', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'high school', 'status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];
-        //$this->UpdateAccountAttributes = ['first-name', 'last-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home address', 'home town', 'highschool', 'education status', 'website', 'looking for', 'interested in', 'relationship status', 'political views', 'interests', 'favorite music', 'favorite movies', 'about me'];        
         $this->PersonalInfoAttributes = [ 'birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about' ];
         $this->DisplayAccountAttributes = [ 'Name', 'Member Since', 'Last Update', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
         $this->DisplayUpdateAccountAttributes = [ 'First Name', 'Last Name', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
         $this->DatabaseAccountAttributes = [ 'first-name', 'last-name', 'full-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home-address', 'home-town', 'highschool', 'education-status', 'website', 'looking-for', 'interested-in', 'relationship-status', 'political-views', 'interests', 'favorite-music', 'favorite-movies', 'about-me' ];
+        $this->education_status_choices = [ 'Student', 'Grad-Student', 'Alumnus/Alumna', 'Faculty', 'Staff' ];
     }
     public function CreateAccount($sql, $register_data, $account_data) {
         if ($sql->CheckConnection()) {

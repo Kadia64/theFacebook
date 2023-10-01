@@ -517,12 +517,16 @@ class Styles {
                 .profile-update-input {
                     margin-left: -10px;
                 }
-                .profile-update-input input {
+                .profile-update-input input,
+                .profile-update-input select {
                     font-family: var(--font);
                     font-size: var(--font-size);
                     background-color: var(--input-color);
                     border: 1px solid black;
                 }
+                .profile-update-input select {
+                    width: 120px;
+                }   
                 .profile-update-info-button {
                     text-align: center;
                     margin: 10px 0px 0px 65px;                    

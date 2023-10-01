@@ -38,13 +38,22 @@
         $sql->CloseConnection();
     } else {
         if ($return_status == 'normal') {
+            // normal page load
             $display_array = json_decode($_COOKIE['user-data']);
             unset($display_array[0]);
             unset($display_array[1]);
             $display_array = array_values($display_array);
         } else if ($return_status == 'update-profile') {
+            // update profile page
             $update_profile = true;  
+
+            $cookie_array = array_values(json_decode($_COOKIE['user-data']));
+            unset($cookie_array[2]);
+            unset($cookie_array[3]);
+            unset($cookie_array[4]);
+            $cookie_array = array_values($cookie_array);            
         } else if ($return_status == 'update-finished') {
+            // will now reset the cookie and will get data from the database
             $sql->Connect();
 
             $session_array = json_decode($_COOKIE['user-data']);
@@ -72,6 +81,7 @@
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
         } else {
+            echo 'page has returned sub-normal';
             $cookie_data = $_COOKIE['user-data'];
             $session_array = json_decode($cookie_data);
             $display_array = $session_array;
@@ -80,6 +90,7 @@
             $display_array = array_values($display_array);
         }
         if ($return_status == 'just-updated') {
+            // back to profile, will now uddate database
             $sql->Connect();
 
             $new_data = null;
@@ -98,6 +109,8 @@
             for ($i = 0; $i < count($old_data); ++$i) {
                 if ($new_data[$i] != null) {
                     $old_data[$i] = $new_data[$i];
+                } else {
+                    $new_data[$i] = 'NULL';
                 }
             }
             $old_data[2] = $old_data[0] . ' ' . $old_data[1];
@@ -116,19 +129,18 @@
                     $variable = 'a';
                 } else {
                     $variable = 'p';
-                } 
-                $query .= $variable . '.' . str_replace('-', '_', $db_attributes[$i]) . " = '" . mysqli_real_escape_string($sql->connection, $old_data[$i]) . "'";
-                if ($i != count($old_data) - 1) $query .= ', ';
-
-                echo $old_data[$i] . '<br>';
+                }
+                $query .= $variable . '.' . str_replace('-', '_', $db_attributes[$i]) . " = " . $sql->Nullable($old_data[$i]) . "";
+                if ($i != count($old_data) - 1) $query .= ', ';                
+                //echo $old_data[$i] . '<br>';
             }
             $query .= " WHERE a.username = '" . $old_username . "';";
             mysqli_query($sql->connection, $query);
+
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=update-finished&new-username=' . $_GET['username'] . '&new-email=' . $_GET['email']);           
             $sql->CloseConnection();
         }
     }    
-    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -216,12 +228,11 @@
                                             ';                                            
                                             for ($i = 0; $i < count($attributes_update_displays); ++$i) {
                                                 $attributes_update_displays[$i] = ucwords($attributes_update_displays[$i]) . ':';                                                
-
                                                 switch ($i) {
                                                     case 0:
                                                         ParseField('Account Info:');
                                                         break;
-                                                    case 6:
+                                                    case 5:
                                                         ParseField('Basic Info:');
                                                         break;
                                                     case 12:
@@ -229,12 +240,41 @@
                                                         break;
                                                 }
 
+                                                $current_attribute = strtolower(str_replace(' ', '-', $dh->DisplayUpdateAccountAttributes[$i]));
+                                                $id = $current_attribute . '-input';
+                                                $gender_index = ($cookie_array[$i] == 'male') ? 1 : 0;
+                                                $input_type = '<input type="text" id="' . $id . '" name="' . $current_attribute . '" style="width:120px!important" value="' . $cookie_array[$i] . '">';
+                                                if ($i == 5) {
+                                                    $input_type = '<input type="date" id="birthday-input" name="birthday">';
+                                                } else if ($i == 6) {
+                                                    $gender_selection = (($gender_index == 0) ? "selected" : "");
+                                                    $input_type = '
+                                                        <select id="' . $id . '" name="' . $current_attribute . '">                                                            
+                                                            <option value="male"' . $gender_selection . '>Male</option>
+                                                            <option value="female" ' . $gender_selection . '>Female</option>
+                                                        </select>
+                                                    ';
+                                                } else if ($i == 10) {
+                                                    $education_status_values = $dh->education_status_choices;
+                                                    $input_type = '<select id="' . $id . '" name="' . $current_attribute . '">';
+
+                                                    for ($j = 0; $j < count($education_status_values); ++$j) {
+                                                        $display = $education_status_values;
+                                                        $education_status_values[$j] = $education_status_values[$j]; //strtolower(str_replace(array(' ', '/'), '-', $education_status_values[$j]));
+                                                        if ($cookie_array[$i] == $education_status_values[$j]) {
+                                                            $input_type .= '<option value="' . ucwords($education_status_values[$j], '-') . '" selected>' . $display[$j] . '</option>';
+                                                        } else {
+                                                            $input_type .= '<option value="' . ucwords($education_status_values[$j], '-') . '">' . $display[$j] . '</option>';
+                                                        }
+                                                    }
+                                                    $input_type .= '</select>';                                                    
+                                                }
                                                 echo '
                                                     <div>
                                                         <p>' . $attributes_update_displays[$i] . '</p>
                                                     </div>
                                                     <div class="profile-update-input">
-                                                        <input type="text" name="' . strtolower(str_replace(' ', '-', $dh->DisplayUpdateAccountAttributes[$i])) . '" style="width:120px!important">
+                                                        ' . $input_type . '
                                                     </div>
                                                 ';
                                             }
@@ -255,6 +295,9 @@
                                                 </div>
                                                 <div></div>
                                             ';
+                                        }
+                                        function ParseOptions($attribute, $options, $textarea = false) {
+
                                         }
                                     ?>                             
                                 </div>

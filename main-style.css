@@ -45,6 +45,14 @@
     color: white;
     text-decoration: none;
 }
+.annual-page-content-box {
+    flex: 1;
+    border: 1px solid var(--darkblue);
+    width: 450px;
+    margin-left: -5px;
+}
+
+
 .highlighted-field {
     color: var(--lightblue);
 }
@@ -57,6 +65,8 @@
     color: white;
     cursor: pointer;    
 }
+
+
 
 .profile-blue-info {
     font-family: var(--font);

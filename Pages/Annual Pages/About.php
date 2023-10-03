@@ -12,62 +12,7 @@
 <html lang="en">
 <head>    
     <?php $content->Startup('About'); ?>
-    <!-- PageStyle(); -->
-    <style>
-        .about-page-window {
-            width: calc(var(--standard-page-width) - 240px);
-            margin: 0 auto;
-        }
-        .about-page-content {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .box1,
-        .box2,
-        .box3 {
-            font-family: var(--font);
-            font-size: var(--font-size);
-            padding: 6px 6px 6px 14px;
-        }
-        .box2-grid {
-            display: grid;
-            grid-template-columns: 30% 35%;
-            column-gap: 10px;
-            row-gap: 5px;
-            padding-top: 10px;
-        }
-        .box2-grid div {
-            width: 100px;
-            height: 15px;   
-        }
-        .box2-grid div:nth-child(even) {
-            width: 300px;
-        }
-        .box2-grid p {
-            margin: 0;
-        }
-        .box2 a,
-        .box3 a {
-            color: var(--lightblue);
-            text-decoration: none;
-        }
-        .box2 a:hover,
-        .box3 a:hover {
-            color: var(--hover-lightblue);
-            text-decoration: underline;
-        }
-        .box3-content {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .box3-content div {
-            flex: 1;
-            line-height: 4.5px;
-        }
-        
-    </style>
+    <?php $styles->AboutPageStyle(); ?>
 </head>
 <body>
     <div class="main-pagebox">
@@ -207,8 +152,42 @@
                                         <p>[ The Marquette Tribune ]</p>
                                         <p><a href="">'Facebook' popular on campuses (04.02.04)</a></p>
                                     </div>
+                                    <div>
+                                        <p>[ The Chronicle Duke ]</p>
+                                        <p><a href="">Thefacebook.com opens to Duke students (04.14.04)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Hoya ]</p>
+                                        <p><a href="">www.thefacebook.com (04.22.04)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Daily Californian (Berkeley) ]</p>
+                                        <p><a href="">Putting Your Best Face Forward (04.27.04)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Daily Northwestern ]</p>
+                                        <p><a href="">Face It (04.27.04)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Heights (Boston College) ]</p>
+                                        <p><a href="">Facebook expands to BC campus (04.27.03)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Wellesley News ]</p>
+                                        <p><a href="">Thefacebook aids in making friends and procrastinating (04.28.04)</a></p>
+                                    </div>
+                                    <div>
+                                        <p>[ The Chicago Maroon ]</p>
+                                        <p><a href="">Facebook defies utilitarianism, insults Mill (05.11.04)</a></p>
+                                        <p><a href="">Social website draws heavy traffic (05.07.04)</a></p>
+                                        <p><a href="">Facebook is the greatest thing since Marx (05.04.04)</a></p>
+                                        <p><a href="">U of C connects to new social website (04.30.04)</a></p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="about-page-back-button">
+                            <a href="">Home</a>
                         </div>
                     </div>
                 </div>

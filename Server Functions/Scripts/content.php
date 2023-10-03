@@ -390,7 +390,7 @@ class Styles {
             </style>
         ';
     }
-    public function EnableCookiesStyle() {        
+    public function EnableCookiesStyle() {
         echo '
             <style>
                 .enable-cookies-page-window {
@@ -413,6 +413,124 @@ class Styles {
                     text-decoration: none;
                     border: 1.5px ridge;
                     padding: 3px;
+                }
+            </style>
+        ';
+    }
+    public function AboutPageStyle() {
+        echo '
+            <style>
+                .about-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .about-page-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 15px;
+                }
+                .box1,
+                .box2,
+                .box3 {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    padding: 6px 6px 6px 14px;
+                }
+                .box2-grid {
+                    display: grid;
+                    grid-template-columns: 30% 35%;
+                    column-gap: 10px;
+                    row-gap: 5px;
+                    padding-top: 10px;
+                }
+                .box2-grid div {
+                    width: 100px;
+                    height: 15px;   
+                }
+                .box2-grid div:nth-child(even) {
+                    width: 300px;
+                }
+                .box2-grid p {
+                    margin: 0;
+                }
+                .box2 a,
+                .box3 a {
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .box2 a:hover,
+                .box3 a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+                .box3-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 2px;
+                }
+                .box3-content div {
+                    flex: 1;
+                    line-height: 4.5px;
+                }
+                .about-page-back-button {
+                    text-align: center;
+                    padding-bottom: 15px;
+                }
+                .about-page-back-button a {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    color: white;
+                    background-color: var(--button-color);
+                    text-decoration: none;
+                    padding: 3px;
+                    border: 1.5px ridge;
+                }
+            </style>
+        ';
+    }
+    public function ContactUsPageStyle() {
+        echo '
+            <style>
+                .contact-us-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .box1-grid {
+                    display: grid;
+                    grid-template-columns: 30% 35%;
+                    column-gap: 15px;
+                    row-gap: 5px;
+                    padding: 12px;
+                }
+                .box1-grid div {
+                    width: 150px;
+                    height: 15px;  
+                }
+                .box1-grid p {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    margin: 0;
+                }
+                .box1-grid p a {
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .box1-grid p a:hover {
+                    text-decoration: underline;
+                    color: var(--hover-lightblue);
+                }
+                .contact-us-page-back-button {
+                    text-align: center;
+                    padding: 15px 0px 15px 0px;
+                }
+                .contact-us-page-back-button a {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    color: white;
+                    background-color: var(--button-color);
+                    text-decoration: none;
+                    padding: 3px;
+                    border: 1.5px ridge;
                 }
             </style>
         ';

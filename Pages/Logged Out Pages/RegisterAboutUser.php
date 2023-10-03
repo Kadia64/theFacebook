@@ -102,7 +102,8 @@
                                         <div>
                                             <select id="looking-for-input" name="looking-for">
                                                 <option value="friendship">Friendship</option>
-                                                <option value="love">Love</option>
+                                                <option value="dating">Dating</option>
+                                                <option value="a-relationship">A Relationship</option>
                                             </select>
                                         </div>
                                         <div>

@@ -227,7 +227,7 @@ namespace SQL_Terminal {
                     blocked_username_list VARCHAR(512),
                     reported_count INT UNSIGNED,
                     message_all_count INT UNSIGNED,
-                    unread_message_count INT UNSIGNED, 
+                    unread_message_count INT UNSIGNED,
                     message_sent_count INT UNSIGNED, 
                     message_received_count INT UNSIGNED, 
                     verification_request_count INT UNSIGNED, 
@@ -260,11 +260,12 @@ namespace SQL_Terminal {
                     username VARCHAR(128),
                     email VARCHAR(128),
                     password VARCHAR(128),
+                    password_salt VARCHAR(32),
                     mobile VARCHAR(128),
                     first_name VARCHAR(128),
                     last_name VARCHAR(128),
                     full_name VARCHAR(255),
-                    password_salt VARCHAR(32),
+                    profile_image LONGBLOB,
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),
                     CONSTRAINT account_stats_fk FOREIGN KEY (account_stats_id)
@@ -275,7 +276,6 @@ namespace SQL_Terminal {
                     	REFERENCES personal_info (personal_info_id)
                 );
             ");
-            Console.WriteLine(output);
         }
         public void TruncateAllRelationalTables() {
             this.Query(@"

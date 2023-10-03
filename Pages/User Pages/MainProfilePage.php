@@ -19,11 +19,15 @@
         $sh->Redirect('Pages/Logged Out Pages/Login.php');
         exit;
     }
+
     $friend_count = 0;
     $update_profile = false;
     $user_data = null;
     $return_status = $_GET['return-status'];
-    $edit_profile_link = PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=update-profile';          
+    $edit_profile_link = PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=update-profile';
+    $edit_profile_button = 'Information';
+    $current_school = null;
+    $profile_image = '<img src="' . PageData::ROOT . 'Images/default-profile-image.jpg">';
 
     if (($return_status == 'account-created' || $return_status == 'logged-in') && !isset($_COOKIE['user-data'])) {
         // if the user logged in or created their account
@@ -37,13 +41,23 @@
         $sh->SetUserDataCookie($session_array);
         $sql->CloseConnection();
     } else {
+        $user_cookie_data = $_COOKIE['user-data'];
+        $user_cookie_token = json_decode($_COOKIE['user-token'], true);
         if ($return_status == 'normal') {
-            // normal page load            
+            // normal page load
+
+            // make a cookie to store the ASSOCIATIVE version of the damn user's data
+            // then just make a function to turn this associative array to an indexed array
             $display_array = $dh->ResetDisplayAttributes(json_decode($_COOKIE['user-data']));
+
         } else if ($return_status == 'update-profile') {
             // update profile page
             $update_profile = true;
+
             $cookie_array = $dh->GetUpdateProfileCookieData(array_values(json_decode($_COOKIE['user-data'])));
+            print_r($cookie_array);
+            exit;
+            
         } else if ($return_status == 'update-finished') {
             // will now reset the cookie and will get data from the database
             $sql->Connect();
@@ -82,13 +96,20 @@
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=update-finished&new-username=' . $_GET['username'] . '&new-email=' . $_GET['email']);           
             $sql->CloseConnection();
         }
-    }    
+    }
+    if ($update_profile) {
+        $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
+    }
+    //echo $cookie_array["username"];
+    //echo $user_cookie_data['username'];
+    //print_r($user_cookie_data);
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>    
     <?php $content->Startup('Your Profile'); ?>
     <?php $styles->MainProfilePageStyle(); ?>
+    <script src="<?php echo PageData::ROOT . 'static-values.js'?>"></script>
 </head>
 <body>
     <div class="main-pagebox">
@@ -96,13 +117,61 @@
         <div class="main-page-flexbox">
             <?php $content->LeftProfileLinks(); ?>            
             <div class="right-main-window">
-                <?php $content->WindowText('Profile (this is you)'); ?>
+                <?php $content->WindowText('Profile (this is you)', $current_school); ?>
                 <div class="main-profile-page-window">
                     <div class="main-profile-page-flexbox">
                         <div class="main-profile-page-left">
-                            <div class="window-content profile-image-window">
-                                <?php $content->WindowText('Picture', '<a href="' . $edit_profile_link . '">[ edit ]</a>'); ?>
-                                <img src="<?php echo PageData::ROOT ?>Images/default-profile-image.jpg">
+                            <div class="window-content profile-image-window">                            
+                                <?php $content->WindowText('Picture', '
+                                    <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php?image-type=profile-image">
+                                        <label class="profile-image-upload-text">
+                                            <input type="file" enctype="multipart/form-data" name="profile-image" id="profile-image-upload" class="profile-image-upload-input">
+                                            <div id="status"></div>
+                                            [ edit ]
+                                        </label>
+                                    </form>
+                                '); ?>
+                                <script>
+                                    const fileInput = document.getElementById('profile-image-upload');
+                                    const statusDiv = document.getElementById('status');
+
+                                    fileInput.addEventListener("change", () => {
+                                        const file = fileInput.files[0];
+
+                                        if (file) {
+                                            const formData = new FormData();
+                                            const img = new Image();
+                                            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+                                            const maxFileSize = 5 * 1024 * 1024;                                            
+                                            formData.append('profile-image', file);
+
+                                            if (!allowedTypes.includes(file.type)) {
+                                                alert('Only .jpeg, .png, and .gif file types are allowed!');
+                                                return;
+                                            }
+                                            if (file.size > maxFileSize) {
+                                                alert('The max file size is 5MB!');
+                                                return;
+                                            }
+
+                                            img.src = window.URL.createObjectURL(file);
+                                            img.onload = function() {
+                                                fetch("<?php echo PageData::ROOT . 'Server Functions/upload-image.php?bruh=omg' ?>", {
+                                                    method: "POST",
+                                                    body: formData
+                                                })
+                                                .then(response => response.text())
+                                                .then(result => {
+                                                    statusDiv.textContent = result;
+                                                })
+                                                .catch(error => {
+                                                    statusDiv.textContent = "error getting file: " + error;
+                                                });
+                                            }
+                                        }
+                                    });
+                                </script>
+                                <?php echo $profile_image; ?>
                             </div>
                             <div class="window-content profile-links-window">
                                 <ul>
@@ -135,11 +204,13 @@
                         </div>
                         <div class="main-profile-page-right">
                             <div class="window-content">
-                                <?php $content->WindowText('Information', '<a href="' . $edit_profile_link . '">[ edit ]</a>'); ?>
+                                <?php $content->WindowText($edit_profile_button, '<a href="' . $edit_profile_link . '">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-info-grid">
                                     <?php 
                                         $attribute_displays = $dh->DisplayAccountAttributes;
                                         $attributes_update_displays = $dh->DisplayUpdateAccountAttributes;
+                                        $highlighted = array(3, 4, 5, 12);
+                                        $highlight_class = null;
                                         if (!$update_profile) {
                                             for ($i = 0; $i < count($attribute_displays); ++$i) {
                                                 switch ($i) {
@@ -153,12 +224,18 @@
                                                         ParseField('Extended Info:');
                                                         break;
                                                 }
+                                                if (in_array($i, $highlighted)) {
+                                                    $highlight_class = 'class="highlighted-field"';
+                                                } else {
+                                                    $highlight_class = null;
+                                                }
+
                                                 echo '
                                                     <div>
                                                         <p>' . $attribute_displays[$i] . ':</p>
                                                     </div>
                                                     <div>
-                                                        ' . $dh->InfoField($display_array[$i]) . '
+                                                        <span ' . $highlight_class . ' >' . $dh->InfoField($display_array[$i]) . '</span>
                                                     </div>
                                                 ';
                                             }
@@ -169,7 +246,7 @@
                                                         <input type="hidden" name="return-status" value="just-updated">
                                             ';                                            
                                             for ($i = 0; $i < count($attributes_update_displays); ++$i) {
-                                                $attributes_update_displays[$i] = ucwords($attributes_update_displays[$i]) . ':';                                                
+                                                $attributes_update_displays[$i] = ucwords($attributes_update_displays[$i]) . ':';
                                                 switch ($i) {
                                                     case 0:
                                                         ParseField('Account Info:');
@@ -181,9 +258,9 @@
                                                         ParseField('Extended Info:');
                                                         break;
                                                 }
-                                                $dynamic->DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays);                                                                                                
+                                                $dynamic->DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays);
                                             }
-
+                                                                                        
                                             echo '
                                                     </div>
                                                     <div class="profile-update-info-button">

@@ -8,6 +8,7 @@ class DataHandle {
     public $DisplayUpdateAccountAttributes;      // displays the update account attributes when updating information
     public $DatabaseAccountAttributes;           // the order of values that will be inserted to the database
     public $education_status_choices;
+    public $looking_for_choices;
     private $files;
     private $sh;
     public function __construct() {
@@ -18,6 +19,8 @@ class DataHandle {
         $this->DisplayUpdateAccountAttributes = [ 'First Name', 'Last Name', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
         $this->DatabaseAccountAttributes = [ 'first-name', 'last-name', 'full-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home-address', 'home-town', 'highschool', 'education-status', 'website', 'looking-for', 'interested-in', 'relationship-status', 'political-views', 'interests', 'favorite-music', 'favorite-movies', 'about-me' ];
         $this->education_status_choices = [ 'Student', 'Grad-Student', 'Alumnus/Alumna', 'Faculty', 'Staff' ];
+        $this->looking_for_choices = [ 'Friendship', 'Dating', 'A Relationship' ];
+
     }
     public function CreateAccount($sql, $register_data, $account_data) {
         if ($sql->CheckConnection()) {
@@ -106,16 +109,22 @@ class DataHandle {
         $db_attributes = $this->DatabaseAccountAttributes;
         for ($i = 0; $i < count($old_data); ++$i) {
             $variable = null;
-            if ($db_attributes[$i] == 'first-name' || $db_attributes[$i] == 'last-name' || $db_attributes[$i] == 'full-name' || $db_attributes[$i] == 'mobile' || $db_attributes[$i] == 'username' || $db_attributes[$i] == 'email') {
+            $current_attribute = $db_attributes[$i];
+            if ($current_attribute == 'first-name' || $current_attribute == 'last-name' || $current_attribute == 'full-name' || $current_attribute == 'mobile' || $current_attribute == 'username' || $current_attribute == 'email') {
                 $variable = 'a';
             } else {
                 $variable = 'p';
             }
-            $query .= $variable . '.' . str_replace('-', '_', $db_attributes[$i]) . " = " . $sql->Nullable($old_data[$i]) . "";
+            $query .= $variable . '.' . str_replace('-', '_', $current_attribute) . " = " . $sql->Nullable($old_data[$i]) . "";
             if ($i != count($old_data) - 1) $query .= ', ';
+            //echo $old_data[$i] . '<br>';
         }
+        //exit;
         $query .= " WHERE a.username = '" . $old_username . "';";
         mysqli_query($sql->connection, $query);
+    }
+    public function UpdateProfileImage() {
+
     }
     public function GetDisplayAttributes($sql, $email, $account_data, $account_stats) {
         $tmp = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, true)), 1);
@@ -169,10 +178,7 @@ class DataHandle {
         } else {
             return '<p ' . $class . '>' . $data . '</p>';
         }        
-    }
-    public function Alert($text) {
-        echo '<script>alert("' . $text . '");</script>';
-    }
+    }    
 }
 class UpdateData {
     private $dh;

@@ -1,8 +1,10 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
+$content = new Content();
 $dh = new DataHandle();
 $sh = new SessionHandle();
 $sql = new SQLHandle();
@@ -21,7 +23,7 @@ if ($dh->Login($sql, $email, $password)) {
     exit;
 } else {
     $sql->CloseConnection();
-    $dh->Alert('Username or password incorrect!');
+    $content->Alert('Username or password incorrect!');
     $sh->Redirect($_GET['prev-page'], 'js');
     exit;
 }

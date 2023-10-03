@@ -6,7 +6,7 @@ class Content {
         }        
         $data = '
             <div class="window-text">
-                <span>' . $text . '</span>
+                <span class="window-text-left">' . $text . '</span>
                 ' . $right_text . '
             </div>
         ';
@@ -148,6 +148,9 @@ class Content {
         }
         $output = $output . $text . '</a>';
         echo $output;
+    }
+    public function Alert($text) {
+        echo '<script>alert("' . $text . '");</script>';
     }
 }
 class Styles {
@@ -487,11 +490,11 @@ class Styles {
                     padding: 10px;
                 }
                 .main-profile-page-info-grid {
-                    margin: 10px 0px 10px 0px;
+                    margin: 1px 9.5px 10px 0px;
                     display: grid;
                     grid-template-columns: 45% 35%;
                     column-gap: 10px;
-                    row-gap: 4px;
+                    row-gap: 2px;
                     width: 265px;
                     float: right;
                     word-wrap: break-word!important;
@@ -501,7 +504,7 @@ class Styles {
                 }
                 .main-profile-page-info-grid p {
                     font-family: var(--font);
-                    font-size: calc(var(--font-size) + 1.2px);
+                    font-size: 10.5px;                /* ATTRIBUTES */
                     display: inline;            
                 }
                 .main-profile-update-grid {
@@ -518,15 +521,21 @@ class Styles {
                     margin-left: -10px;
                 }
                 .profile-update-input input,
-                .profile-update-input select {
+                .profile-update-input select,
+                .profile-update-input textarea {
                     font-family: var(--font);
-                    font-size: var(--font-size);
+                    font-size: 10.5px;
                     background-color: var(--input-color);
                     border: 1px solid black;
                 }
                 .profile-update-input select {
                     width: 120px;
-                }   
+                }
+                .profile-update-input textarea {
+                    resize: none;
+                    height: 42px;
+                    width: 135px;
+                }
                 .profile-update-info-button {
                     text-align: center;
                     margin: 10px 0px 0px 65px;                    

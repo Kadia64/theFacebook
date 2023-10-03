@@ -19,7 +19,9 @@ $account_info = [
     'salt' => $salt
 ];
 $register_data = $sh->GetRegisterData();
-
+$register_data['sex'] = ucwords($register_data['sex']);
+$register_data['looking-for'] = str_replace('-', ' ', ucwords($register_data['looking-for'], '-'));
+$register_data['interested-in'] = ucwords($register_data['interested-in']);
 $dh->CreateAccount($sql, $register_data, $account_info);
 $sql->CloseConnection();
 $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=account-created');

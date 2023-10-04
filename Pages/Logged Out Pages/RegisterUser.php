@@ -91,7 +91,7 @@
                 </div>
             </div>            
         </div>
-        <?php $content->BottomContent(); ?>        
+        <?php $content->BottomContent(0); ?>        
     </div>
 </body>
 </html>

@@ -286,7 +286,7 @@
                 </div>                    
             </div>            
         </div>
-        <?php $content->BottomContent(); ?>        
+        <?php $content->BottomContent(1); ?>        
     </div>
 </body>
 </html>

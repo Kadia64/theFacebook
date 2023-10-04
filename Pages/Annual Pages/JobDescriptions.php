@@ -6,7 +6,7 @@
     $pages = new PageData();
     session_start();
 
-    $logged_in = isset($_GET['logged-in']) ? $_GET['logged-in'] : false;
+    $logged_in = $_GET['logged-in'] ?? false;    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +18,13 @@
     <div class="main-pagebox">
         <?php $content->TopContent($logged_in); ?>
         <div class="main-page-flexbox">
-            <?php $content->LeftLoginForm('Pages/Annual Pages/JobDescriptions.php'); ?>
+            <?php 
+                if ($logged_in) {
+                    $content->LeftProfileLinks();
+                } else {
+                    $content->LeftLoginForm('Pages/Annual Pages/JobDescriptions.php');
+                }
+            ?>
             <div class="right-main-window">
                 <?php $content->WindowText('Job Descriptions'); ?>
                 <h4>[ Job Descriptions ]</h4>
@@ -93,7 +99,7 @@
                 </div>
             </div>            
         </div>
-        <?php $content->BottomContent(); ?>        
+        <?php $content->BottomContent($logged_in); ?>        
     </div>
 </body>
 </html>

@@ -5,8 +5,9 @@
     $styles = new Styles();
     $pages = new PageData();
     session_start();
-
-    $logged_in = isset($_GET['logged-in']) ? $_GET['logged-in'] : false;
+    
+    $logged_in = $_GET['logged-in'] ?? false;
+    $home_link = PageData::ROOT . 'Pages/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,8 +21,10 @@
         <div class="main-page-flexbox">
             <?php 
                 if ($logged_in) {
+                    $home_link .= 'User Pages/UserHomePage.php';
                     $content->LeftProfileLinks();
                 } else {
+                    $home_link .= 'Logged Out Pages/Welcome.php';
                     $content->LeftLoginForm('Pages/Annual Pages/About.php');
                 }
             ?>
@@ -72,7 +75,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <p><a href="<?php echo PageData::ROOT . 'Pages/Annual Pages/ContactUs.php'?>">Contact us.</a></p>
+                                <p><a href="<?php echo PageData::ROOT . 'Pages/Annual Pages/ContactUs.php?logged-in=' . $logged_in; ?>">Contact us.</a></p>
                             </div>
                         </div>
                         <div class="annual-page-content-box">
@@ -187,13 +190,13 @@
                             </div>
                         </div>
                         <div class="about-page-back-button">
-                            <a href="">Home</a>
+                            <a href="<?php echo $home_link; ?>">Home</a>
                         </div>
                     </div>
                 </div>
             </div>            
         </div>
-        <?php $content->BottomContent(); ?>        
+        <?php $content->BottomContent($logged_in); ?>
     </div>
 </body>
 </html>

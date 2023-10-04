@@ -31,7 +31,7 @@ class Content {
             $links = '        
                 <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/Login.php">login</a>
                 <a href="' . PageData::ROOT . 'Pages/Logged Out Pages/RegisterUser.php">register</a>
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php?logged-in=0">about</a>
             ';
         } else {
             $links = '
@@ -59,15 +59,15 @@ class Content {
             </div>
         ';       
     }
-    public function BottomContent() {
+    public function BottomContent($logged_in) {
         echo '
             <div class="bottom-content">
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/ContactUs.php">contact</a>                
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/JobDescriptions.php">jobs</a>                
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/faqPage.php">faq</a>
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/TermsAndConditions.php">terms</a>
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/PrivacyPolicy.php">privacy</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php?logged-in=' . $logged_in . '">about</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/ContactUs.php?logged-in=' . $logged_in . '">contact</a>                
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/JobDescriptions.php?logged-in=' . $logged_in . '">jobs</a>                
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/faqPage.php?logged-in=' . $logged_in . '">faq</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/TermsAndConditions.php?logged-in=' . $logged_in . '">terms</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/PrivacyPolicy.php?logged-in=' . $logged_in . '">privacy</a>
                 <div>
                     <p>a Mark Zuckerberg production</p>
                     <p>Thefacebook © 2004</p>
@@ -595,6 +595,49 @@ class Styles {
                 .job-description-pagea-bottom a:hover {
                     color: var(--hover-lightblue);
                     text-decoration: underline;
+                }
+            </style>
+        ';
+    }    
+    public function FAQPageStyle() {
+        echo '
+            <style>
+                .faq-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .faq-page-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                    margin-bottom: 14px;
+                }        
+                .faq-page-list li {
+                    margin: -3.5px auto auto -25px;
+                }
+                .faq-page-list li a,
+                .annual-page-content-box div:last-child p a {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    color: var(--lightblue);
+                    text-decoration: none;
+                    margin-left: -4px;
+                }
+                .faq-page-list li a:hover,
+                .annual-page-content-box div:last-child p a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+                .annual-page-content-box div:last-child {
+                    padding: 5px 15px 5px 12px;
+                }
+                .annual-page-content-box div:last-child p,
+                .annual-page-content-box div:last-child p a {
+                    font-family: var(--font);
+                    font-size: calc(var(--content-font-size) - 1px);
+                }
+                .annual-page-content-box div:last-child p a {
+                    margin: auto!important;
                 }
             </style>
         ';

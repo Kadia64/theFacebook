@@ -7,7 +7,6 @@
     session_start();
 
     $logged_in = $_GET['logged-in'] ?? false;
-
 ?>
 <!DOCTYPE html>
 <html lang="en">

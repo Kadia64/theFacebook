@@ -642,6 +642,37 @@ class Styles {
             </style>
         ';
     }
+    public function TermsPageStyle() {
+        echo '
+            <style>
+                .terms-page-window {
+                    width: calc(var(--standard-page-width) - 240px)!important;
+                    margin-left: 35px;
+                }
+                .terms-page-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                }
+                .annual-page-content-box div:last-child {            
+                    padding: 5px 10px 5px 12px;
+                }
+                .annual-page-content-box div:last-child p,
+                .annual-page-content-box div:last-child a {
+                    font-family: var(--font);
+                    font-size: calc(var(--content-font-size) - 1px);
+                }
+                .annual-page-content-box div:last-child a {
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .annual-page-content-box div:last-child a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+            </style>
+        ';
+    }
     public function MainProfilePageStyle() {
         echo '
             <style>

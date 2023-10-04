@@ -59,7 +59,7 @@ class Content {
             </div>
         ';       
     }
-    public function BottomContent() { 
+    public function BottomContent() {
         echo '
             <div class="bottom-content">
                 <a href="' . PageData::ROOT . 'Pages/Annual Pages/About.php">about</a>
@@ -67,7 +67,7 @@ class Content {
                 <a href="' . PageData::ROOT . 'Pages/Annual Pages/JobDescriptions.php">jobs</a>                
                 <a href="' . PageData::ROOT . 'Pages/Annual Pages/faqPage.php">faq</a>
                 <a href="' . PageData::ROOT . 'Pages/Annual Pages/TermsAndConditions.php">terms</a>
-                <a href="' . PageData::ROOT . 'Pages/Annual Pages/PrivacyPolicy.php">policy</a>
+                <a href="' . PageData::ROOT . 'Pages/Annual Pages/PrivacyPolicy.php">privacy</a>
                 <div>
                     <p>a Mark Zuckerberg production</p>
                     <p>Thefacebook © 2004</p>
@@ -531,6 +531,70 @@ class Styles {
                     text-decoration: none;
                     padding: 3px;
                     border: 1.5px ridge;
+                }
+            </style>
+        ';
+    }
+    public function JobDescriptionPageStyle() {
+        echo '
+            <style>
+                .job-description-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .job-description-page-content {
+                    text-align: left!important;
+                }
+                .job-description-page-content h3 {
+                    font-family: var(--font);
+                    font-size: 13.8px;
+                    font-weight: bold;
+                    margin-left: 10px;
+                }
+                .job-description-page-content ul {
+                    width: calc(var(--standard-page-width) - 200px);
+                }
+                .parent-list li {
+                    font-family: var(--font)!important;
+                    font-size: calc(var(--content-font-size) + 1px)!important;
+                    margin-left: -14.5px;
+                }
+                .parent-list li p {
+                    margin: 0;
+                }
+                .parent-list li p.parent-title {
+                    margin-left: -4px;
+                }
+                .parent-list li p.parent-text {
+                    margin-left: -12px;
+                    padding: 0;
+                }
+                .sub-list {
+                    list-style-type: none;
+                }
+                .sub-list li {
+                    margin-left: -30px;
+                    width: calc(var(--standard-page-width) - 210px)!important;
+                }
+                .sub-list li::before {
+                    content: "\2013";
+                    margin-right: 5px;
+                } 
+                .sub-list .sub-list li {
+                    margin-left: -55px;
+                }
+                .job-description-pagea-bottom {
+                    font-family: var(--font);
+                    font-size: var(--content-font-size);
+                    margin-left: 25px;
+                }
+                .job-description-pagea-bottom a {
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .job-description-pagea-bottom a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
                 }
             </style>
         ';

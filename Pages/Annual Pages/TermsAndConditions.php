@@ -18,7 +18,7 @@
     <div class="main-pagebox">
         <?php $content->TopContent($logged_in); ?>
         <div class="main-page-flexbox">
-        <?php 
+            <?php 
                 if ($logged_in) {
                     $content->LeftProfileLinks();
                 } else {

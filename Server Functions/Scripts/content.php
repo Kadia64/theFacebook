@@ -653,12 +653,47 @@ class Styles {
                     display: flex;
                     flex-direction: column;
                     gap: 14px;
+                    margin-bottom: 14px;
                 }
                 .annual-page-content-box div:last-child {            
                     padding: 5px 10px 5px 12px;
                 }
                 .annual-page-content-box div:last-child p,
                 .annual-page-content-box div:last-child a {
+                    font-family: var(--font);
+                    font-size: calc(var(--content-font-size) - 1px);
+                }
+                .annual-page-content-box div:last-child a {
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .annual-page-content-box div:last-child a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+            </style>
+        ';
+    }
+    public function PrivacyPolicyPageStyle() {
+        echo '
+            <style>
+                .privacy-page-window {
+                    width: calc(var(--standard-page-width) - 240px);
+                    margin: 0 auto;
+                }
+                .privacy-page-content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                    margin-bottom: 14px;
+                }
+                .privacy-page-content div {
+                    flex: 1;
+                }
+                .annual-page-content-box div:last-child {
+                    padding: 5px 10px 5px 12px;
+                }
+                .annual-page-content-box div:last-child p {
                     font-family: var(--font);
                     font-size: calc(var(--content-font-size) - 1px);
                 }

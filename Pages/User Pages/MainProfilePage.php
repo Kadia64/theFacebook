@@ -18,14 +18,14 @@
         setcookie('user-data', '', 0, '/');
         $sh->Redirect('Pages/Logged Out Pages/Login.php');
         exit;
-    }
+    }        
 
-    $friend_count = 0;
     $update_profile = false;
     $user_data = null;
     $return_status = $_GET['return-status'];
     $edit_profile_link = PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=update-profile';
     $edit_profile_button = 'Information';
+    $edit_groups_button = 'Groups';
     $current_school = null;
     $profile_image = '<img src="' . PageData::ROOT . 'Images/default-profile-image.jpg">';
 
@@ -42,6 +42,8 @@
         
         $sh->SetUserDataCookie($cookie_array);
         $sql->CloseConnection();
+        $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
+        exit;
     } else {
         $cookie_data = json_decode($_COOKIE['user-data']);
         if ($return_status == 'normal') {
@@ -76,6 +78,7 @@
             $sh->ResetSessionCookies($new_username, $new_email, $sh->ParseUserDataCookie($sql, $new_email));
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
+            exit;
         } else {
             // normal
             $display_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data']);
@@ -91,7 +94,7 @@
     }
     if ($update_profile) {
         $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
-    }
+    }    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -173,20 +176,18 @@
                             <?php 
                                 $connection_window = null;
                                 $friends_window = null;
-                                if ($friend_count == 0) {
-                                    $connection_window = '
-                                        <div class="window-content empty-connection-window">
-                                            ' . $content->WindowText('Connection', null, true) . '
-                                            <p>This is you</p>
-                                        </div>
-                                    ';
-                                    $friends_window = '
-                                        <div class="window-content empty-friends-window">
-                                            ' . $content->WindowText('Friends', null, true) . '
-                                            <p>You have ' . $friend_count . ' friends</p>
-                                        </div>                              
-                                    ';
-                                }
+                                $connection_window = '
+                                    <div class="window-content empty-connection-window">
+                                        ' . $content->WindowText('Connection', null, true) . '
+                                        <p>This is you</p>
+                                    </div>
+                                ';
+                                $friends_window = '
+                                    <div class="window-content other-schools-window">
+                                        ' . $content->WindowText('Other Schools', null, true) . '
+                                        <p>null</p>
+                                    </div>                              
+                                ';
                                 echo $connection_window;
                                 echo $friends_window;
                             ?>
@@ -249,7 +250,7 @@
                                                 }
                                                 $dynamic->DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays);
                                             }
-                                                                                        
+
                                             echo '
                                                     </div>
                                                     <div class="profile-update-info-button">
@@ -266,14 +267,75 @@
                                                 </div>
                                                 <div></div>
                                             ';
-                                        }                                        
-                                    ?>                             
+                                        }
+                                    ?>                                    
+                                </div>                                
+                            </div>
+                            <div class="window-content">
+                                <?php $content->WindowText($edit_groups_button, '<a href="">[ edit ]</a>'); ?>
+                                <div class="main-profile-page-groups">
+                                    <?php 
+                                        $groups = array();
+                                        if (count($groups) == 0) {
+                                            echo '
+                                                <div class="no-groups">
+                                                    <p>You are in 0 groups</p>
+                                                </div>
+                                            ';
+                                        } else {
+                                            for ($i = 0; $i < count($groups); ++$i) {
+                                                echo '
+                                                    <span class="groups-bullets">
+                                                        &#8226
+                                                    </span>
+                                                    <a href=""> ' . $groups[$i] . ' </a>
+                                                ';
+                                            }
+                                        }
+                                    ?>
                                 </div>
                             </div>
-                        </div>                        
+                            <div class="window-content">
+                                <?php $content->WindowText('Courses', '<a href="">[ edit ]</a>'); ?>
+                                <div class="main-profile-page-courses">
+                                    <?php 
+                                        $courses = array();                                        
+                                        if (count($courses) == 0) {
+                                            echo '
+                                                <div class="no-courses">
+                                                    <p>You are in 0 courses</p>
+                                                </div>
+                                            ';
+                                        } else {
+                                            echo '<ul>';
+                                            for ($i = 0; $i < count($courses); ++$i) {
+                                                echo '<li>' . $courses[$i] . '</li>';
+                                            }
+                                            echo '</ul>';
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="window-content">
+                                <?php $content->WindowText($cookie_data->{'first_name'} . '\'s Wall', '<a href="">[ edit ]</a>'); ?>
+                                <div class="main-profile-page-wall">
+                                    <?php 
+                                        echo '<div><p>null</p></div>';
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="window-content">
+                                <?php $content->WindowText('Friends', '<a href="">[ edit ]</a>'); ?>
+                                <div class="main-profile-page-friends">
+                                    <?php 
+                                        echo '<div><p>null</p></div>';
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>                    
-            </div>            
+                </div>
+            </div>
         </div>
         <?php $content->BottomContent(1); ?>        
     </div>

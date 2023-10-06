@@ -709,7 +709,7 @@ class Styles {
         ';
     }
     public function MainProfilePageStyle() {
-        echo '
+        echo "
             <style>
                 .main-profile-page-window {
                     width: calc(var(--standard-page-width) - 180px);
@@ -730,7 +730,10 @@ class Styles {
                 }
                 .main-profile-page-right {
                     flex: 2;
-                }
+                    display: flex;
+                    flex-direction: column;
+                    gap: 14px;
+                }                
                 .window-content:first-child {
                     overflow: hidden;    
                 }
@@ -768,14 +771,14 @@ class Styles {
                     text-decoration: underline;
                 }
                 .empty-connection-window,
-                .empty-friends-window {
+                .other-schools-window {
                     text-align: center;
-                }
+                }                
                 .window-text {
                     text-align: left!important;
                 }
                 .empty-connection-window p,
-                .empty-friends-window p {
+                .other-schools-window p {
                     font-family: var(--font);
                     font-size: var(--font-size);
                     padding: 10px;
@@ -798,6 +801,58 @@ class Styles {
                     font-size: 10.5px;                /* ATTRIBUTES */
                     display: inline;            
                 }
+                .main-profile-page-groups {
+                    line-height: 12px;
+                }
+                .main-profile-page-groups a {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    color: var(--lightblue);
+                    text-decoration: none;
+                }
+                .main-profile-page-groups span {
+                    color: black;
+                    position: relative;
+                    top: 1.5px;
+                    font-size: 18px;
+                }
+                .no-groups,
+                .no-courses {
+                    text-align: center;
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                }
+                .main-profile-page-courses {
+                    line-height: 12px;
+                    margin-left: -10px;
+                }
+                .main-profile-page-courses ul {
+                    margin: 8px;
+                    margin-left: -6px;
+                }
+                .main-profile-page-courses ul li {
+                    font-family: var(--font);
+                    font-size: var(--font-size);                    
+                }
+                .main-profile-page-wall {
+                    line-height: 12px;
+                    text-align: center;
+                }
+                .main-profile-page-wall div {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                }
+                .main-profile-page-friends {
+                    line-height: 12px;
+                    text-align: center;
+                }
+                .main-profile-page-friends div {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                }
+
+
+
                 .main-profile-update-grid {
                     display: grid;
                     grid-template-columns: 45% 35%;
@@ -840,7 +895,7 @@ class Styles {
                     padding: 3px;
                 }
             </style>
-        ';
+        ";
     }
 }
 class PageData {

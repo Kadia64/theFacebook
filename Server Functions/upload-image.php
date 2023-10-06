@@ -1,7 +1,7 @@
 <?php
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
 $content = new Content();
 $sql = new SQLHandle();
 
@@ -13,18 +13,15 @@ if (isset($_FILES['profile-image'])) {
     $size = $file['size'];
     $image_data = addslashes(file_get_contents($_FILES['profile-image']['tmp_name']));
     
-    $sql->Connect();
+    $sql->Connect();    
     $query = "
         UPDATE account_info AS a
-        JOIN personal_info AS p ON a.personal_info_id = p.personal_info_id
         SET
         a.profile_image = '" . $image_data . "'
+        WHERE a.username = 'asd';
     ";
-    
     mysqli_query($sql->connection, $query);
-    
-    echo $query;
+    $sql->CloseConnection();
+    exit;
 }
-
-
 ?>

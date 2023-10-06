@@ -6,7 +6,10 @@
     $pages = new PageData();
     session_start();
     
-    $logged_in = $_GET['logged-in'] ?? false;
+    $logged_in = ($_GET['logged-in']) ?? false;
+    if (!isset($_COOKIE['user-token'])) {
+        $logged_in = 0;
+    }
     $home_link = PageData::ROOT . 'Pages/';
 ?>
 <!DOCTYPE html>

@@ -3,6 +3,8 @@ $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 class DataHandle {
+    public $AccountInfoColumn;
+    public $PersonalInfoColumn;
     public $PersonalInfoAttributes;              // table attributes for the 'personal_info' table
     public $DisplayAccountAttributes;            // displays the account attributes of a user
     public $DisplayUpdateAccountAttributes;      // displays the update account attributes when updating information
@@ -14,7 +16,9 @@ class DataHandle {
     public function __construct() {
         $this->files = new FileHandle();
         $this->sh = new SessionHandle();
-        $this->PersonalInfoAttributes = [ 'birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about' ];
+        $this->AccountInfoColumn = array('username', 'email', 'mobile', 'first_name', 'last_name', 'full_name');
+        $this->PersonalInfoColumn = array('birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about_me');
+        $this->PersonalInfoAttributes = [ 'birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about_me' ];
         $this->DisplayAccountAttributes = [ 'Name', 'Member Since', 'Last Update', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
         $this->DisplayUpdateAccountAttributes = [ 'First Name', 'Last Name', 'Username', 'Email', 'Mobile', 'Birthday', 'Sex', 'Home Address', 'Home Town', 'Highschool', 'Education Status', 'Website', 'Looking For', 'Interested In', 'Relationship Status', 'Political Views', 'Interests', 'Favorite Music', 'Favorite Movies', 'About Me' ];
         $this->DatabaseAccountAttributes = [ 'first-name', 'last-name', 'full-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home-address', 'home-town', 'highschool', 'education-status', 'website', 'looking-for', 'interested-in', 'relationship-status', 'political-views', 'interests', 'favorite-music', 'favorite-movies', 'about-me' ];
@@ -89,6 +93,7 @@ class DataHandle {
             $old_data[] = $display_array[$k];
             ++$k;
         }
+        print_r($session_array);
         array_unshift($old_data, $session_array[0], $session_array[1], $session_array[2]);
         for ($i = 0; $i < count($old_data); ++$i) {
             if ($new_data[$i] != null) {
@@ -98,8 +103,8 @@ class DataHandle {
             }
         }
         $old_data[2] = $old_data[0] . ' ' . $old_data[1];
-        $old_username = $session_array[5];
-        $old_email = $session_array[6];
+        $old_username = $session_array[2];
+        $old_email = $session_array[3];
         
         $query = '
             UPDATE account_info AS a
@@ -119,27 +124,35 @@ class DataHandle {
             if ($i != count($old_data) - 1) $query .= ', ';
             //echo $old_data[$i] . '<br>';
         }
-        //exit;
         $query .= " WHERE a.username = '" . $old_username . "';";
+        //echo $query;
+        //exit;
         mysqli_query($sql->connection, $query);
     }
-    public function UpdateProfileImage() {
-
-    }
-    public function GetDisplayAttributes($sql, $email, $account_data, $account_stats) {
-        $tmp = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, true)), 1);
-        array_unshift($tmp, $account_data->{'full_name'}, $account_stats->{'member_since'}, $account_stats->{'last_update'}, $account_data->{'username'}, $account_data->{'email'}, $account_data->{'mobile'});
+    public function UpdateProfileImage() {}    
+    public function GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats) {
+        $tmp = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, null, true)), 1);
+        array_unshift($tmp, $account_data['full_name'], $account_stats['member_since'], $account_stats['last_update'], $account_data['username'], $account_data['email'], $account_data['mobile']);
         return $tmp;
     }
-    public function ResetDisplayAttributes($session_array) {
-        $tmp = $session_array;
-        unset($tmp[0]);
-        unset($tmp[1]);
+    public function GetDisplayAttributesFromCookie($cookie, $version1 = false) {
+        $tmp = array_values(get_object_vars((json_decode($cookie))));
+        if ($version1) {
+            unset($tmp[2]);
+            unset($tmp[3]);
+            unset($tmp[4]);
+        } else {
+            unset($tmp[0]);
+            unset($tmp[1]);
+        }
         return array_values($tmp);
+    }
+    public function ResetDisplayAttributes($session_array) {
+        return array_slice($session_array, 2, null, true);
     }
     public function GetSessionArray($display_array, $account_data) {
         $tmp = $display_array;
-        array_unshift($tmp, $account_data->{'first_name'}, $account_data->{'last_name'});
+        array_unshift($tmp, $account_data['first_name'], $account_data['last_name']);
         return $tmp;
     }
     public function GetUpdateProfileCookieData($cookie_data) {

@@ -7,6 +7,9 @@
     session_start();
 
     $logged_in = $_GET['logged-in'] ?? false;
+    if (!isset($_COOKIE['user-token'])) {
+        $logged_in = 0;
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +25,7 @@
                 if ($logged_in) {
                     $content->LeftProfileLinks();
                 } else {
-                    $content->LeftLoginForm('Pages/Annual Pages/TermsAndConditions.php');
+                    $content->LeftLoginForm('Pages/Annual Pages/PrivacyPolicy.php');
                 }
             ?>
             <div class="right-main-window">

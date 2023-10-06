@@ -1,5 +1,6 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class SessionHandle {
     public $_10minExpiration;
@@ -78,6 +79,18 @@ class SessionHandle {
         setcookie('user-data', '', 0, '/');
         $this->SetUserTokenCookie($username, $email);
         $this->SetUserDataCookie($user_data);
+    }
+    public function ParseUserDataCookie($sql, $email) {
+        $columns = array('ai.first_name', 'ai.last_name', 'ai.full_name', 'stats.member_since', 'stats.last_update', 'ai.username', 'ai.email', 'ai.mobile', 'p.birthday', 'p.sex', 'p.home_address', 'p.home_town', 'p.highschool', 'p.education_status', 'p.website', 'p.looking_for', 'p.interested_in', 'p.relationship_status', 'p.political_views', 'p.interests', 'p.favorite_music', 'p.favorite_movies', 'p.about_me');
+        $columns = implode(', ', $columns);        
+        $query = "
+            SELECT $columns FROM account_info AS ai
+            JOIN personal_info AS p ON ai.personal_info_id = p.personal_info_id
+            JOIN account_stats AS stats ON ai.account_stats_id = stats.account_stats_id
+            WHERE ai.email = '$email';
+        ";
+        $result = mysqli_query($sql->connection, $query);
+        return mysqli_fetch_assoc($result);
     }
 }
 ?>

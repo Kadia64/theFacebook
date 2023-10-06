@@ -74,9 +74,16 @@ class SQLHandle {
         }
         return $values;
     }
-    public function JsonValuesQuery($table, $selector, $value) {     
-        $id = $this->_tables->GetID($table);   
-        return "SELECT pi.* FROM " . $table . " AS pi JOIN account_info AS ai ON pi." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $value . "';";
+    public function JsonValuesQuery($table, $selector, $value, $columns = null) {
+        $id = $this->_tables->GetID($table);
+        if ($columns == null) {
+            return "SELECT pi.* FROM " . $table . " AS pi JOIN account_info AS ai ON pi." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $value . "';";
+        } else {
+            for ($i = 1; $i < count($columns); ++$i) {
+                $columns[$i] = 'pi.' . $columns[$i];
+            }
+            return "SELECT pi." . implode(", ", $columns) . " FROM " . $table . " AS pi JOIN account_info AS ai ON pi." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $value . "';";
+        }
     }
     public function RelationalValuesQuery($value, $table, $selector, $selector_value) {        
         $id = $this->_tables->GetID($table);
@@ -88,11 +95,11 @@ class SQLHandle {
         $data = mysqli_fetch_assoc($result);
         return json_decode(json_encode($data), $assoc);
     }
-    public function GetDataByEmail($table, $email, $assoc = false) {
-        $query = $this->JsonValuesQuery($table, 'email', $email);
+    public function GetDataByEmail($table, $email, $column = null, $assoc = false) {
+        $query = $this->JsonValuesQuery($table, 'email', $email, $column);
         $result = mysqli_query($this->connection, $query);
         $data = mysqli_fetch_assoc($result);
-        return json_decode(json_encode($data), $assoc);
+        return $data;
     }
     public function GetEmailByUsername($username) {        
         $result = mysqli_query($this->connection, "SELECT email FROM account_info WHERE username = '" . $username . "'");
@@ -102,7 +109,7 @@ class SQLHandle {
         } else return null;
     }
     public function GetUsernameByEmail($email) {
-        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '" . $email . "'");
+        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '" . $email . "'");        
         $row = mysqli_fetch_assoc($result);
         if ($row) {
             return $row['username'];

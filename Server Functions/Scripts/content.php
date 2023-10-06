@@ -130,7 +130,7 @@ class Content {
                 </div>
                 <div class="left-profile-links-box">
                     <ul>
-                        <li><a href="">My Profile</a><a href="">[ edit ]</a></li>
+                        <li><a href="' . PageData::ROOT . 'Pages/User pages/MainProfilePage.php?return-status=normal">My Profile</a><a href="' . PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=update-profile">[ edit ]</a></li>
                         <li><a href="">My Friends</a></li>
                         <li><a href="">My Groups</a></li>
                         <li><a href="">My Messages</a></li>

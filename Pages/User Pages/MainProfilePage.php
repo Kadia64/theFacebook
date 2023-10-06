@@ -12,7 +12,7 @@
     $dh = new DataHandle();
     $sh = new SessionHandle();
     $sql = new SQLHandle();
-    session_start();
+    session_start();        
 
     if (!isset($_COOKIE['user-token'])) {
         setcookie('user-data', '', 0, '/');
@@ -33,37 +33,30 @@
         // if the user logged in or created their account
         $email = $_SESSION['email'];
         $sql->Connect();
-        $account_data = $sql->GetDataByEmail('account_info', $email);
+        $account_data = $sql->GetDataByEmail('account_info', $email, $dh->AccountInfoColumn, false);
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
-        $display_array = $dh->GetDisplayAttributes($sql, $email, $account_data, $account_stats);
-        $session_array = $dh->GetSessionArray($display_array, $account_data);
-        $sh->SetUserDataCookie($session_array);
+        $cookie_array = $sh->ParseUserDataCookie($sql, $email);
+        $session_array = array_values($cookie_array);        
+        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);
+        
+        $sh->SetUserDataCookie($cookie_array);
         $sql->CloseConnection();
     } else {
-        $user_cookie_data = $_COOKIE['user-data'];
-        $user_cookie_token = json_decode($_COOKIE['user-token'], true);
+        $cookie_data = json_decode($_COOKIE['user-data']);
         if ($return_status == 'normal') {
-            // normal page load
-
-            // make a cookie to store the ASSOCIATIVE version of the damn user's data
-            // then just make a function to turn this associative array to an indexed array
-            $display_array = $dh->ResetDisplayAttributes(json_decode($_COOKIE['user-data']));
-
+            // normal page load            
+            $display_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data']);
         } else if ($return_status == 'update-profile') {
             // update profile page
             $update_profile = true;
-
-            $cookie_array = $dh->GetUpdateProfileCookieData(array_values(json_decode($_COOKIE['user-data'])));
-            print_r($cookie_array);
-            exit;
-            
+            $cookie_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data'], true);
         } else if ($return_status == 'update-finished') {
             // will now reset the cookie and will get data from the database
             $sql->Connect();
-            $session_array = json_decode($_COOKIE['user-data']);
-            $old_username = $session_array[5];
-            $old_email = $session_array[6];
+            $old_cookie = json_decode($_COOKIE['user-data']);
+            $old_username = $old_cookie->{'username'};
+            $old_email = $old_cookie->{'email'};
             $new_username = $_GET['new-username'];
             $new_email = $_GET['new-email'];
             if ($new_username == null) {
@@ -76,23 +69,22 @@
             $account_data = $sql->GetDataByEmail('account_info', $new_email);
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
-            $display_array = $dh->GetDisplayAttributes($sql, $new_email, $account_data, $account_stats);
+            $display_array = $dh->GetDisplayAttributesFromDB($sql, $new_email, $account_data, $account_stats);
 
-            $session_array = $display_array;
-            array_unshift($session_array, $account_data->{'first_name'}, $account_data->{'last_name'});
-            $sh->ResetSessionCookies($new_username, $new_email, $session_array);
+            $old_cookie = $display_array;
+            array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
+            $sh->ResetSessionCookies($new_username, $new_email, $sh->ParseUserDataCookie($sql, $new_email));
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
         } else {
-            // unknown case
-            $cookie_data = $_COOKIE['user-data'];
-            $session_array = json_decode($cookie_data);
-            $display_array = $dh->ResetDisplayAttributes($session_array);
+            // normal
+            $display_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data']);
         }
         if ($return_status == 'just-updated') {
             // back to profile, will now uddate database
             $sql->Connect();
-            $dh->UpdatePersonalInfo($sql, $display_array, $session_array);
+            $session_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data'], true);
+            $dh->UpdatePersonalInfo($sql, $display_array, $session_array);            
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=update-finished&new-username=' . $_GET['username'] . '&new-email=' . $_GET['email']);           
             $sql->CloseConnection();
         }
@@ -100,9 +92,6 @@
     if ($update_profile) {
         $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
     }
-    //echo $cookie_array["username"];
-    //echo $user_cookie_data['username'];
-    //print_r($user_cookie_data);
 ?>
 <!DOCTYPE html>
 <html lang="en">

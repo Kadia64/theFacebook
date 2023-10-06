@@ -14,11 +14,20 @@
     $sql = new SQLHandle();
     session_start();        
 
+    //echo $_COOKIE['user-data'];
+
+    $sql->Connect();
+    if ($sql->CheckValueNull('profile_image', 'account_info', 'email', 'asd@asd')) {
+        //echo 'shoot me';
+    }
+    //print_r($sh->ParseUserDataCookie($sql, 'asd@asd'));
+
+
     if (!isset($_COOKIE['user-token'])) {
         setcookie('user-data', '', 0, '/');
         $sh->Redirect('Pages/Logged Out Pages/Login.php');
         exit;
-    }        
+    }    
 
     $update_profile = false;
     $user_data = null;
@@ -27,7 +36,8 @@
     $edit_profile_button = 'Information';
     $edit_groups_button = 'Groups';
     $current_school = null;
-    $profile_image = '<img src="' . PageData::ROOT . 'Images/default-profile-image.jpg">';
+    $default_profile_image = '<img src="' . PageData::ROOT . 'Images/default-profile-image.jpg">';
+    $profile_iamge = null;
 
     if (($return_status == 'account-created' || $return_status == 'logged-in') && !isset($_COOKIE['user-data'])) {
         // if the user logged in or created their account
@@ -38,14 +48,19 @@
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
         $session_array = array_values($cookie_array);        
-        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);
-        
+        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);        
+
         $sh->SetUserDataCookie($cookie_array);
         $sql->CloseConnection();
         $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
         exit;
     } else {
         $cookie_data = json_decode($_COOKIE['user-data']);
+        $account_attributes = json_decode($_COOKIE['account-attributes']);
+        if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $cookie_data->{'email'})) {
+            $account_attributes->{'profile-image'} = false;
+        }
+
         if ($return_status == 'normal') {
             // normal page load            
             $display_array = $dh->GetDisplayAttributesFromCookie($_COOKIE['user-data']);
@@ -72,6 +87,9 @@
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
             $display_array = $dh->GetDisplayAttributesFromDB($sql, $new_email, $account_data, $account_stats);
+            if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email)) {
+                $account_attributes['profile-image'] = false;
+            }
 
             $old_cookie = $display_array;
             array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
@@ -95,6 +113,7 @@
     if ($update_profile) {
         $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
     }    
+    $diff_profile_image = $account_attributes->{'profile-image'};
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -115,7 +134,7 @@
                         <div class="main-profile-page-left">
                             <div class="window-content profile-image-window">                            
                                 <?php $content->WindowText('Picture', '
-                                    <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php?image-type=profile-image">
+                                    <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php">
                                         <label class="profile-image-upload-text">
                                             <input type="file" enctype="multipart/form-data" name="profile-image" id="profile-image-upload" class="profile-image-upload-input">
                                             <div id="status"></div>
@@ -163,7 +182,13 @@
                                         }
                                     });
                                 </script>
-                                <?php echo $profile_image; ?>
+                                <?php
+                                    if ($diff_profile_image) {
+                                        // if you have a different profile image                                        
+                                    } else {
+                                        echo $default_profile_image;
+                                    }
+                                ?>
                             </div>
                             <div class="window-content profile-links-window">
                                 <ul>

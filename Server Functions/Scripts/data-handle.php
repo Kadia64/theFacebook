@@ -85,6 +85,7 @@ class DataHandle {
         $old_data = null;
         for ($i = 0; $i < count($this->DisplayUpdateAccountAttributes); ++$i) {
             $new_data[] = $_GET[strtolower(str_replace(' ', '-', $this->DisplayUpdateAccountAttributes[$i]))];
+            //echo $new_data[$i] . '<br>';
         }
         array_splice($new_data, 2, 0, $new_data[0] . ' ' . $new_data[1]);
 
@@ -93,18 +94,13 @@ class DataHandle {
             $old_data[] = $display_array[$k];
             ++$k;
         }
-        print_r($session_array);
         array_unshift($old_data, $session_array[0], $session_array[1], $session_array[2]);
         for ($i = 0; $i < count($old_data); ++$i) {
-            if ($new_data[$i] != null) {
-                $old_data[$i] = $new_data[$i];
-            } else {
-                $new_data[$i] = 'NULL';
-            }
+            $old_data[$i] = $new_data[$i];            
         }
         $old_data[2] = $old_data[0] . ' ' . $old_data[1];
         $old_username = $session_array[2];
-        $old_email = $session_array[3];
+        $old_email = $session_array[6];
         
         $query = '
             UPDATE account_info AS a
@@ -126,7 +122,7 @@ class DataHandle {
         }
         $query .= " WHERE a.username = '" . $old_username . "';";
         //echo $query;
-        //exit;
+        //exit;        
         mysqli_query($sql->connection, $query);
     }
     public function UpdateProfileImage() {}    

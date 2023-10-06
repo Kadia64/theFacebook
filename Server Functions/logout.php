@@ -6,5 +6,6 @@ session_start();
 session_unset();
 setcookie('user-token', '', 0, '/');
 setcookie('user-data', '', 0, '/');
+setcookie('account-attributes', '', 0, '/');
 $sh->Redirect('Pages/Logged Out Pages/Login.php');
 ?>

@@ -129,13 +129,22 @@ class SQLHandle {
             return $row[$value];
         } else return null;
     }
+    public function CheckValueNull($field, $table, $selector, $selector_value) {
+        $result = mysqli_query($this->connection, $this->JsonValuesQuery($table, $selector, $selector_value));
+        $values = mysqli_fetch_assoc($result);
+        if ($values[$field] == null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     public function Nullable($val) {
         if ($val == '') {
             return 'NULL';
         } else {
             return '\'' . mysqli_real_escape_string($this->connection, $val) . '\'';
         }
-    }
+    }    
 }
 class SQLTables {
     public function GetID($table) {

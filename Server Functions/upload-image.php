@@ -4,6 +4,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
 $content = new Content();
 $sql = new SQLHandle();
+session_start();
+$cookie_data = json_decode($_COOKIE['user-data']);
+$username = $cookie_data->{'username'};
 
 if (isset($_FILES['profile-image'])) {
     
@@ -18,7 +21,7 @@ if (isset($_FILES['profile-image'])) {
         UPDATE account_info AS a
         SET
         a.profile_image = '" . $image_data . "'
-        WHERE a.username = 'asd';
+        WHERE a.username = '" . $username . "';
     ";
     mysqli_query($sql->connection, $query);
     $sql->CloseConnection();

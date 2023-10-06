@@ -850,8 +850,7 @@ class Styles {
                     font-family: var(--font);
                     font-size: var(--font-size);
                 }
-
-
+                
 
                 .main-profile-update-grid {
                     display: grid;

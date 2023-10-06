@@ -68,11 +68,15 @@ class SessionHandle {
         };
         setcookie('user-token', json_encode($obj), $this->_10minExpiration, '/');
     }
-    public function SetUserDataCookie($data) {
+    public function SetUserDataCookie($user_data) {
         if (isset($_COOKIE['user-data'])) {
             setcookie('user-data', '', 0, '/');
-        }        
-        setcookie('user-data', json_encode($data), $this->_10minExpiration, '/');
+        }
+        $attributes = array(
+            'profile-image' => true
+        );
+        setcookie('user-data', json_encode($user_data), $this->_10minExpiration, '/');
+        setcookie('account-attributes', json_encode($attributes), $this->_10minExpiration, '/');
     }
     public function ResetSessionCookies($username, $email, $user_data) {
         setcookie('user-token', '', 0, '/');
@@ -89,8 +93,10 @@ class SessionHandle {
             JOIN account_stats AS stats ON ai.account_stats_id = stats.account_stats_id
             WHERE ai.email = '$email';
         ";
+        
         $result = mysqli_query($sql->connection, $query);
-        return mysqli_fetch_assoc($result);
+        $assoc_array = mysqli_fetch_assoc($result);
+        return $assoc_array;
     }
 }
 ?>

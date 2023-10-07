@@ -9,31 +9,22 @@ $sql = new SQLHandle();
 
 session_start();
 $sql->Connect();
-$link = null;
-if (isset($_GET['prev-page'])) {
-    $link = $_GET['prev-page'];
-}
-
-if (!$sf->CookiesEnabled()) {
-    $sf->Redirect('Pages/EnableCookies.php?prev-page=' . $link);
-    exit;
-} else {
-    $username = $_POST['username'];
-    $email = $_POST['email'];
-    if ($dh->CheckExistingAccount($sql, $username, $email) == 'username') {
-        $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=username');
-    } else if ($dh->CheckExistingAccount($sql, $username, $email) == 'email') {
-        $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=email');
-    } else if ($dh->CheckExistingAccount($sql, $username, $email) == 'both') {
-        $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=both');
-    } else {                
-        $sql->CloseConnection();
-        $_SESSION['username'] = $_POST['username'];
-        $_SESSION['status'] = $_POST['status'];
-        $_SESSION['email'] = $_POST['email'];
-        $_SESSION['password'] = $_POST['password'];
-        $sf->Redirect('Pages/Logged Out Pages/RegisterAboutUser.php', 'PHP');
-    }    
+$link = $_GET['prev-page'];
+$username = $_POST['username'];
+$email = $_POST['email'];
+if ($dh->CheckExistingAccount($sql, $username, $email) == 'username') {
+    $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=username');
+} else if ($dh->CheckExistingAccount($sql, $username, $email) == 'email') {
+    $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=email');
+} else if ($dh->CheckExistingAccount($sql, $username, $email) == 'both') {
+    $sf->Redirect('Pages/Logged Out Pages/RegisterUser.php?account-create-fail=both');
+} else {                
+    $sql->CloseConnection();
+    $_SESSION['username'] = $_POST['username'];
+    $_SESSION['status'] = $_POST['status'];
+    $_SESSION['email'] = $_POST['email'];
+    $_SESSION['password'] = $_POST['password'];
+    $sf->Redirect('Pages/Logged Out Pages/RegisterAboutUser.php', 'PHP');
 }
 exit;
 ?>

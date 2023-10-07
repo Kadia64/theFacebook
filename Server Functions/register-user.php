@@ -16,7 +16,8 @@ $account_info = [
     'status' => ucwords(str_replace('s-a', 's/A', $_SESSION['status']), '-'),
     'email' => $_SESSION['email'],
     'password' => hash('sha256', $_SESSION['password'] . $salt),
-    'salt' => $salt
+    'salt' => $salt,
+    'profile-image' => 'NULL'
 ];
 $register_data = $sh->GetRegisterData();
 $register_data['sex'] = ucwords($register_data['sex']);

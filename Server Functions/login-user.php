@@ -16,10 +16,11 @@ $username = $sql->GetUsernameByEmail($email);
 $salt = $sql->GetValueByEmail('password_salt', 'account_info', $email);
 $password = hash('sha256', $_POST['password'] . $salt);
 if ($dh->Login($sql, $email, $password)) {
-    $sql->CloseConnection();
     $_SESSION['email'] = $email;
+    $username = $sql->GetUsernameByEmail($email);
+    $sql->CloseConnection();
     $sh->SetUserTokenCookie($username, $email);
-    $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in');
+    $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in&username=' . $username . '&email=' . $email);
     exit;
 } else {
     $sql->CloseConnection();

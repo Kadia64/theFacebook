@@ -12,7 +12,11 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>    
+<head>
+    <script type="module">
+        import { CheckCookiesEnabled } from '../../client-functions.js'
+        var cookiesEnabled = CheckCookiesEnabled('Pages/Logged Out Pages/Welcome.php');
+    </script>    
     <?php $content->Startup('Welcome'); ?>
     <?php $styles->WelcomeStyle(); ?>
 </head>

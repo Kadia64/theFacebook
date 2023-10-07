@@ -11,7 +11,11 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>    
+<head>
+    <script type="module">
+        import { CheckCookiesEnabled } from '../../client-functions.js'
+        var cookiesEnabled = CheckCookiesEnabled('Pages/Logged Out Pages/RegisterAboutUser.php');
+    </script>
     <?php $content->Startup('About You'); ?>
     <?php $styles->RegisterAboutUserStyle(); ?>
 </head>

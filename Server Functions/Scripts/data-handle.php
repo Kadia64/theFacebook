@@ -187,7 +187,7 @@ class DataHandle {
         } else {
             return '<p ' . $class . '>' . $data . '</p>';
         }        
-    }    
+    }
 }
 class UpdateData {
     private $dh;

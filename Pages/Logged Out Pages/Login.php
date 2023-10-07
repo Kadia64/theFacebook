@@ -13,6 +13,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>    
+    <script type="module">
+        import { CheckCookiesEnabled } from '../../client-functions.js'
+        var cookiesEnabled = CheckCookiesEnabled('Pages/Logged Out Pages/Login.php');
+    </script>
     <?php $content->Startup('Login'); ?>
     <?php $styles->LoginStyle(); ?>
 </head>

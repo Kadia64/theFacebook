@@ -46,7 +46,7 @@ class SessionHandle {
         }
     }
     public function CookiesEnabled() {
-        setcookie('cookies_enabled', 'test', time() + 3600, '/');
+        setcookie('cookies_enabled', 'test', time() + (1 * 60), '/');
         if (isset($_COOKIE['cookies_enabled'])) {
             return true;
         } else {

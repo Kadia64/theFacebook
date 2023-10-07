@@ -13,6 +13,12 @@ export function fetchJSON(filename, callback) {
             console.error('There was a problem with fetching the file: ' + error);
         });
 }
-export function GetServerConfiguration() {
-    
+export function CheckCookiesEnabled(previousPage) {    
+    function Enabled() {
+        document.cookie = 'testCookie=test; max-age=60; path=/;';
+        return document.cookie.indexOf('testCookie') !== -1;
+    }
+    if (!Enabled()) {
+        window.location.href = '../../Pages/EnableCookies.php?prev-page=' + previousPage;
+    }    
 }

@@ -13,18 +13,22 @@
 
     if (isset($_GET['account-create-fail'])) {
         if ($_GET['account-create-fail'] == 'username') {
-            $dh->Alert('Username already exists!');
+            $content->Alert('Username already exists!');
         } else if ($_GET['account-create-fail'] == 'email') {
-            $dh->Alert('Email already exists!');
+            $content->Alert('Email already exists!');
         } else if ($_GET['account-create-fail'] == 'both') {
-            $dh->Alert('Both the username and email exist!');
+            $content->Alert('Both the username and email exist!');
         }
-        $sh->Redirect('Logged Out Pages/RegisterUser.php', 'js');
+        $sh->Redirect('Pages/Logged Out Pages/RegisterUser.php', 'js');
     }        
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>    
+    <script type="module">
+        import { CheckCookiesEnabled } from '../../client-functions.js'
+        var cookiesEnabled = CheckCookiesEnabled('Pages/Logged Out Pages/RegisterUser.php');
+    </script>
     <?php $content->Startup('Register'); ?>
     <?php $styles->RegisterUserStyle(); ?>
 </head>

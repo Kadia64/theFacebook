@@ -12,22 +12,19 @@
     $dh = new DataHandle();
     $sh = new SessionHandle();
     $sql = new SQLHandle();
-    session_start();        
-
-    //echo $_COOKIE['user-data'];
-
-    $sql->Connect();
-    if ($sql->CheckValueNull('profile_image', 'account_info', 'email', 'asd@asd')) {
-        //echo 'shoot me';
-    }
-    //print_r($sh->ParseUserDataCookie($sql, 'asd@asd'));
-
-
-    if (!isset($_COOKIE['user-token'])) {
-        setcookie('user-data', '', 0, '/');
-        $sh->Redirect('Pages/Logged Out Pages/Login.php');
+    session_start();
+    
+    if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
+        $sh->SetUserTokenCookie($_GET['username'], $_GET['email']);
+        $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
         exit;
-    }    
+    } else if (!isset($_COOKIE['user-token'])) {
+        $sh->Redirect('Server Functions/logout.php');
+        exit;
+    }
+
+    // account attributes cookie
+    //print_r($_COOKIE['account-attributes']);
 
     $update_profile = false;
     $user_data = null;
@@ -57,6 +54,9 @@
     } else {
         $cookie_data = json_decode($_COOKIE['user-data']);
         $account_attributes = json_decode($_COOKIE['account-attributes']);
+        
+        // needs to be cached in the account attributes
+        $sql->Connect();
         if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $cookie_data->{'email'})) {
             $account_attributes->{'profile-image'} = false;
         }

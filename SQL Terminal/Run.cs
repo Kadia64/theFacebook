@@ -15,7 +15,8 @@ namespace SQL_Terminal {
             "whipe tables", "truncate tables", "truncate",
             "create default",
             "create account", 
-            "create null account", "create null"
+            "create null account", "create null",
+            "create random account", "create rand"
         };
         private bool Connected = false;
         private string? CurrentCommand = null;
@@ -168,6 +169,18 @@ namespace SQL_Terminal {
                                     sql.CreateNullUserAccount();
                                 }
                             } else sql.CreateNullUserAccount();
+                        } else methods.ErrorOutput("Not connected to the database!");
+                        break;
+                    case "create random account":
+                    case "create rand":
+                        if (this.Help) {
+                            methods.HelpOutput("Will create a number of random accounts with some values being random.", new string[] { HELP_INFO, "<count> ~ the amount of times you want to create an account." }, new string[] { "create random account", "create rand" });
+                            break;
+                        }
+                        if (this.Connected) {
+                            if (inputAmount != 0) {
+                                sql.CreateRandomAccount(inputAmount);
+                            } else sql.CreateRandomAccount(1);
                         } else methods.ErrorOutput("Not connected to the database!");
                         break;
                     case "create account":

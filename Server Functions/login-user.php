@@ -19,9 +19,11 @@ $generated_sessionID = $dh->RandomCharacters(32);
 
 if ($dh->Login($sql, $email, $password)) {
     $_SESSION['email'] = $email;
+    $userID = $sql->GetIDByEmail($email);
     $username = $sql->GetUsernameByEmail($email);
     $sh->StartuserSession($sql, $sql->GetIDByEmail($email), $generated_sessionID);
     $sh->SetUserTokenCookie($username, $email);
+    $sh->SetLogoutCookie($userID);
     $sql->CloseConnection();
     $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in&username=' . $username . '&email=' . $email);
     exit;

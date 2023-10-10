@@ -20,12 +20,14 @@ $account_info = [
     'salt' => $salt,
     'profile-image' => 'NULL'
 ];
+$userID = $sql->GetIDByEmail($account_info['email']);
 $register_data = $sh->GetRegisterData();
 $register_data['sex'] = ucwords($register_data['sex']);
 $register_data['looking-for'] = str_replace('-', ' ', ucwords($register_data['looking-for'], '-'));
 $register_data['interested-in'] = ucwords($register_data['interested-in']);
 $dh->CreateAccount($sql, $register_data, $account_info);
 $sh->StartuserSession($sql, $sql->GetIDByEmail($account_info['email']), $generated_sessionID);
+$sh->SetLogoutCookie($userID);
 $sql->CloseConnection();
 $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=account-created&username=' . $account_info['username'] . '&email=' . $account_info['email']);
 exit;

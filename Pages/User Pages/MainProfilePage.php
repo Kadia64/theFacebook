@@ -19,11 +19,13 @@
         $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
         exit;
     } else if (!isset($_COOKIE['user-token'])) {
+        $old_user_cookie = json_decode($_COOKIE['user-data']);
         $sh->Redirect('Server Functions/logout.php');
         exit;
     }
     
-    $sql->Connect();    
+    $sql->Connect();
+
     
     //$display_cached_image = '<img src="data:image/jpeg;base64,' . base64_encode($cached_image_data) . '">';
     //print_r($_COOKIE['user-data']);
@@ -44,13 +46,18 @@
 
     if (($return_status == 'account-created' || $return_status == 'logged-in') && !isset($_COOKIE['user-data'])) {
         // if the user logged in or created their account
-        $email = $_SESSION['email'];
         $sql->Connect();
+        $email = $_SESSION['email'];
+
+        $current_session_data = $sh->GetUserSessionDataByEmail($sql, $email);
+        $_SESSION['session-id'] = $current_session_data['session_id'];
+        print_r($_SESSION['session-id']);
+
         $account_data = $sql->GetDataByEmail('account_info', $email, $dh->AccountInfoColumn, false);
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
-        $session_array = array_values($cookie_array);        
+        $session_array = array_values($cookie_array);
         $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);        
         //$cached_image_data = include $_SERVER['DOCUMENT_ROOT'] . $_path . 'cache-image.php';
 

@@ -89,19 +89,18 @@ class SQLHandle {
         $id = $this->_tables->GetID($table);
         return " SELECT selector." . $value . " FROM " . $table . " selector JOIN account_info ai ON selector." . $id . " = ai." . $id . " WHERE ai." . $selector . " = '" . $selector_value . "';";
     }
-    public function GetDataByUsername($table, $username, $assoc = false) {
+    public function GetDataByUsername($table, $username) {
         /*
             ex: 
             $sql->GetDataByEmail('personal_info', 'user123');
             -> returns the entire row as an associative array
         */
 
-        $query = $this->JsonValuesQuery($table, 'username', $username);
+        $query = $this->JsonValuesQuery($table, 'email', $username);
         $result = mysqli_query($this->connection, $query);
         $data = mysqli_fetch_assoc($result);
-        return json_decode(json_encode($data), $assoc);
     }
-    public function GetDataByEmail($table, $email, $column = null, $assoc = false) {
+    public function GetDataByEmail($table, $email, $column = null,) {
         /*
             ex: 
             $sql->GetDataByEmail('account_info', 'asd@asd');
@@ -112,6 +111,19 @@ class SQLHandle {
         $result = mysqli_query($this->connection, $query);
         $data = mysqli_fetch_assoc($result);
         return $data;
+    }
+    public function GetDataBySessionID($sessionID, $table) {
+        /* 
+            ex:
+            $sql->GetDataBySessionID($sessionID, 'account_info');
+        */
+
+        $session_assoc = mysqli_fetch_assoc(mysqli_query($this->connection, "SELECT session_data_id FROM session_data WHERE session_id = '$sessionID'"));
+        $userID = $session_assoc['session_data_id'];
+        $email = $this->GetEmailByID($userID);
+        $selected_table = mysqli_query($this->connection, $this->JsonValuesQuery($table, 'email', $email));
+        $result = mysqli_fetch_assoc($selected_table);
+        return $result;   
     }
     public function GetValueByUsername($value, $table, $username) {        
         $result = mysqli_query($this->connection, $this->RelationalValuesQuery($value, $table, 'username', $username));
@@ -135,10 +147,24 @@ class SQLHandle {
         } else return null;
     }
     public function GetUsernameByEmail($email) {
-        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '" . $email . "'");        
+        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '$email'");
         $row = mysqli_fetch_assoc($result);
         if ($row) {
             return $row['username'];
+        } else return null;
+    }
+    public function GetUsernameByID($id) {
+        $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE account_id = $id");
+        $row = mysqli_fetch_assoc($result);
+        if ($row) {
+            return $row['username'];
+        } else return null;
+    }
+    public function GetEmailByID($id) {
+        $result = mysqli_query($this->connection, "SELECT email FROM account_info WHERE account_id = $id");
+        $row = mysqli_fetch_assoc($result);
+        if ($row) {
+            return $row['email'];
         } else return null;
     }
     public function GetIDByUsername($username) {
@@ -154,7 +180,7 @@ class SQLHandle {
         if ($row) {
             return $row['account_id'];
         } else return null;
-    }
+    }    
     public function CheckValueNull($field, $table, $selector, $selector_value) {
         $result = mysqli_query($this->connection, $this->JsonValuesQuery($table, $selector, $selector_value));
         $values = mysqli_fetch_assoc($result);

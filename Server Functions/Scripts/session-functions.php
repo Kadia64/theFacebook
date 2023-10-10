@@ -3,11 +3,15 @@ $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class SessionHandle {
+    public $_30dayExpiration;
     public $_10minExpiration;
+    public $_10pminExpiration;
     public $_5minExpiration;
     private $files;
     public function __construct() {
-        $this->_10minExpiration = time() + (10 * 60);
+        $this->_30dayExpiration = time() + (30 * 24 * 60 * 60);
+        $this->_10minExpiration = time() + (10 * 61);
+        $this->_10pminExpiration = time() + (10 * 60);
         $this->_5minExpiration = time() + (5 * 60);
         $this->files = new FileHandle();      
     }
@@ -54,7 +58,6 @@ class SessionHandle {
         }
     }
     public function SetUserTokenCookie($username, $email) {
-        if (!$this->CookiesEnabled()) return;
         if (isset($_COOKIE['user-token'])) {
             setcookie('user-token', '', 0, '/');
         }
@@ -75,8 +78,14 @@ class SessionHandle {
         $attributes = array(
             'profile-image' => true
         );
-        setcookie('user-data', json_encode($user_data), $this->_10minExpiration, '/');
+        setcookie('user-data', json_encode($user_data), $this->_10pminExpiration, '/');
         setcookie('account-attributes', json_encode($attributes), $this->_10minExpiration, '/');
+    }
+    public function SetLogoutCookie($dbID) {
+        $obj = array(
+            'id' => $dbID
+        );
+        setcookie('logout', json_encode($obj), $this->_30dayExpiration, '/');
     }
     public function ResetSessionCookies($username, $email, $user_data) {
         setcookie('user-token', '', 0, '/');
@@ -101,6 +110,9 @@ class SessionHandle {
     }
     public function EndUserSession($sql, $dbID) {
         mysqli_query($sql->connection, "DELETE FROM session_data WHERE session_data_id = $dbID;");
+    }
+    public function SessionExpired($sql) {
+
     }
     public function GetUserSessionDataByEmail($sql, $email) {
         $id = $sql->GetIDByEmail($email);        

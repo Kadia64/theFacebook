@@ -1,13 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Net;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using MySql.Data.MySqlClient;
+using MySqlX.XDevAPI.Relational;
 using Newtonsoft;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Macs;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SQL_Terminal {
     public class Methods {
@@ -129,8 +142,21 @@ namespace SQL_Terminal {
                 Thread.Sleep(speed);
             }
         }
+        public int R(int min, int max) {
+            Random random = new Random();
+            return random.Next(min, max);
+        }
         public string RandCharacters(int length) {
             return new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());            
+        }
+        public string sha256(string input) {
+            byte[] data = Encoding.UTF8.GetBytes(input);
+
+            using (SHA256 sha256 = SHA256.Create()) {
+                byte[] hashBytes = sha256.ComputeHash(data);
+                string hashString = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                return hashString;
+            }
         }
         public string GetFilePath(string filePath) {
             string projectDirectory = Directory.GetCurrentDirectory();
@@ -300,9 +326,47 @@ namespace SQL_Terminal {
                 ALTER TABLE account_info ADD CONSTRAINT personal_info_fk FOREIGN KEY (personal_info_id) REFERENCES personal_info(personal_info_id);
             ");
         }
-        public void CreateUserAccount(string[] values) { 
-            
-        }       
+        public void CreateRandomAccount(int amount) {
+            string[] domainNames = { "@example.com","@email.net","@gmail.com","@rocket.org","@emailbox.com","@example.net","@emailpros.com","@emailworld.net","@example.org","@emailzone.com","@emailhub.net","@emailspot.org","@examplemail.com","@emailplanet.net","@exampleplace.com","@emailville.org","@emailglobe.com","@exampleuniverse.net","@emailcountry.com","@emailocean.org","@emaildomain.net","@emailcity.com","@emailwave.com","@emailland.org","@emailplanet.com","@emailworld.org","@emailheaven.com","@emailforest.net","@emailpeak.com","@emailvalley.org" };
+            List<string> emails = new List<string>();
+            for (int i = 0; i < domainNames.Length; ++i) {
+                emails.Add(methods.RandCharacters(4) + domainNames[i]);
+            }
+            string[] usernames = { "Banana","Sunshine","Elephant","Adventure","Mystery","Serendipity","Chocolate","Universe","Harmony","Blossom","Whisper","Radiant","Symphony","Firefly","Tranquil","Wanderlust","Lighthouse","Butterfly","Aurora","Waterfall","Enchanted","Sapphire","Velvet","Tornado","Twilight","Euphoria","Infinity","Rainbow","Stardust","Mirage" };
+            string[] first_names = { "Emerson", "Ryan", "Marlee", "Kameron", "Malaya", "Thaddeus", "Marlowe", "Ira", "Mira", "Zyaire", "Savanna", "Lorenzo", "Ivory", "Johnathan", "Journee", "Lee", "Rosemary", "Jamari", "Giselle", "Deacon", "Ana", "Armani", "Aileen", "Calum", "Harmoni", "Jakob","Faye", "Jeremy", "Lena", "Jaime" };
+            string[] last_names = { "Cruz","Trevino","Huber","Sims","Carpenter","Arellano","McMahon","Tanner","Finley","Ponce","Terry","Harper","Gibbs","Byrd","Valenzuela","Reese","Lester","Vazquez","Cardenas","Collier","Webb","Roy","Blake","Wise","Chung","Horne","Palacios","Hensley","Fowler","Fitzgerald" };
+
+
+            for (int i = 0; i < amount; ++i) {
+                string username = usernames[methods.R(0, usernames.Length - 1)] + methods.RandCharacters(3);
+                string email = emails[methods.R(0, emails.Count - 1)];
+                string password_salt = methods.RandCharacters(32);
+                string password = methods.sha256("asd" + password_salt);
+                string mobile = $"{methods.R(100, 999)}-{methods.R(100, 999)}-{methods.R(1000, 9999)}";
+                int randNameIndex = methods.R(0, first_names.Length - 1);
+                string first_name = first_names[randNameIndex];
+                string last_name = last_names[randNameIndex];
+                string full_name = $"{first_name} {last_name}";
+
+                string query = $@"
+                    INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
+                    SET @last_settings_id = LAST_INSERT_ID();
+                    INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    SET @last_account_stats_id = LAST_INSERT_ID();
+                    INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    SET @last_social_stats_id = LAST_INSERT_ID();
+                    INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    SET @last_personal_info_id = LAST_INSERT_ID();
+                    INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{username}', '{email}', '{password}', '{password_salt}', '{mobile}', '{first_name}', '{last_name}', '{full_name}', NULL);
+                ";
+                MySqlCommand command = new MySqlCommand(query, this.Connection);
+                command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+                command.Parameters.Add("@last_account_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+                command.Parameters.Add("@last_social_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+                command.Parameters.Add("@last_personal_info_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
+                command.ExecuteNonQuery();
+            }
+        }
         public void CreateNullUserAccount() {
             string query = $@"
                 INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
@@ -315,8 +379,6 @@ namespace SQL_Terminal {
                 SET @last_personal_info_id = LAST_INSERT_ID();
                 INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL, NULL, NULL, NULL, NULL);
             ";
-            Console.WriteLine(query);
-            while (true) { }
             MySqlCommand command = new MySqlCommand(query, this.Connection);
             command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
             command.Parameters.Add("@last_account_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;

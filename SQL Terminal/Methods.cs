@@ -200,6 +200,11 @@ namespace SQL_Terminal {
 
         public void CreateDefaultStructure() {
             string output = this.Query(@"
+                CREATE TABLE session_data (
+                    session_data_id INT PRIMARY KEY,
+                    session_id VARCHAR(512),
+                    logged_in TIMESTAMP
+                );
                 CREATE TABLE account_settings (
   	                settings_id INT PRIMARY KEY AUTO_INCREMENT,
   	                allow_mentions VARCHAR(255),
@@ -230,7 +235,7 @@ namespace SQL_Terminal {
                     unread_message_count INT UNSIGNED,
                     message_sent_count INT UNSIGNED, 
                     message_received_count INT UNSIGNED, 
-                    verification_request_count INT UNSIGNED, 
+                    verification_request_count INT UNSIGNED,
                     verification_request_last_timestamp VARCHAR(32)
                 );
                 CREATE TABLE personal_info (
@@ -253,7 +258,7 @@ namespace SQL_Terminal {
                 );
                 CREATE TABLE account_info (
                     account_id INT PRIMARY KEY AUTO_INCREMENT,
-                    settings_id INT, 
+                    settings_id INT,
                     account_stats_id INT, 
                     social_stats_id INT,
                     personal_info_id INT,
@@ -283,6 +288,7 @@ namespace SQL_Terminal {
                 ALTER TABLE account_info DROP FOREIGN KEY account_stats_fk;
                 ALTER TABLE account_info DROP FOREIGN KEY social_stats_fk;
                 ALTER TABLE account_info DROP FOREIGN KEY personal_info_fk;
+                TRUNCATE TABLE session_data;
                 TRUNCATE TABLE account_settings;
                 TRUNCATE TABLE account_stats;
                 TRUNCATE TABLE social_stats;
@@ -307,8 +313,10 @@ namespace SQL_Terminal {
                 SET @last_social_stats_id = LAST_INSERT_ID();
                 INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
                 SET @last_personal_info_id = LAST_INSERT_ID();
-                INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, mobile, first_name, last_name, full_name, password_salt) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL, NULL, NULL, NULL);
+                INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{methods.RandCharacters(6)}', '{methods.RandCharacters(6) + "@icloud.com"}', '123', NULL, NULL, NULL, NULL, NULL, NULL);
             ";
+            Console.WriteLine(query);
+            while (true) { }
             MySqlCommand command = new MySqlCommand(query, this.Connection);
             command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;
             command.Parameters.Add("@last_account_stats_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;

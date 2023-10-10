@@ -59,11 +59,11 @@ class SessionHandle {
             setcookie('user-token', '', 0, '/');
         }
         $obj = new class($username, $email) {
-            public $Username;
-            public $Email;
+            public $username;
+            public $email;
             public function __construct($username, $email) {
-                $this->Username = $username;
-                $this->Email = $email;
+                $this->username = $username;
+                $this->email = $email;
             }
         };
         setcookie('user-token', json_encode($obj), $this->_10minExpiration, '/');
@@ -86,15 +86,25 @@ class SessionHandle {
     }
     public function ParseUserDataCookie($sql, $email) {
         $columns = array('ai.first_name', 'ai.last_name', 'ai.full_name', 'stats.member_since', 'stats.last_update', 'ai.username', 'ai.email', 'ai.mobile', 'p.birthday', 'p.sex', 'p.home_address', 'p.home_town', 'p.highschool', 'p.education_status', 'p.website', 'p.looking_for', 'p.interested_in', 'p.relationship_status', 'p.political_views', 'p.interests', 'p.favorite_music', 'p.favorite_movies', 'p.about_me');
-        $columns = implode(', ', $columns);        
-        $query = "
-            SELECT $columns FROM account_info AS ai
+        $columns = implode(', ', $columns);                        
+        $result = mysqli_query($sql->connection, 
+           "SELECT $columns FROM account_info AS ai
             JOIN personal_info AS p ON ai.personal_info_id = p.personal_info_id
             JOIN account_stats AS stats ON ai.account_stats_id = stats.account_stats_id
             WHERE ai.email = '$email';
-        ";
-        
-        $result = mysqli_query($sql->connection, $query);
+        ");
+        $assoc_array = mysqli_fetch_assoc($result);
+        return $assoc_array;
+    }
+    public function StartUserSession($sql, $dbID, $sessionID) {        
+        mysqli_query($sql->connection, "INSERT INTO session_data (session_data_id, session_id, logged_in) VALUES ($dbID, '$sessionID', NOW());");
+    }
+    public function EndUserSession($sql, $dbID) {
+        mysqli_query($sql->connection, "DELETE FROM session_data WHERE session_data_id = $dbID;");
+    }
+    public function GetUserSessionDataByEmail($sql, $email) {
+        $id = $sql->GetIDByEmail($email);        
+        $result = mysqli_query($sql->connection, "SELECT * FROM `session_data` WHERE session_data_id = $id;");
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
     }

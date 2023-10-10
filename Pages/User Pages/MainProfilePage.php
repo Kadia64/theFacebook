@@ -1,10 +1,10 @@
 <?php 
-    $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/dynamic-content.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
+    $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/dynamic-content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/data-handle.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/sql-functions.php';
     $content = new Content();
     $dynamic = new DynamicContent();
     $styles = new Styles();
@@ -13,7 +13,7 @@
     $sh = new SessionHandle();
     $sql = new SQLHandle();
     session_start();
-    
+
     if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
         $sh->SetUserTokenCookie($_GET['username'], $_GET['email']);
         $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
@@ -22,6 +22,12 @@
         $sh->Redirect('Server Functions/logout.php');
         exit;
     }
+    
+    $sql->Connect();    
+    
+    //$display_cached_image = '<img src="data:image/jpeg;base64,' . base64_encode($cached_image_data) . '">';
+    //print_r($_COOKIE['user-data']);
+
 
     // account attributes cookie
     //print_r($_COOKIE['account-attributes']);
@@ -46,6 +52,7 @@
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
         $session_array = array_values($cookie_array);        
         $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);        
+        //$cached_image_data = include $_SERVER['DOCUMENT_ROOT'] . $_path . 'cache-image.php';
 
         $sh->SetUserDataCookie($cookie_array);
         $sql->CloseConnection();
@@ -88,7 +95,7 @@
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
             $display_array = $dh->GetDisplayAttributesFromDB($sql, $new_email, $account_data, $account_stats);
             if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email)) {
-                $account_attributes['profile-image'] = false;
+                $account_attributes->{'profile-image'} = false;
             }
 
             $old_cookie = $display_array;
@@ -114,6 +121,8 @@
         $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
     }    
     $diff_profile_image = $account_attributes->{'profile-image'};
+
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -184,7 +193,7 @@
                                 </script>
                                 <?php
                                     if ($diff_profile_image) {
-                                        // if you have a different profile image                                        
+                                        //echo $display_cached_image;
                                     } else {
                                         echo $default_profile_image;
                                     }

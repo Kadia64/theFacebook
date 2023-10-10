@@ -15,11 +15,14 @@ $email = $_POST['email'];
 $username = $sql->GetUsernameByEmail($email);
 $salt = $sql->GetValueByEmail('password_salt', 'account_info', $email);
 $password = hash('sha256', $_POST['password'] . $salt);
+$generated_sessionID = $dh->RandomCharacters(32);
+
 if ($dh->Login($sql, $email, $password)) {
     $_SESSION['email'] = $email;
     $username = $sql->GetUsernameByEmail($email);
-    $sql->CloseConnection();
+    $sh->StartuserSession($sql, $sql->GetIDByEmail($email), $generated_sessionID);
     $sh->SetUserTokenCookie($username, $email);
+    $sql->CloseConnection();
     $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in&username=' . $username . '&email=' . $email);
     exit;
 } else {

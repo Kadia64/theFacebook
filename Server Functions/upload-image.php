@@ -16,7 +16,7 @@ if (isset($_FILES['profile-image'])) {
     $size = $file['size'];
     $image_data = addslashes(file_get_contents($_FILES['profile-image']['tmp_name']));
     
-    $sql->Connect();    
+    $sql->Connect();
     $query = "
         UPDATE account_info AS a
         SET

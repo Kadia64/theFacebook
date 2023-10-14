@@ -229,7 +229,8 @@ namespace SQL_Terminal {
                 CREATE TABLE session_data (
                     session_data_id INT PRIMARY KEY,
                     session_id VARCHAR(512),
-                    logged_in TIMESTAMP
+                    logged_in DATETIME,
+                    session_expiration DATETIME
                 );
                 CREATE TABLE account_settings (
   	                settings_id INT PRIMARY KEY AUTO_INCREMENT,

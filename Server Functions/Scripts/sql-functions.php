@@ -45,26 +45,6 @@ class SQLHandle {
         mysqli_query($this->connection, 'SET @last_personal_info_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, ' . $this->Nullable($account_info['username']) . ', ' . $this->Nullable($account_info['email']) . ', ' . $this->Nullable($account_info['password']) . ', ' . $this->Nullable($account_info['salt']) . ', ' . $this->Nullable($personal_info['mobile']) . ', ' . $this->Nullable($personal_info['first-name']) . ', ' . $this->Nullable($personal_info['last-name']) . ', ' . $full_name . ', ' . $this->Nullable($account_info['profile-image']) . ');');            
     }
-    public function UpdateAccountRowByUsername($table, $attributes, $values, $selector_value) {
-        $id = $this->_tables->GetID($table);
-        // $query = "
-        //     UPDATE personal_info
-        //     JOIN account_info ON " . $table . "." . $id . " = account_info." . $id . "
-        //     SET
-        //         " . $table . ".first_name = 'NewFirstName',
-        //         personal_info.last_name = 'NewLastName',
-        //         personal_info.birthday = 'NewBirthday'            
-        // ";
-        // for ($i = 0; $i < count($attributes); ++$i) {
-        //     $query .= $table . "." . $attributes[$i] . " = '" . $values[$i] . "',";
-        // }
-        // $query .= "WHERE account_info.username = '" . $selector_value . "';";
-        $query = "";
-            
-
-
-        echo $query;
-    }
     public function GetTableFieldData($attribute, $table) {
         $result = mysqli_query($this->connection, 'SELECT ' . $attribute . ' FROM ' . $table);
         $values = [];
@@ -139,18 +119,18 @@ class SQLHandle {
             return $row[$value];
         } else return null;
     }
-    public function GetEmailByUsername($username) {        
-        $result = mysqli_query($this->connection, "SELECT email FROM account_info WHERE username = '" . $username . "'");
-        $row = mysqli_fetch_assoc($result);
-        if ($row) {
-            return $row['email'];
-        } else return null;
-    }
     public function GetUsernameByEmail($email) {
         $result = mysqli_query($this->connection, "SELECT username FROM account_info WHERE email = '$email'");
         $row = mysqli_fetch_assoc($result);
         if ($row) {
             return $row['username'];
+        } else return null;
+    }
+    public function GetEmailByUsername($username) {        
+        $result = mysqli_query($this->connection, "SELECT email FROM account_info WHERE username = '" . $username . "'");
+        $row = mysqli_fetch_assoc($result);
+        if ($row) {
+            return $row['email'];
         } else return null;
     }
     public function GetUsernameByID($id) {

@@ -8,9 +8,11 @@ session_start();
 if (!isset($_COOKIE['logout'])) {
     echo 'Warning: there is no sessionID that is set!<br>Can\'t locate your sessions\'s row!';
 } else {
-    $sql->Connect();
-    $logout_data = json_decode($_COOKIE['logout']);
-    $sh->EndUserSession($sql, $logout_data->{'id'});
+    try {
+        $sql->Connect();
+        $logout_data = json_decode($_COOKIE['logout']);
+        $sh->EndUserSession($sql, $logout_data->{'id'});
+    } catch (Exception $e) {}
 }
 session_unset();
 setcookie('user-token', '', 0, '/');

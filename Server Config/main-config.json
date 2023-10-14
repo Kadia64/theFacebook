@@ -6,6 +6,7 @@
 		"Password": ""
 	},
 	"Server-Configuration": {
-		"Absolute-Path": "http://10.0.0.139/Projects/TheFacebook/Git/theFacebook/"
+		"Absolute-Path": "http://10.0.0.139/Projects/TheFacebook/Git/theFacebook/",		
+		"Sessions-Length-Min": 10
 	}
 }

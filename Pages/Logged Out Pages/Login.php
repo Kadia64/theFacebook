@@ -2,6 +2,8 @@
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
@@ -9,6 +11,18 @@
     session_start();
     session_unset();
     $sh->CheckTraversal();
+
+
+    $sql = new SQLHandle();
+    $sql->Connect();
+
+    $sh->CheckSessionRow($sql, 3);
+    // $sh->StartUserSession($sql, 2, "whyyadsdadyy");
+    // exit;
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

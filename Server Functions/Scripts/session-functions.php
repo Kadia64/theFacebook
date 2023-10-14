@@ -5,15 +5,18 @@ require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class SessionHandle {
     public $_30dayExpiration;
     public $_10minExpiration;
-    public $_10pminExpiration;
     public $_5minExpiration;
+    public $sessionExpirationTime;
     private $files;
+    private $ServerConfig;    
     public function __construct() {
+        date_default_timezone_set('America/Chicago');
+        $this->files = new FileHandle();
+        $this->ServerConfig = $this->files->ServerConfig;
+        $this->sessionExpirationTime = $this->ServerConfig->{"Server-Configuration"}->{"Sessions-Length-Min"};
         $this->_30dayExpiration = time() + (30 * 24 * 60 * 60);
-        $this->_10minExpiration = time() + (10 * 61);
-        $this->_10pminExpiration = time() + (10 * 60);
+        $this->_10minExpiration = time() + (10 * 60);
         $this->_5minExpiration = time() + (5 * 60);
-        $this->files = new FileHandle();      
     }
     public function GetRegisterData() {
         return [
@@ -78,7 +81,7 @@ class SessionHandle {
         $attributes = array(
             'profile-image' => true
         );
-        setcookie('user-data', json_encode($user_data), $this->_10pminExpiration, '/');
+        setcookie('user-data', json_encode($user_data), $this->_10minExpiration, '/');
         setcookie('account-attributes', json_encode($attributes), $this->_10minExpiration, '/');
     }
     public function SetLogoutCookie($dbID) {
@@ -105,20 +108,28 @@ class SessionHandle {
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
     }
-    public function StartUserSession($sql, $dbID, $sessionID) {        
-        mysqli_query($sql->connection, "INSERT INTO session_data (session_data_id, session_id, logged_in) VALUES ($dbID, '$sessionID', NOW());");
+    public function StartUserSession($sql, $dbID, $sessionID) {
+        $time = new DateTime();
+        $now_time = $time->format('Y-m-d g:i:s A');
+        $time->add(new DateInterval('PT' . $this->sessionExpirationTime . 'M'));
+        $new_time = $time->format('Y-m-d g:i:s A');
+        mysqli_query($sql->connection, "INSERT INTO session_data (session_data_id, session_id, logged_in, session_expiration) VALUES ($dbID, '$sessionID', '$now_time', '$new_time');");
     }
     public function EndUserSession($sql, $dbID) {
         mysqli_query($sql->connection, "DELETE FROM session_data WHERE session_data_id = $dbID;");
-    }
-    public function SessionExpired($sql) {
-
     }
     public function GetUserSessionDataByEmail($sql, $email) {
         $id = $sql->GetIDByEmail($email);        
         $result = mysqli_query($sql->connection, "SELECT * FROM `session_data` WHERE session_data_id = $id;");
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
+    }
+    public function CheckSessionRow($sql, $id) {
+        $result = mysqli_query($sql->connection, "SELECT * FROM `session_data` WHERE session_data_id = $id;");
+        $assoc_array = mysqli_fetch_assoc($result);
+        if (mysqli_num_rows($result) > 0) {
+            return true;
+        } else return false;
     }
 }
 ?>

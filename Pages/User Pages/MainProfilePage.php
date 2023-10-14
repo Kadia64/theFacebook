@@ -27,6 +27,8 @@
     $sql->Connect();
 
     
+
+    
     //$display_cached_image = '<img src="data:image/jpeg;base64,' . base64_encode($cached_image_data) . '">';
     //print_r($_COOKIE['user-data']);
 

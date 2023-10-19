@@ -1,7 +1,7 @@
 import sys
-from datetime import datetime
 import time
 import mysql.connector
+from datetime import datetime
 
 def get_current_time(timeobj):
     hour = timeobj.tm_hour % 12
@@ -22,20 +22,20 @@ connection = mysql.connector.connect(
     autocommit=True
 )
 
+UPDATE_FREQ = 3
+UPDATE_TIME = 1.5
 cursor = connection.cursor()
 result = get_session_data(cursor)
 dateFormat = '%Y-%m-%d %H:%M:%S'
-if result == []:
-    print('no user currently signed in')    
 
 print('Currently Logged In:', len(result), ' active\n')
 k = 0
 
 while True:
     print('Iteration: ', k)
-    time.sleep(1)
+    time.sleep(UPDATE_TIME)
 
-    if (k % 3) == 0:
+    if (k % UPDATE_FREQ) == 0:
         result = get_session_data(cursor)
 
     for row in result:
@@ -48,13 +48,12 @@ while True:
         formattedCurrentTimestamp = get_current_time(now)
         formattedLoggedInTime = datetime.strptime(loggedInTime, dateFormat)
         formattedExpirationTime = datetime.strptime(expirationTime, dateFormat)
-        
+
         if formattedCurrentTimestamp > formattedExpirationTime:
             print('their session has expired')
             deleteRow = "DELETE FROM session_data WHERE session_data_id = " + str(userID) + ";"
             cursor.execute(deleteRow)
-            connection.commit()
+            connection.commit()            
         else:
             print('user: ', userID, ' active')
-            
     k += 1

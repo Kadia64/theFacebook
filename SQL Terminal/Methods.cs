@@ -298,6 +298,8 @@ namespace SQL_Terminal {
                     last_name VARCHAR(128),
                     full_name VARCHAR(255),
                     profile_image LONGBLOB,
+                    profile_image_name VARCHAR(512),
+                    profile_image_extension VARCHAR(6),
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),
                     CONSTRAINT account_stats_fk FOREIGN KEY (account_stats_id)

@@ -124,8 +124,7 @@ class DataHandle {
         //echo $query;
         //exit;        
         mysqli_query($sql->connection, $query);
-    }
-    public function UpdateProfileImage() {}    
+    }    
     public function GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats) {
         $tmp = array_slice(array_values($sql->GetDataByEmail('personal_info', $email, null, true)), 1);
         array_unshift($tmp, $account_data['full_name'], $account_stats['member_since'], $account_stats['last_update'], $account_data['username'], $account_data['email'], $account_data['mobile']);
@@ -142,22 +141,7 @@ class DataHandle {
             unset($tmp[1]);
         }
         return array_values($tmp);
-    }
-    public function ResetDisplayAttributes($session_array) {
-        return array_slice($session_array, 2, null, true);
-    }
-    public function GetSessionArray($display_array, $account_data) {
-        $tmp = $display_array;
-        array_unshift($tmp, $account_data['first_name'], $account_data['last_name']);
-        return $tmp;
-    }
-    public function GetUpdateProfileCookieData($cookie_data) {
-        $tmp = $cookie_data;
-        unset($tmp[2]);
-        unset($tmp[3]);
-        unset($tmp[4]);
-        return array_values($tmp);
-    }
+    }  
     public function RandomCharacters($length) {
         $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $rand = null;
@@ -165,14 +149,19 @@ class DataHandle {
             $rand .= $letters[mt_rand(0, strlen($letters) - 1)];            
         }
         return $rand;
-    }
+    }    
     public function GetTimeStamp($type) {
+        $time = new DateTime();
         if ($type == 0) {                   // 2023-09-27
             return date('Y-m-d');
         } else if ($type == 1) {            // 2023/09/27
             return date('Y/m/d');           
         } else if ($type == 2) {            // 2023/09/27 094029 am
             return date('Y/m/d His a');  
+        } else if ($type == 7) {            // +10 minutes from now
+            $now = $time->format('Y-m-d g:i:s A');
+            $time->add(new DateInterval('PT10M'));
+            return $time->format('Y-m-d g:i:s A');
         } else if ($type == 9) {
             return date('c', time());
         }
@@ -187,6 +176,10 @@ class DataHandle {
         } else {
             return '<p ' . $class . '>' . $data . '</p>';
         }        
+    }
+    public function ParseProfileImageHash($username, $email, $file_type) {
+        $salt = $this->RandomCharacters(32);
+        return md5($username . $email . $salt) . $file_type;
     }
 }
 class UpdateData {

@@ -12,6 +12,7 @@
     $dh = new DataHandle();
     $sh = new SessionHandle();
     $sql = new SQLHandle();
+    $ftp = new FTPHandle();
     session_start();
 
     if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
@@ -24,17 +25,9 @@
         exit;
     }
     
-    $sql->Connect();
-
-    
-
-    
-    //$display_cached_image = '<img src="data:image/jpeg;base64,' . base64_encode($cached_image_data) . '">';
-    //print_r($_COOKIE['user-data']);
-
-
-    // account attributes cookie
-    //print_r($_COOKIE['account-attributes']);
+    //$sql->Connect();
+    //$ftp->Connect();
+    //$ftp->Login();
 
     $update_profile = false;
     $user_data = null;
@@ -50,20 +43,23 @@
         // if the user logged in or created their account
         $sql->Connect();
         $email = $_SESSION['email'];
-
         $current_session_data = $sh->GetUserSessionDataByEmail($sql, $email);
         $_SESSION['session-id'] = $current_session_data['session_id'];
-        print_r($_SESSION['session-id']);
-
         $account_data = $sql->GetDataByEmail('account_info', $email, $dh->AccountInfoColumn, false);
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
         $session_array = array_values($cookie_array);
-        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);        
-        //$cached_image_data = include $_SERVER['DOCUMENT_ROOT'] . $_path . 'cache-image.php';
-
-        $sh->SetUserDataCookie($cookie_array);
+        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);
+        $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $email);
+        $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $email) : '';
+        $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $email) : '';
+        $account_attributes_array = array(
+            'profile-image' => $default_image_check,
+            'profile-image-id' => $profile_image_name,
+            'profile-image-extension' => $profile_image_extension
+        );
+        $sh->SetUserDataCookie($cookie_array, $account_attributes_array, $default_image_check);
         $sql->CloseConnection();
         $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
         exit;
@@ -71,11 +67,7 @@
         $cookie_data = json_decode($_COOKIE['user-data']);
         $account_attributes = json_decode($_COOKIE['account-attributes']);
         
-        // needs to be cached in the account attributes
-        $sql->Connect();
-        if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $cookie_data->{'email'})) {
-            $account_attributes->{'profile-image'} = false;
-        }
+        // get the cached image from the linux server
 
         if ($return_status == 'normal') {
             // normal page load            
@@ -103,13 +95,19 @@
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
             $display_array = $dh->GetDisplayAttributesFromDB($sql, $new_email, $account_data, $account_stats);
-            if ($sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email)) {
-                $account_attributes->{'profile-image'} = false;
-            }
 
             $old_cookie = $display_array;
             array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
-            $sh->ResetSessionCookies($new_username, $new_email, $sh->ParseUserDataCookie($sql, $new_email));
+            $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email);
+            $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $new_email) : '';
+            $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $new_email) : '';
+            $account_attributes_array = array(
+                'profile-image' => $default_image_check,
+                'profile-image-id' => $profile_image_name,
+                'profile-image-extension' => $profile_image_extension
+            );
+            
+            $sh->UpdateCookies($sql, $new_email, $sh->ParseUserDataCookie($sql, $new_email), $account_attributes_array);
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
             exit;
@@ -128,10 +126,10 @@
     }
     if ($update_profile) {
         $edit_profile_button = '<a href="javascript:history.go(-1)" class="window-text-button">[ Back ]</a>';
-    }    
-    $diff_profile_image = $account_attributes->{'profile-image'};
-
-    
+    }
+    $default_profile_image = $account_attributes->{'profile-image'};
+    $profile_image_name = $account_attributes->{'profile-image-id'};
+    $profile_image_extension = $account_attributes->{'profile-image-extension'};    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -152,7 +150,7 @@
                         <div class="main-profile-page-left">
                             <div class="window-content profile-image-window">                            
                                 <?php $content->WindowText('Picture', '
-                                    <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php">
+                                    <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php" id="upload-image-form">
                                         <label class="profile-image-upload-text">
                                             <input type="file" enctype="multipart/form-data" name="profile-image" id="profile-image-upload" class="profile-image-upload-input">
                                             <div id="status"></div>
@@ -161,6 +159,7 @@
                                     </form>
                                 '); ?>
                                 <script>
+                                    const form = document.getElementById('upload-image-form');
                                     const fileInput = document.getElementById('profile-image-upload');
                                     const statusDiv = document.getElementById('status');
 
@@ -198,13 +197,16 @@
                                                 });
                                             }
                                         }
+                                        setTimeout(function() {
+                                            window.location.href = "MainProfilePage.php?return-status=normal";
+                                        }, 800);
                                     });
                                 </script>
                                 <?php
-                                    if ($diff_profile_image) {
-                                        //echo $display_cached_image;
+                                    if ($default_profile_image) {
+                                        $dynamic->DisplayCachedDefaultProfileImage();
                                     } else {
-                                        echo $default_profile_image;
+                                        $dynamic->DisplayCachedProfileImage($profile_image_name, $profile_image_extension);
                                     }
                                 ?>
                             </div>

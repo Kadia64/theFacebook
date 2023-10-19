@@ -18,14 +18,15 @@ $account_info = [
     'email' => $_SESSION['email'],
     'password' => hash('sha256', $_SESSION['password'] . $salt),
     'salt' => $salt,
-    'profile-image' => 'NULL'
+    'profile-image' => null
 ];
-$userID = $sql->GetIDByEmail($account_info['email']);
 $register_data = $sh->GetRegisterData();
 $register_data['sex'] = ucwords($register_data['sex']);
 $register_data['looking-for'] = str_replace('-', ' ', ucwords($register_data['looking-for'], '-'));
 $register_data['interested-in'] = ucwords($register_data['interested-in']);
+
 $dh->CreateAccount($sql, $register_data, $account_info);
+$userID = $sql->GetIDByEmail($account_info['email']);
 $sh->StartuserSession($sql, $sql->GetIDByEmail($account_info['email']), $generated_sessionID);
 $sh->SetLogoutCookie($userID);
 $sql->CloseConnection();

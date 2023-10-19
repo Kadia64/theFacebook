@@ -74,13 +74,10 @@ class SessionHandle {
         };
         setcookie('user-token', json_encode($obj), $this->_10minExpiration, '/');
     }
-    public function SetUserDataCookie($user_data) {
+    public function SetUserDataCookie($user_data, $attributes, $default_profile_image = true) {
         if (isset($_COOKIE['user-data'])) {
             setcookie('user-data', '', 0, '/');
-        }
-        $attributes = array(
-            'profile-image' => true
-        );
+        }        
         setcookie('user-data', json_encode($user_data), $this->_10minExpiration, '/');
         setcookie('account-attributes', json_encode($attributes), $this->_10minExpiration, '/');
     }
@@ -90,11 +87,14 @@ class SessionHandle {
         );
         setcookie('logout', json_encode($obj), $this->_30dayExpiration, '/');
     }
-    public function ResetSessionCookies($username, $email, $user_data) {
-        setcookie('user-token', '', 0, '/');
+    public function UpdateCookies($sql, $email, $user_data = null, $attributes = null) {
+        $_user_data = $user_data == null ? json_decode($_COOKIE['user-data']) : $user_data;
+        $_attributes = $attributes == null ? json_decode($_COOKIE['account-attributes']) : $attributes;
         setcookie('user-data', '', 0, '/');
-        $this->SetUserTokenCookie($username, $email);
-        $this->SetUserDataCookie($user_data);
+        setcookie('account-attributes', '', 0, '/');
+        setcookie('logout', '', 0, '/');
+        $this->SetUserDataCookie($_user_data, $_attributes);
+        $this->SetLogoutCookie($sql->GetIDByEmail($email));
     }
     public function ParseUserDataCookie($sql, $email) {
         $columns = array('ai.first_name', 'ai.last_name', 'ai.full_name', 'stats.member_since', 'stats.last_update', 'ai.username', 'ai.email', 'ai.mobile', 'p.birthday', 'p.sex', 'p.home_address', 'p.home_town', 'p.highschool', 'p.education_status', 'p.website', 'p.looking_for', 'p.interested_in', 'p.relationship_status', 'p.political_views', 'p.interests', 'p.favorite_music', 'p.favorite_movies', 'p.about_me');
@@ -113,7 +113,10 @@ class SessionHandle {
         $now_time = $time->format('Y-m-d g:i:s A');
         $time->add(new DateInterval('PT' . $this->sessionExpirationTime . 'M'));
         $new_time = $time->format('Y-m-d g:i:s A');
-        mysqli_query($sql->connection, "INSERT INTO session_data (session_data_id, session_id, logged_in, session_expiration) VALUES ($dbID, '$sessionID', '$now_time', '$new_time');");
+        mysqli_query($sql->connection, 
+           "INSERT INTO session_data (session_data_id, session_id, logged_in, session_expiration) 
+            VALUES ($dbID, '$sessionID', '$now_time', '$new_time');
+        ");
     }
     public function EndUserSession($sql, $dbID) {
         mysqli_query($sql->connection, "DELETE FROM session_data WHERE session_data_id = $dbID;");
@@ -130,6 +133,39 @@ class SessionHandle {
         if (mysqli_num_rows($result) > 0) {
             return true;
         } else return false;
+    } 
+    public function CacheDefaultProfileImage($ftp, $iterator) {
+        $root = $_SERVER['DOCUMENT_ROOT'] . '/Projects/TheFacebook/Git/thefacebook/';
+        $def_img_path =  $root . 'Images/default-profile-image.jpg';
+        $ftp->ChangeDirectory('Cache/Default');
+        ftp_put($ftp->ConnectionID, 'def-' . $iterator . '.jpg', $def_img_path, FTP_BINARY);
+        $ftp->ParentDirectory(2);
+    }
+    public function CacheProfileImage($ftp, $sql, $email, $file_name) {
+        $result = mysqli_query($sql->connection, "SELECT profile_image FROM account_info WHERE email = '$email';");
+        $row = mysqli_fetch_assoc($result);
+        $img = $row['profile_image'];
+
+        $stream = fopen('php://temp', 'r+');
+        fwrite($stream, $img);
+        rewind($stream);
+
+        $ftp->ChangeDirectory('Cache');
+        ftp_fput($ftp->ConnectionID, $file_name , $stream, FTP_BINARY);
+        ftp_chmod($ftp->ConnectionID, 0755, $file_name);
+        $ftp->ParentDirectory(1);
+
+        $parts = explode('.', $file_name);
+        $file_name = $parts[0];
+        mysqli_query($sql->connection, "UPDATE account_info AS a SET a.profile_image_name = '$file_name' WHERE email = '$email';");
+    }
+    public function GetCachedProfileImage($id) {
+
+    }
+    public function RemoveCachedProfileImage($ftp, $sql, $id) {
+
+
+        $ftp->ParentDirectory(1);
     }
 }
 ?>

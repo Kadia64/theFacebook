@@ -1,10 +1,13 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 class DynamicContent {
     private $dh;
+    private $files;
     public function __construct() {
         $this->dh = new DataHandle();
+        $this->files = new FileHandle();
     }
 
     public function DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays) {
@@ -86,6 +89,12 @@ class DynamicContent {
                 ' . $input_type . '
             </div>
         ';
+    }
+    public function DisplayCachedDefaultProfileImage() {
+        echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';
+    }
+    public function DisplayCachedProfileImage($identifier, $extension) {
+        echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?profile=1&id=' . $identifier . '&extension=' . $extension . '">';
     }
 }
 ?>

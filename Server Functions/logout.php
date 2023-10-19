@@ -1,17 +1,28 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
 $sh = new SessionHandle();
 $sql = new SQLHandle();
+$ftp = new FTPHandle();
 session_start();
 if (!isset($_COOKIE['logout'])) {
     echo 'Warning: there is no sessionID that is set!<br>Can\'t locate your sessions\'s row!';
 } else {
     try {
         $sql->Connect();
+        $ftp->Connect();
+        $ftp->Login();
+
         $logout_data = json_decode($_COOKIE['logout']);
-        $sh->EndUserSession($sql, $logout_data->{'id'});
+        $id = $logout_data->{'id'};
+        $sh->EndUserSession($sql, $id);        
+        $file_to_delete = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_name FROM account_info WHERE account_id = $id;"))['profile_image_name'];
+        $extension = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_extension FROM account_info WHERE account_id = $id;"))['profile_image_extension'];
+        mysqli_query($sql->connection, "UPDATE account_info SET profile_image_name = NULL WHERE account_id = $id;");
+        $ftp->DeleteFile($file_to_delete . '.' . $extension);
+        $sql->CloseConnection();
     } catch (Exception $e) {}
 }
 session_unset();

@@ -1,28 +1,17 @@
 <?php 
-    $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
+    $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/files.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/sql-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
     $sh = new SessionHandle();
+    $ftp = new FTPHandle();
     session_start();
     session_unset();
     $sh->CheckTraversal();
-
-
-    $sql = new SQLHandle();
-    $sql->Connect();
-
-    $sh->CheckSessionRow($sql, 3);
-    // $sh->StartUserSession($sql, 2, "whyyadsdadyy");
-    // exit;
-
-
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,7 +31,7 @@
             <div class="right-main-window">
                 <h4>[ Login ]</h4>
                 <div class="login-page-window">
-                    <div class="login-page-content">
+                    <div class="login-page-content">                        
                         <form method="POST" action="<?php echo PageData::ROOT . 'Server Functions/login-user.php?prev-page=Pages/Logged Out Pages/Login.php'?>" class="login-page-form">
                             <div>
                                 <div>

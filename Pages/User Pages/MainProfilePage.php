@@ -1,10 +1,12 @@
 <?php 
     $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/styles.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/dynamic-content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/data-handle.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/sql-functions.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/ftp-handle.php';
     $content = new Content();
     $dynamic = new DynamicContent();
     $styles = new Styles();
@@ -36,8 +38,8 @@
     $edit_profile_button = 'Information';
     $edit_groups_button = 'Groups';
     $current_school = null;
-    $default_profile_image = '<img src="' . PageData::ROOT . 'Images/default-profile-image.jpg">';
     $profile_iamge = null;
+    $default_profile_image = null;
 
     if (($return_status == 'account-created' || $return_status == 'logged-in') && !isset($_COOKIE['user-data'])) {
         // if the user logged in or created their account
@@ -45,12 +47,11 @@
         $email = $_SESSION['email'];
         $current_session_data = $sh->GetUserSessionDataByEmail($sql, $email);
         $_SESSION['session-id'] = $current_session_data['session_id'];
+        
         $account_data = $sql->GetDataByEmail('account_info', $email, $dh->AccountInfoColumn, false);
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
-        $session_array = array_values($cookie_array);
-        $display_array = $dh->GetDisplayAttributesFromDB($sql, $email, $account_data, $account_stats);
         $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $email);
         $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $email) : '';
         $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $email) : '';
@@ -65,9 +66,7 @@
         exit;
     } else {
         $cookie_data = json_decode($_COOKIE['user-data']);
-        $account_attributes = json_decode($_COOKIE['account-attributes']);
-        
-        // get the cached image from the linux server
+        $account_attributes = json_decode($_COOKIE['account-attributes']);                
 
         if ($return_status == 'normal') {
             // normal page load            
@@ -95,9 +94,9 @@
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
             $account_stats = $sql->GetDataByEmail('account_stats', $new_email);
             $display_array = $dh->GetDisplayAttributesFromDB($sql, $new_email, $account_data, $account_stats);
-
             $old_cookie = $display_array;
             array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
+
             $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email);
             $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $new_email) : '';
             $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $new_email) : '';
@@ -105,8 +104,7 @@
                 'profile-image' => $default_image_check,
                 'profile-image-id' => $profile_image_name,
                 'profile-image-extension' => $profile_image_extension
-            );
-            
+            );            
             $sh->UpdateCookies($sql, $new_email, $sh->ParseUserDataCookie($sql, $new_email), $account_attributes_array);
             $sql->CloseConnection();
             $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=normal');
@@ -164,7 +162,7 @@
                                     const statusDiv = document.getElementById('status');
 
                                     fileInput.addEventListener("change", () => {
-                                        const file = fileInput.files[0];
+                                        const file = fileInput.files[0];                                        
 
                                         if (file) {
                                             const formData = new FormData();
@@ -270,7 +268,7 @@
                                                         <p>' . $attribute_displays[$i] . ':</p>
                                                     </div>
                                                     <div>
-                                                        <span ' . $highlight_class . ' >' . $dh->InfoField($display_array[$i]) . '</span>
+                                                        <span ' . $highlight_class . ' >' . $content->InfoField($display_array[$i]) . '</span>
                                                     </div>
                                                 ';
                                             }

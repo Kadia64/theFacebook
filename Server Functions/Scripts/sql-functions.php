@@ -11,10 +11,12 @@ class SQLHandle {
     public $connection;
     private $files;
     private $dh;
+    private $methods;
     private $_tables;
     public function __construct() {
         $this->files = new FileHandle();
         $this->dh = new DataHandle();
+        $this->methods = new Methods();
         $this->_tables = new SQLTables();
         $sql_info = $this->files->ServerConfig;
         $this->Server = $sql_info->{"MySQL-Credentials"}->{"Server"};
@@ -37,7 +39,7 @@ class SQLHandle {
         $full_name = $this->Nullable($personal_info['first-name'] . ' ' . $personal_info['last-name']);
         mysqli_query($this->connection, 'INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (\'People You Follow\', true, true)');
         mysqli_query($this->connection, 'SET @last_settings_id = LAST_INSERT_ID();');
-        mysqli_query($this->connection, 'INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, \'' . $this->dh->GetTimeStamp(0) . '\', \'' . $this->dh->GetTimeStamp(0) . '\');');
+        mysqli_query($this->connection, 'INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, \'' . $this->methods->GetTimeStamp(0) . '\', \'' . $this->methods->GetTimeStamp(0) . '\');');
         mysqli_query($this->connection, 'SET @last_account_stats_id = LAST_INSERT_ID();');
         mysqli_query($this->connection, 'INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (0, NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL);');
         mysqli_query($this->connection, 'SET @last_social_stats_id = LAST_INSERT_ID();');

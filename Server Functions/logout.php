@@ -1,6 +1,6 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/ftp-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
 $sh = new SessionHandle();

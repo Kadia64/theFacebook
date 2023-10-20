@@ -1,7 +1,8 @@
 <?php 
-$path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
+$_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/files.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/methods.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
 class DataHandle {
     public $AccountInfoColumn;
     public $PersonalInfoColumn;
@@ -12,10 +13,13 @@ class DataHandle {
     public $education_status_choices;
     public $looking_for_choices;
     private $files;
+    private $methods;
     private $sh;
     public function __construct() {
         $this->files = new FileHandle();
+        $this->methods = new Methods();
         $this->sh = new SessionHandle();
+
         $this->AccountInfoColumn = array('username', 'email', 'mobile', 'first_name', 'last_name', 'full_name');
         $this->PersonalInfoColumn = array('birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about_me');
         $this->PersonalInfoAttributes = [ 'birthday', 'sex', 'home_address', 'home_town', 'highschool', 'education_status', 'website', 'looking_for', 'interested_in', 'relationship_status', 'political_views', 'interests', 'favorite_music', 'favorite_movies', 'about_me' ];
@@ -24,7 +28,6 @@ class DataHandle {
         $this->DatabaseAccountAttributes = [ 'first-name', 'last-name', 'full-name', 'username', 'email', 'mobile', 'birthday', 'sex', 'home-address', 'home-town', 'highschool', 'education-status', 'website', 'looking-for', 'interested-in', 'relationship-status', 'political-views', 'interests', 'favorite-music', 'favorite-movies', 'about-me' ];
         $this->education_status_choices = [ 'Student', 'Grad-Student', 'Alumnus/Alumna', 'Faculty', 'Staff' ];
         $this->looking_for_choices = [ 'Friendship', 'Dating', 'A Relationship' ];
-
     }
     public function CreateAccount($sql, $register_data, $account_data) {
         if ($sql->CheckConnection()) {
@@ -141,76 +144,10 @@ class DataHandle {
             unset($tmp[1]);
         }
         return array_values($tmp);
-    }  
-    public function RandomCharacters($length) {
-        $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $rand = null;
-        for ($i = 0; $i < $length; ++$i) {
-            $rand .= $letters[mt_rand(0, strlen($letters) - 1)];            
-        }
-        return $rand;
-    }    
-    public function GetTimeStamp($type) {
-        $time = new DateTime();
-        if ($type == 0) {                   // 2023-09-27
-            return date('Y-m-d');
-        } else if ($type == 1) {            // 2023/09/27
-            return date('Y/m/d');           
-        } else if ($type == 2) {            // 2023/09/27 094029 am
-            return date('Y/m/d His a');  
-        } else if ($type == 7) {            // +10 minutes from now
-            $now = $time->format('Y-m-d g:i:s A');
-            $time->add(new DateInterval('PT10M'));
-            return $time->format('Y-m-d g:i:s A');
-        } else if ($type == 9) {
-            return date('c', time());
-        }
-    }
-    public function InfoField($data, $blue = false) {
-        $class = null;
-        if ($blue) {
-            $class = 'class="profile-blue-info"';
-        }
-        if ($data == '') {
-            return '<p ' . $class . '>................................</p>';
-        } else {
-            return '<p ' . $class . '>' . $data . '</p>';
-        }        
-    }
+    }        
     public function ParseProfileImageHash($username, $email, $file_type) {
-        $salt = $this->RandomCharacters(32);
+        $salt = $this->methods->RandomCharacters(32);
         return md5($username . $email . $salt) . $file_type;
-    }
-}
-class UpdateData {
-    private $dh;
-    public function __construct() {
-        $this->dh = new DataHandle();
-    }
-
-    public function __update_member_since_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_member_since_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_update_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_update_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_login_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_logout_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_password_attempt_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
-    }
-    public function __update_last_password_changed_timestamp_() {
-        echo $this->dh->GetTimeStamp(2);
     }
 }
 ?>

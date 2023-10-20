@@ -1,6 +1,6 @@
 <?php 
 $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/files.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/ftp-handle.php';
 $ftp = new FTPHandle();
 
 $ftp->Connect();

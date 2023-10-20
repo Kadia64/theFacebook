@@ -1,17 +1,19 @@
 <?php 
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/session-functions.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/methods.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/sql-functions.php';
 
 $sh = new SessionHandle();
+$methods = new Methods();
 $dh = new DataHandle();
 $sql = new SQLHandle();
 $sql->Connect();
 session_start();
 
-$generated_sessionID = $dh->RandomCharacters(32);
-$salt = $dh->RandomCharacters(32);
+$generated_sessionID = $methods->RandomCharacters(32);
+$salt = $methods->RandomCharacters(32);
 $account_info = [
     'username' => $_SESSION['username'],
     'status' => ucwords(str_replace('s-a', 's/A', $_SESSION['status']), '-'),

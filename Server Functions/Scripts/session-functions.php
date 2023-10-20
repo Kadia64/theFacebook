@@ -86,7 +86,7 @@ class SessionHandle {
             'id' => $dbID
         );
         setcookie('logout', json_encode($obj), $this->_30dayExpiration, '/');
-    }
+    }    
     public function UpdateCookies($sql, $email, $user_data = null, $attributes = null) {
         $_user_data = $user_data == null ? json_decode($_COOKIE['user-data']) : $user_data;
         $_attributes = $attributes == null ? json_decode($_COOKIE['account-attributes']) : $attributes;
@@ -158,14 +158,6 @@ class SessionHandle {
         $parts = explode('.', $file_name);
         $file_name = $parts[0];
         mysqli_query($sql->connection, "UPDATE account_info AS a SET a.profile_image_name = '$file_name' WHERE email = '$email';");
-    }
-    public function GetCachedProfileImage($id) {
-
-    }
-    public function RemoveCachedProfileImage($ftp, $sql, $id) {
-
-
-        $ftp->ParentDirectory(1);
     }
 }
 ?>

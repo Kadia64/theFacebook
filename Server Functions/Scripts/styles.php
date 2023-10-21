@@ -741,5 +741,141 @@ class Styles {
             </style>
         ";
     }
+    public function UserHomePageStyle() {
+        echo "
+            <style>
+                .window-content {
+                    width: 475px!important;
+                    flex: 1!important;
+                }
+                .user-home-page-window {
+                    width: calc(var(--standard-page-width) - 180px);
+                    margin: 0 auto;
+                }
+                .user-home-page-content {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                    padding: 10px;
+                }
+                .my-account-box {
+                    display: flex;
+                    flex-direction: row;
+                }
+                .user-home-page-profile-image-flexbox {
+                    flex: 1;
+                }
+                .user-home-page-profile-image img {
+                    width: 120px;
+                    height: 100%;
+                    object-fit: cover;
+                }
+                .user-home-page-links-flexbox {
+                    flex: 1;
+                    width: 200px!important;
+                }        
+                .user-home-page-links {
+                    margin-top: 7px;
+                    margin-left: 6px;
+                    line-height: 20px;
+                    width: 115px;
+                }
+                .user-home-page-links p {
+                    margin: 0;                        
+                    border-left: 1px solid var(--darkblue);
+                    border-right: 1px solid var(--darkblue);
+                }
+                .user-home-page-links p:first-child {
+                    border-top: 1px solid var(--darkblue);
+                }
+                .user-home-page-links p:last-child {
+                    border-bottom: 1px solid var(--darkblue);
+                    border-top: 1px solid var(--darkblue);
+                }
+                .user-home-page-links p:not(:first-child):not(:last-child) {
+                    border-top: 1px solid var(--darkblue);
+                }
+                .user-home-page-links a {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    color: var(--lightblue);
+                    text-decoration: none;
+                    font-size: 12px;
+                    margin-left: 3px;  
+                }
+                .user-home-page-links a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+                .user-home-page-connections-flexbox {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    flex: 1;
+                    line-height: 2px;
+                }
+                .user-home-page-connections-flexbox div {
+                    width: 120px;
+                    margin-top: 25px;
+                }
+                .user-home-page-browse-links-flexbox {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    flex: 1;
+                }
+                .user-home-page-browse-links-flexbox div {
+                    width: 85px;
+                    margin-top: 30px;
+                    line-height: 25px;
+                }
+                .user-home-page-browse-links-flexbox div p a {
+                    color: var(--lightblue);
+                    text-decoration: none;                        
+                }
+                .user-home-page-browse-links-flexbox div p a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+                .user-home-page-message-flexbox {
+                    display: flex;
+                    flex-direction: row;
+                }
+                .user-home-page-mail {
+                    width: 70px;
+                    flex: 1;
+                    padding: 15px;
+                }
+                .mail-icon-image {
+                    height: 100%;
+                    width: 100%;
+                }
+                .user-home-page-message-count {
+                    flex: 1;
+                    margin-top: 27px;
+                }
+                .user-home-page-message-count p {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    width: 200px;
+                }
+                .user-home-page-read-mail-button {
+                    flex: 1;
+                    margin-top: 35px;
+                }
+                .user-home-page-read-mail-button a {
+                    font-family: var(--font);
+                    font-size: var(--font-size);
+                    text-decoration: none;
+                    color: var(--lightblue);            
+                    float: right;
+                    margin-right: 15px;
+                }
+                .user-home-page-read-mail-button a:hover {
+                    color: var(--hover-lightblue);
+                    text-decoration: underline;
+                }
+            </style>
+        ";
+    }
 }
 ?>

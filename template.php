@@ -1,5 +1,6 @@
 <?php 
     $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/styles.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/content.php';
     $content = new Content();
     $styles = new Styles();

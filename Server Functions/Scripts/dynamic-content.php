@@ -9,7 +9,6 @@ class DynamicContent {
         $this->dh = new DataHandle();
         $this->files = new FileHandle();
     }
-
     public function DisplayUpdateProfileValues($i, $cookie_array, $attributes_update_displays) {
         $current_attribute = strtolower(str_replace(' ', '-', $this->dh->DisplayUpdateAccountAttributes[$i]));
         $id = $current_attribute . '-input';

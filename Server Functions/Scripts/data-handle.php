@@ -149,5 +149,9 @@ class DataHandle {
         $salt = $this->methods->RandomCharacters(32);
         return md5($username . $email . $salt) . $file_type;
     }
+    public function GetProfileImageName($sql, $id) {
+        $row = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_name	FROM session_data WHERE session_data_id = $id"));
+        return $row['profile_image_name'];
+    }
 }
 ?>

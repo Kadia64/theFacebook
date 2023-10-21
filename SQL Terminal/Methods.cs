@@ -229,6 +229,7 @@ namespace SQL_Terminal {
                 CREATE TABLE session_data (
                     session_data_id INT PRIMARY KEY,
                     session_id VARCHAR(512),
+                    profile_image_name VARCHAR(100),
                     logged_in DATETIME,
                     session_expiration DATETIME
                 );
@@ -298,7 +299,6 @@ namespace SQL_Terminal {
                     last_name VARCHAR(128),
                     full_name VARCHAR(255),
                     profile_image LONGBLOB,
-                    profile_image_name VARCHAR(512),
                     profile_image_extension VARCHAR(6),
                     CONSTRAINT account_settings_fk FOREIGN KEY (settings_id) 
                    		REFERENCES account_settings (settings_id),

@@ -108,6 +108,16 @@ class SessionHandle {
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
     }
+    public function CheckActiveSession() {
+        if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
+            $this->SetUserTokenCookie($_GET['username'], $_GET['email']);
+            $this->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
+            exit;
+        } else if (!isset($_COOKIE['user-token'])) {
+            $this->Redirect('Server Functions/logout.php');
+            exit;
+        }
+    }
     public function StartUserSession($sql, $dbID, $sessionID) {
         $time = new DateTime();
         $now_time = $time->format('Y-m-d g:i:s A');
@@ -157,7 +167,8 @@ class SessionHandle {
 
         $parts = explode('.', $file_name);
         $file_name = $parts[0];
-        mysqli_query($sql->connection, "UPDATE account_info AS a SET a.profile_image_name = '$file_name' WHERE email = '$email';");
+        $id = $sql->GetIDByEmail($email);
+        mysqli_query($sql->connection, "UPDATE session_data AS s SET s.profile_image_name = '$file_name' WHERE session_data_id = '$id';");
     }
 }
 ?>

@@ -16,16 +16,7 @@
     $sql = new SQLHandle();
     $ftp = new FTPHandle();
     session_start();
-
-    if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
-        $sh->SetUserTokenCookie($_GET['username'], $_GET['email']);
-        $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
-        exit;
-    } else if (!isset($_COOKIE['user-token'])) {
-        $old_user_cookie = json_decode($_COOKIE['user-data']);
-        $sh->Redirect('Server Functions/logout.php');
-        exit;
-    }
+    $sh->CheckActiveSession();
     
     //$sql->Connect();
     //$ftp->Connect();
@@ -45,6 +36,7 @@
         // if the user logged in or created their account
         $sql->Connect();
         $email = $_SESSION['email'];
+        $id = $sql->GetIDByEmail($email);
         $current_session_data = $sh->GetUserSessionDataByEmail($sql, $email);
         $_SESSION['session-id'] = $current_session_data['session_id'];
         
@@ -53,12 +45,16 @@
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
         $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $email);
-        $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $email) : '';
+        $profile_image_name = !$default_image_check ? $dh->GetProfileImageName($sql, $id) : '';
         $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $email) : '';
         $account_attributes_array = array(
             'profile-image' => $default_image_check,
             'profile-image-id' => $profile_image_name,
-            'profile-image-extension' => $profile_image_extension
+            'profile-image-extension' => $profile_image_extension,
+            'class-connection-count' => 0,
+            'friend-connection-count' => 0,
+            'friend-message-count' => 0,
+            'group-message-count' => 0
         );
         $sh->SetUserDataCookie($cookie_array, $account_attributes_array, $default_image_check);
         $sql->CloseConnection();
@@ -88,7 +84,8 @@
             }
             if ($new_email == null) {
                 $new_email = $old_email;
-            }
+            }        
+            $id = $sql->GetIDByEmail($new_email);
 
             $account_data = $sql->GetDataByEmail('account_info', $new_email);
             $user_data = $sql->GetDataByEmail('personal_info', $new_email);
@@ -98,12 +95,16 @@
             array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
 
             $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email);
-            $profile_image_name = !$default_image_check ? $sql->GetValueByEmail('profile_image_name', 'account_info', $new_email) : '';
+            $profile_image_name = !$default_image_check ? $dh->GetProfileImageName($sql, $id) : '';
             $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $new_email) : '';
             $account_attributes_array = array(
                 'profile-image' => $default_image_check,
                 'profile-image-id' => $profile_image_name,
-                'profile-image-extension' => $profile_image_extension
+                'profile-image-extension' => $profile_image_extension,
+                'class-connection-count' => 0,
+                'friend-connection-count' => 0,
+                'friend-message-count' => 0,
+                'group-message-count' => 0
             );            
             $sh->UpdateCookies($sql, $new_email, $sh->ParseUserDataCookie($sql, $new_email), $account_attributes_array);
             $sql->CloseConnection();
@@ -127,7 +128,7 @@
     }
     $default_profile_image = $account_attributes->{'profile-image'};
     $profile_image_name = $account_attributes->{'profile-image-id'};
-    $profile_image_extension = $account_attributes->{'profile-image-extension'};    
+    $profile_image_extension = $account_attributes->{'profile-image-extension'};
 ?>
 <!DOCTYPE html>
 <html lang="en">

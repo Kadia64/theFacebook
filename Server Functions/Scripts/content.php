@@ -35,7 +35,7 @@ class Content {
             ';
         } else {
             $links = '
-                <a href="">home</a>
+                <a href="' . PageData::ROOT . 'Pages/User Pages/UserHomePage.php?return-status=normal">home</a>
                 <a href="">search</a>
                 <a href="">global</a>
                 <a href="">social net</a>

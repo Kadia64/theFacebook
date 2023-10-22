@@ -16,6 +16,13 @@ class Content {
             return $data;
         }
     }
+    public function LightBlueWindowText($text) {
+        echo '
+            <div class="lightblue-window-text">
+                <span>' . $text . '</span>                
+            </div>
+        ';
+    }
     public function Startup($title) {
         echo '
             <meta charset="UTF-8">
@@ -36,7 +43,7 @@ class Content {
         } else {
             $links = '
                 <a href="' . PageData::ROOT . 'Pages/User Pages/UserHomePage.php?return-status=normal">home</a>
-                <a href="">search</a>
+                <a href="' . PageData::ROOT . 'Pages/User Pages/SearchPage.php?return-status=normal">search</a>
                 <a href="">global</a>
                 <a href="">social net</a>
                 <a href="">invite</a>

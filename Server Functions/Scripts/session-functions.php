@@ -2,16 +2,19 @@
 $path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/data-handle.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/files.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . $path . 'Scripts/methods.php';
 class SessionHandle {
     public $_30dayExpiration;
     public $_10minExpiration;
     public $_5minExpiration;
     public $sessionExpirationTime;
     private $files;
-    private $ServerConfig;    
+    private $methods;
+    private $ServerConfig;
     public function __construct() {
         date_default_timezone_set('America/Chicago');
         $this->files = new FileHandle();
+        $this->methods = new Methods();
         $this->ServerConfig = $this->files->ServerConfig;
         $this->sessionExpirationTime = $this->ServerConfig->{"Server-Configuration"}->{"Sessions-Length-Min"};
         $this->_30dayExpiration = time() + (30 * 24 * 60 * 60);
@@ -152,7 +155,7 @@ class SessionHandle {
         $ftp->ParentDirectory(2);
     }
     public function CacheProfileImage($ftp, $sql, $email, $file_name) {
-        $result = mysqli_query($sql->connection, "SELECT profile_image FROM account_info WHERE email = '$email';");
+        $result = mysqli_query($sql->connection, "SELECT account_id, profile_image FROM account_info WHERE email = '$email';");
         $row = mysqli_fetch_assoc($result);
         $img = $row['profile_image'];
 
@@ -160,15 +163,41 @@ class SessionHandle {
         fwrite($stream, $img);
         rewind($stream);
 
-        $ftp->ChangeDirectory('Cache');
+        $dir_name = $this->methods->RandomCharacters(16);
+        ftp_mkdir($ftp->ConnectionID, "Cache/" . $dir_name);
+        $ftp->ChangeDirectory('Cache/' . $dir_name);
         ftp_fput($ftp->ConnectionID, $file_name , $stream, FTP_BINARY);
         ftp_chmod($ftp->ConnectionID, 0755, $file_name);
         $ftp->ParentDirectory(1);
 
+        $id = $row['account_id'];
         $parts = explode('.', $file_name);
-        $file_name = $parts[0];
-        $id = $sql->GetIDByEmail($email);
-        mysqli_query($sql->connection, "UPDATE session_data AS s SET s.profile_image_name = '$file_name' WHERE session_data_id = '$id';");
+        $file_name = $dir_name . '/' . $parts[0];
+        mysqli_query($sql->connection, "UPDATE session_data AS s SET s.profile_image_name = '$file_name' WHERE session_data_id = $id;");
+    }
+    public function UpdateCachedProfileImage($ftp, $sql, $email, $file_name) {
+        $result = mysqli_query($sql->connection, "SELECT account_id, profile_image FROM account_info WHERE email = '$email';");
+        $row = mysqli_fetch_assoc($result);
+        $img = $row['profile_image'];
+
+        $stream = fopen('php://temp', 'r+');
+        fwrite($stream, $img);
+        rewind($stream);
+        
+        $session_data = $this->GetUserSessionDataByEmail($sql, $email);
+        $profile_image_name = $session_data['profile_image_name'];
+        $parts = explode('/', $profile_image_name);
+        $dir_name = $parts[0];        
+        $ftp->ChangeDirectory('Cache/' . $dir_name);
+        ftp_fput($ftp->ConnectionID, $file_name, $stream, FTP_BINARY);
+        ftp_chmod($ftp->ConnectionID, 0755, $file_name);
+        $ftp->ParentDirectory(1);
+
+        $id = $row['account_id'];
+        $parts = explode('.', $file_name);
+        $new_dir = $dir_name . '/' . $parts[0];
+        mysqli_query($sql->connection, "UPDATE session_data SET profile_image_name = '$new_dir' WHERE session_data_id = '$id';");
+        
     }
 }
 ?>

@@ -89,6 +89,14 @@ class DynamicContent {
             </div>
         ';
     }
+
+    public function DisplayFriendSearchResults($message_count) {
+        for ($i = 0; $i < $message_count; ++$i) {
+
+        }
+
+        echo "<p>testin5</p>";
+    }
     public function DisplayCachedDefaultProfileImage() {
         echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';
     }

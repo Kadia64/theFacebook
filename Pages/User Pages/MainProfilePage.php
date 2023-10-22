@@ -18,9 +18,9 @@
     session_start();
     $sh->CheckActiveSession();
     
-    //$sql->Connect();
-    //$ftp->Connect();
-    //$ftp->Login();
+    // $sql->Connect();
+    // $ftp->Connect();
+    // $ftp->Login();   
 
     $update_profile = false;
     $user_data = null;
@@ -128,7 +128,7 @@
     }
     $default_profile_image = $account_attributes->{'profile-image'};
     $profile_image_name = $account_attributes->{'profile-image-id'};
-    $profile_image_extension = $account_attributes->{'profile-image-extension'};
+    $profile_image_extension = $account_attributes->{'profile-image-extension'};    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -230,7 +230,7 @@
                                     <div class="window-content other-schools-window">
                                         ' . $content->WindowText('Other Schools', null, true) . '
                                         <p>null</p>
-                                    </div>                              
+                                    </div>
                                 ';
                                 echo $connection_window;
                                 echo $friends_window;

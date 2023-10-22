@@ -56,7 +56,6 @@
                                     <div class="user-home-page-links">
                                         <p><a href="<?php echo PageData::ROOT . 'Pages/User Pages/MainProfilePage.php?return-status=normal'; ?>">View My Profile</a></p>
                                         <p><a href="">View My Friends</a></p>
-                                        <p><a href="">Visualize My Friends</a></p>
                                         <p><a href="">Search for People</a></p>
                                         <p><a href="">Browse My Network</a></p>
                                     </div>
@@ -94,7 +93,7 @@
                                     </div>
                                 </div>
                                 <div class="user-home-page-message-count">
-                                    <?php 
+                                    <?php
                                         if ($message_count > 0) {
                                             echo "<p>You have <b>$message_count</b> new message.</p>";
                                         } else {

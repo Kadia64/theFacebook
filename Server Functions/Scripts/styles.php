@@ -776,7 +776,7 @@ class Styles {
                     width: 200px!important;
                 }        
                 .user-home-page-links {
-                    margin-top: 7px;
+                    margin-top: 18px;
                     margin-left: 6px;
                     line-height: 20px;
                     width: 115px;

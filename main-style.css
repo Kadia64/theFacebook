@@ -36,7 +36,7 @@
     background-color: var(--darkblue);
     color: white;    
     padding: 2.5px 2.5px 3px 2.5px;
-    display: flex;   
+    display: flex;
     justify-content: space-between;
     align-items: center;
 }
@@ -44,6 +44,13 @@
 .window-text-right a {
     color: white;
     text-decoration: none;
+}
+.lightblue-window-text {
+    font-family: var(--font);
+    font-size: var(--font-size);
+    padding: 3px;
+    color: var(--darkblue);
+    background-color: var(--input-color);
 }
 .annual-page-content-box {
     flex: 1;

@@ -20,6 +20,12 @@ if (!isset($_COOKIE['logout'])) {
         $file_to_delete = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_name FROM session_data WHERE session_data_id = $id;"))['profile_image_name'];
         $extension = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_extension FROM account_info WHERE account_id = $id;"))['profile_image_extension'];
         $ftp->DeleteFile($file_to_delete . '.' . $extension);
+
+        $folder = explode('/', $file_to_delete);
+        $folder_part = $folder[0];
+        //echo 'Cache/' . $folder_part;
+        ftp_rmdir($ftp->ConnectionID, 'Cache/' . $folder_part);
+        //exit;
         $sh->EndUserSession($sql, $id);
         $sql->CloseConnection();
     } catch (Exception $e) {}

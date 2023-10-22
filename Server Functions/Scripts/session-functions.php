@@ -154,7 +154,7 @@ class SessionHandle {
         ftp_put($ftp->ConnectionID, 'def-' . $iterator . '.jpg', $def_img_path, FTP_BINARY);
         $ftp->ParentDirectory(2);
     }
-    public function CacheProfileImage($ftp, $sql, $email, $file_name) {
+    public function CacheProfileImage($ftp, $sql, $email, $file_name, $default = false) {
         $result = mysqli_query($sql->connection, "SELECT account_id, profile_image FROM account_info WHERE email = '$email';");
         $row = mysqli_fetch_assoc($result);
         $img = $row['profile_image'];
@@ -165,14 +165,16 @@ class SessionHandle {
 
         $dir_name = $this->methods->RandomCharacters(16);
         ftp_mkdir($ftp->ConnectionID, "Cache/" . $dir_name);
-        $ftp->ChangeDirectory('Cache/' . $dir_name);
-        ftp_fput($ftp->ConnectionID, $file_name , $stream, FTP_BINARY);
-        ftp_chmod($ftp->ConnectionID, 0755, $file_name);
-        $ftp->ParentDirectory(1);
+        if (!$default) {
+            $ftp->ChangeDirectory('Cache/' . $dir_name);
+            ftp_fput($ftp->ConnectionID, $file_name , $stream, FTP_BINARY);
+            ftp_chmod($ftp->ConnectionID, 0755, $file_name);
+            $ftp->ParentDirectory(1);
+        }
 
         $id = $row['account_id'];
         $parts = explode('.', $file_name);
-        $file_name = $dir_name . '/' . $parts[0];
+        $file_name = !$default ? $dir_name . '/' . $parts[0] : $dir_name . '/';
         mysqli_query($sql->connection, "UPDATE session_data AS s SET s.profile_image_name = '$file_name' WHERE session_data_id = $id;");
     }
     public function UpdateCachedProfileImage($ftp, $sql, $email, $file_name) {

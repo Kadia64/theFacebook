@@ -24,7 +24,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SQL_Terminal {
     public class Methods {
-        
+
         public void PrintCursor(ConsoleColor color = ConsoleColor.White) {
             Console.ForegroundColor = color;
             Console.Write("> ");
@@ -33,19 +33,19 @@ namespace SQL_Terminal {
         public void CommandOutput(string text, bool print = false, ConsoleColor color = ConsoleColor.White, bool extra_lines = true) {
             if (print) {
                 Console.ForegroundColor = color;
-                if (extra_lines) Console.WriteLine();                    
+                if (extra_lines) Console.WriteLine();
                 this.Print(text);
                 Console.ResetColor();
                 if (extra_lines) Console.WriteLine("\n");
             } else {
-                if (extra_lines) Console.WriteLine();                
+                if (extra_lines) Console.WriteLine();
                 Console.Write(text);
-                if (extra_lines) Console.WriteLine("\n");                
+                if (extra_lines) Console.WriteLine("\n");
             }
         }
         public void HelpOutput(string description, string[] flags, string[]? alias = null, string[]? parameters = null) {
             Console.WriteLine();
-            
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(description);
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -107,25 +107,25 @@ namespace SQL_Terminal {
         public bool Hault(string text, ConsoleColor color = ConsoleColor.White) {
             bool read = true;
             while (true) {
-                Console.ForegroundColor = color;                
+                Console.ForegroundColor = color;
                 if (read) this.Print("\n" + text + "\n");
                 read = false;
                 Console.Write("   [y/n]\n\n");
                 Console.ResetColor();
                 Console.Write("> ");
                 string input = Console.ReadLine();
-                
+
                 if (input == "y" || input == "Y") {
                     return true;
                 } else if (input == "n" || input == "N") {
                     return false;
                 } else {
                     Console.WriteLine("\nTry Again\n");
-                }                
+                }
             }
         }
         public List<string> ValueOutput(string[] parameters) {
-            List<string> values = new List<string>();            
+            List<string> values = new List<string>();
             for (int i = 0; i < parameters.Length; ++i) {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write($"  {parameters[i]}: ");
@@ -147,7 +147,7 @@ namespace SQL_Terminal {
             return random.Next(min, max);
         }
         public string RandCharacters(int length) {
-            return new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());            
+            return new string(Enumerable.Repeat("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length).Select(s => s[new Random().Next(s.Length)]).ToArray());
         }
         public string sha256(string input) {
             byte[] data = Encoding.UTF8.GetBytes(input);
@@ -198,7 +198,7 @@ namespace SQL_Terminal {
         public bool CheckConnection() {
             if (this.Connection.State == System.Data.ConnectionState.Open) {
                 return true;
-            } else return false;                
+            } else return false;
         }
         public string Query(string query_string) {
             try {
@@ -222,7 +222,7 @@ namespace SQL_Terminal {
                 string dropTable = $"DROP TABLE {tableName}";
                 this.Query(dropTable);
             }
-        }        
+        }
 
         public void CreateDefaultStructure() {
             string output = this.Query(@"
@@ -330,15 +330,22 @@ namespace SQL_Terminal {
             ");
         }
         public void CreateRandomAccount(int amount) {
-            string[] domainNames = { "@example.com","@email.net","@gmail.com","@rocket.org","@emailbox.com","@example.net","@emailpros.com","@emailworld.net","@example.org","@emailzone.com","@emailhub.net","@emailspot.org","@examplemail.com","@emailplanet.net","@exampleplace.com","@emailville.org","@emailglobe.com","@exampleuniverse.net","@emailcountry.com","@emailocean.org","@emaildomain.net","@emailcity.com","@emailwave.com","@emailland.org","@emailplanet.com","@emailworld.org","@emailheaven.com","@emailforest.net","@emailpeak.com","@emailvalley.org" };
+            string[] domainNames = { "@example.com", "@email.net", "@gmail.com", "@rocket.org", "@emailbox.com", "@example.net", "@emailpros.com", "@emailworld.net", "@example.org", "@emailzone.com", "@emailhub.net", "@emailspot.org", "@examplemail.com", "@emailplanet.net", "@exampleplace.com", "@emailville.org", "@emailglobe.com", "@exampleuniverse.net", "@emailcountry.com", "@emailocean.org", "@emaildomain.net", "@emailcity.com", "@emailwave.com", "@emailland.org", "@emailplanet.com", "@emailworld.org", "@emailheaven.com", "@emailforest.net", "@emailpeak.com", "@emailvalley.org" };
             List<string> emails = new List<string>();
             for (int i = 0; i < domainNames.Length; ++i) {
                 emails.Add(methods.RandCharacters(4) + domainNames[i]);
             }
-            string[] usernames = { "Banana","Sunshine","Elephant","Adventure","Mystery","Serendipity","Chocolate","Universe","Harmony","Blossom","Whisper","Radiant","Symphony","Firefly","Tranquil","Wanderlust","Lighthouse","Butterfly","Aurora","Waterfall","Enchanted","Sapphire","Velvet","Tornado","Twilight","Euphoria","Infinity","Rainbow","Stardust","Mirage" };
-            string[] first_names = { "Emerson", "Ryan", "Marlee", "Kameron", "Malaya", "Thaddeus", "Marlowe", "Ira", "Mira", "Zyaire", "Savanna", "Lorenzo", "Ivory", "Johnathan", "Journee", "Lee", "Rosemary", "Jamari", "Giselle", "Deacon", "Ana", "Armani", "Aileen", "Calum", "Harmoni", "Jakob","Faye", "Jeremy", "Lena", "Jaime" };
-            string[] last_names = { "Cruz","Trevino","Huber","Sims","Carpenter","Arellano","McMahon","Tanner","Finley","Ponce","Terry","Harper","Gibbs","Byrd","Valenzuela","Reese","Lester","Vazquez","Cardenas","Collier","Webb","Roy","Blake","Wise","Chung","Horne","Palacios","Hensley","Fowler","Fitzgerald" };
-
+            string[] usernames = { "Banana", "Sunshine", "Elephant", "Adventure", "Mystery", "Serendipity", "Chocolate", "Universe", "Harmony", "Blossom", "Whisper", "Radiant", "Symphony", "Firefly", "Tranquil", "Wanderlust", "Lighthouse", "Butterfly", "Aurora", "Waterfall", "Enchanted", "Sapphire", "Velvet", "Tornado", "Twilight", "Euphoria", "Infinity", "Rainbow", "Stardust", "Mirage" };
+            string[] first_names = { "Emerson", "Ryan", "Marlee", "Kameron", "Malaya", "Thaddeus", "Marlowe", "Ira", "Mira", "Zyaire", "Savanna", "Lorenzo", "Ivory", "Johnathan", "Journee", "Lee", "Rosemary", "Jamari", "Giselle", "Deacon", "Ana", "Armani", "Aileen", "Calum", "Harmoni", "Jakob", "Faye", "Jeremy", "Lena", "Jaime" };
+            string[] last_names = { "Cruz", "Trevino", "Huber", "Sims", "Carpenter", "Arellano", "McMahon", "Tanner", "Finley", "Ponce", "Terry", "Harper", "Gibbs", "Byrd", "Valenzuela", "Reese", "Lester", "Vazquez", "Cardenas", "Collier", "Webb", "Roy", "Blake", "Wise", "Chung", "Horne", "Palacios", "Hensley", "Fowler", "Fitzgerald" };
+            string[] addresses = { "Maple Avenue", "Elm Street", "Pine Road", "Oak Lane", "Cedar Way", "Willow Drive", "Birch Lane", "Chestnut Street", "Sycamore Avenue", "Magnolia Road", "Rosewood Lane", "Juniper Drive", "Cypress Road", "Poplar Street", "Walnut Lane", "Spruce Avenue", "Hawthorn Drive", "Redwood Lane", "Aspen Road", "Cherry Street", "Hemlock Way", "Dogwood Lane", "Alder Avenue", "Pecan Road", "Acacia Drive", "Beech Lane", "Linden Street", "Sequoia Drive", "Palmetto Avenue", "Eucalyptus Road" };
+            string[] status_options = { "Student", "Grad-Student", "Alumnus/Alumna", "Faculty", "Staff" };
+            string[] towns = { "Willowbrook", "Sycamore Springs", "Pineville", "Maplewood", "Cedar Falls", "Birchwood", "Hickory Ridge", "Oakdale", "Sunset Beach", "Riverdale", "Meadowbrook", "Aspen Hollow", "Elmwood", "Willow Grove", "Redwood Point", "Hawthorn Hills", "Springfield", "Juniper Creek", "Cypressville", "Palm Harbor", "Beechwood", "Linden Heights", "Chestnut Ridge", "Magnolia Springs", "Sycamore Valley", "Dogwood Junction", "Roseville", "Alder Lake", "Poplar Ridge", "Evergreen Pines" };
+            string[] highschools = { "Willowbrook High School", "Sycamore Springs High School", "Pineville High School", "Maplewood High School", "Cedar Falls High School", "Birchwood High School", "Hickory Ridge High School", "Oakdale High School", "Sunset Beach High School", "Riverdale High School", "Meadowbrook High School", "Aspen Hollow High School", "Elmwood High School", "Willow Grove High School", "Redwood Point High School", "Hawthorn Hills High School", "Springfield High School", "Juniper Creek High School", "Cypressville High School", "Palm Harbor High School", "Beechwood High School", "Linden Heights High School", "Chestnut Ridge High School", "Magnolia Springs High School", "Sycamore Valley High School", "Dogwood Junction High School", "Roseville High School", "Alder Lake High School", "Poplar Ridge High School", "Evergreen Pines High School" };
+            string[] websites = { "http://short.url/abc123", "http://short.url/xyz789", "http://short.url/def456", "http://short.url/123xyz", "http://short.url/456abc", "http://short.url/789def", "http://short.url/url123", "http://short.url/shorturl", "http://short.url/random1", "http://short.url/sample2", "http://short.url/link123", "http://short.url/testurl", "http://short.url/quickurl", "http://short.url/visitme", "http://short.url/gotothis", "http://short.url/explore5", "http://short.url/easylink", "http://short.url/shortcut", "http://short.url/tinyweb", "http://short.url/webpage1", "http://short.url/browse2", "http://short.url/visitnow", "http://short.url/quick123", "http://short.url/seeitnow", "http://short.url/rapidurl", "http://short.url/getlink", "http://short.url/followme", "http://short.url/gotohere", "http://short.url/trythis", "http://short.url/openurl" };
+            string[] looking_for_options = { "Friendship", "Dating", "A Relationship" };
+            string[] interests_options = { "Computers", "Relational Databases", "Microsoft Server 2019", "CRT Monitors", "Server Racks", "Intregrated Circuits"};
+            string[] movies_options = { "The Social Network", "Star Wars", "Stranger Things", "The Conjuring II", "The Nightmare Before Christmas", "Children of the Corn" };
 
             for (int i = 0; i < amount; ++i) {
                 string username = usernames[methods.R(0, usernames.Length - 1)] + methods.RandCharacters(3);
@@ -350,6 +357,21 @@ namespace SQL_Terminal {
                 string first_name = first_names[randNameIndex];
                 string last_name = last_names[randNameIndex];
                 string full_name = $"{first_name} {last_name}";
+                string birthday = $"{methods.R(1980, 2010)}-{methods.R(0, 12)}-{methods.R(0, 30)}";
+                string sex = Convert.ToBoolean(methods.R(-1, 2)) ? "Male" : "Female";
+                string home_address = $"{methods.R(100, 999)} {addresses[methods.R(0, addresses.Length - 1)]}";
+                string status = status_options[methods.R(0, status_options.Length - 1)];
+                string home_town = towns[methods.R(0, towns.Length - 1)];
+                string highschool = highschools[methods.R(0, highschools.Length - 1)];
+                string website = websites[methods.R(0, websites.Length - 1)];
+                string looking_for = looking_for_options[methods.R(0, looking_for_options.Length - 1)];
+                string interested_in = Convert.ToBoolean(methods.R(-1, 2)) ? "Men" : "Women";
+                string relationship_status = "single forever";
+                string political_views = "none";
+                string interests = interests_options[methods.R(0, interests_options.Length - 1)];
+                string favorite_music = "Lil Peep";
+                string favorite_movies = movies_options[methods.R(0, movies_options.Length - 1)];
+                string about = "a boring human being";
 
                 string query = $@"
                     INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
@@ -358,9 +380,9 @@ namespace SQL_Terminal {
                     SET @last_account_stats_id = LAST_INSERT_ID();
                     INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
                     SET @last_social_stats_id = LAST_INSERT_ID();
-                    INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES ('{birthday}', '{sex}', '{home_address}', '{home_town}', '{highschool}', '{status}', '{website}', '{looking_for}', '{interested_in}', '{relationship_status}', '{political_views}', '{interests}', '{favorite_music}', '{favorite_movies}', '{about}');
                     SET @last_personal_info_id = LAST_INSERT_ID();
-                    INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{username}', '{email}', '{password}', '{password_salt}', '{mobile}', '{first_name}', '{last_name}', '{full_name}', NULL);
+                    INSERT INTO account_info (settings_id, account_stats_id, social_stats_id, personal_info_id, username, email, password, password_salt, mobile, first_name, last_name, full_name, profile_image, profile_image_extension) VALUES (@last_settings_id, @last_account_stats_id, @last_social_stats_id, @last_personal_info_id, '{username}', '{email}', '{password}', '{password_salt}', '{mobile}', '{first_name}', '{last_name}', '{full_name}', NULL, NULL);
                 ";
                 MySqlCommand command = new MySqlCommand(query, this.Connection);
                 command.Parameters.Add("@last_settings_id", MySqlDbType.Int32).Direction = ParameterDirection.Output;

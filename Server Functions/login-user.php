@@ -30,7 +30,8 @@ if ($dh->Login($sql, $email, $password)) {
     $sh->StartuserSession($sql, $sql->GetIDByEmail($email), $generated_sessionID);
     $sh->SetUserTokenCookie($username, $email);
     $sh->SetLogoutCookie($userID);
-    $sh->CacheProfileImage($ftp, $sql, $email, $dh->ParseProfileImageHash($username, $email, '.' . $sql->GetValueByEmail('profile_image_extension', 'account_info', $email)));
+    $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $email);
+    $sh->CacheProfileImage($ftp, $sql, $email, $dh->ParseProfileImageHash($username, $email, '.' . $sql->GetValueByEmail('profile_image_extension', 'account_info', $email)), $default_image_check);
     $sql->CloseConnection();
     $sh->Redirect('Pages/User Pages/MainProfilePage.php?return-status=logged-in&username=' . $username . '&email=' . $email);
     exit;

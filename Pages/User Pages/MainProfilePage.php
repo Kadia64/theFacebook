@@ -22,6 +22,7 @@
     // $ftp->Connect();
     // $ftp->Login();   
 
+
     $update_profile = false;
     $user_data = null;
     $return_status = $_GET['return-status'];
@@ -44,14 +45,18 @@
         $user_data = $sql->GetDataByEmail('personal_info', $email);
         $account_stats = $sql->GetDataByEmail('account_stats', $email);
         $cookie_array = $sh->ParseUserDataCookie($sql, $email);
+
+        # Future Function =>
         $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $email);
         $profile_image_name = !$default_image_check ? $dh->GetProfileImageName($sql, $id) : '';
         $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $email) : '';
+        $friends_id_list = $sql->GetValueByEmail('friends_id_list', 'account_info', $email);
         $account_attributes_array = array(
             'profile-image' => $default_image_check,
             'profile-image-id' => $profile_image_name,
             'profile-image-extension' => $profile_image_extension,
             'class-connection-count' => 0,
+            'friends-id-list' => $friends_id_list,
             'friend-connection-count' => 0,
             'friend-message-count' => 0,
             'group-message-count' => 0
@@ -94,15 +99,18 @@
             $old_cookie = $display_array;
             array_unshift($old_cookie, $account_data['first_name'], $account_data['last_name']);
 
+            # Future Function =>
             $default_image_check = $sql->CheckValueNull('profile_image', 'account_info', 'email', $new_email);
             $profile_image_name = !$default_image_check ? $dh->GetProfileImageName($sql, $id) : '';
             $profile_image_extension = !$default_image_check ? $sql->GetValueByEmail('profile_image_extension', 'account_info', $new_email) : '';
+            $friends_id_list = $sql->GetValueByEmail('friends_id_list', 'account_info', $email);
             $account_attributes_array = array(
                 'profile-image' => $default_image_check,
                 'profile-image-id' => $profile_image_name,
                 'profile-image-extension' => $profile_image_extension,
                 'class-connection-count' => 0,
                 'friend-connection-count' => 0,
+                'friends-id-list' => $friends_id_list,
                 'friend-message-count' => 0,
                 'group-message-count' => 0
             );            

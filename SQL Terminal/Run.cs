@@ -16,7 +16,7 @@ namespace SQL_Terminal {
             "create default",
             "create account", 
             "create null account", "create null",
-            "create random account", "create rand"
+            "create random account", "create rand", "crand"
         };
         private bool Connected = false;
         private string? CurrentCommand = null;
@@ -173,8 +173,9 @@ namespace SQL_Terminal {
                         break;
                     case "create random account":
                     case "create rand":
+                    case "crand":
                         if (this.Help) {
-                            methods.HelpOutput("Will create a number of random accounts with some values being random.", new string[] { HELP_INFO, "<count> ~ the amount of times you want to create an account." }, new string[] { "create random account", "create rand" });
+                            methods.HelpOutput("Will create a number of random accounts with some values being random.", new string[] { HELP_INFO, "<count> ~ the amount of times you want to create an account." }, new string[] { "create random account", "create rand", "crand" });
                             break;
                         }
                         if (this.Connected) {

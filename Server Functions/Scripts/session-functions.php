@@ -111,7 +111,11 @@ class SessionHandle {
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
     }
-    public function CheckActiveSession() {
+    public function CheckActiveSession($session_vars = true) {
+        if ($session_vars) {
+            if (isset($_SESSION['search-results'])) unset($_SESSION['search-results']);            
+            if (isset($_SESSION['search-results-count'])) unset($_SESSION['session-results-count']);
+        }
         if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
             $this->SetUserTokenCookie($_GET['username'], $_GET['email']);
             $this->Redirect('Pages/User Pages/MainProfilePage.php?return-status=' . $_GET['return-status']);
@@ -198,8 +202,10 @@ class SessionHandle {
         $id = $row['account_id'];
         $parts = explode('.', $file_name);
         $new_dir = $dir_name . '/' . $parts[0];
-        mysqli_query($sql->connection, "UPDATE session_data SET profile_image_name = '$new_dir' WHERE session_data_id = '$id';");
-        
+        mysqli_query($sql->connection, "UPDATE session_data SET profile_image_name = '$new_dir' WHERE session_data_id = '$id';");        
+    }
+    public function CacheImageSearchResult() {
+
     }
 }
 ?>

@@ -90,12 +90,65 @@ class DynamicContent {
         ';
     }
 
-    public function DisplayFriendSearchResults($message_count) {
-        for ($i = 0; $i < $message_count; ++$i) {
+    public function DisplayFriendSearchResults($session_array, $session_results) {
+        $result_array = json_decode($session_array);
+        $result_count = count($result_array);
 
+        if ($result_array[0] == null) {
+            echo '
+                <div class="no-results">
+                    <p>Found 0 results.</p>
+                </div>
+            ';
+            return;
         }
 
-        echo "<p>testin5</p>";
+        echo '<div class="search-results-box">';
+        $default_counter = 0;
+        for ($i = 0; $i < $result_count; ++$i) {
+            $current_result = json_decode(json_encode($result_array[$i]));
+            $account_id = $current_result->{'account_id'};
+            $name = $current_result->{'full_name'};
+            $email = $current_result->{'email'};
+            $residence = $current_result->{'highschool'};
+
+            echo '<div class="search-result-profile">';
+                echo '                    
+                    <div class="profile-image-search-result">
+                        <img src="' . PageData::ROOT . 'Server Functions/get-live-image.php?id=' . $account_id . '&def-index=' . $default_counter . '">
+                    </div>
+                    <div class="personal-info-search-result">
+                        <table>
+                            <tr>
+                                <td>Name:</td>
+                                <td class="personal-info-search-result-lb">' . $name . '</td>
+                            </tr>
+                            <tr>
+                                <td>Email:</td>
+                                <td class="personal-info-search-result-lb">' . $email . '</td>
+                            </tr>                            
+                            <tr>
+                                <td>Residence:</td>
+                                <td>' . $residence . '</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="search-result-buttons">
+                        <div class="search-result-buttons-box">
+                            <p><a href="">View Profile</a></p>
+                            <p><a href="">View Friends</a></p>
+                            <p><a href="">Send A Message</a></p>
+                        </div>
+                    </div>
+                ';
+            echo '</div>';
+
+            ++$default_counter;
+            if ($default_counter == 5) {
+                $default_counter = 0;
+            }
+        }
+        echo '</div>';
     }
     public function DisplayCachedDefaultProfileImage() {
         echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';

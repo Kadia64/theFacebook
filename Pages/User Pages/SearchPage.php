@@ -10,7 +10,7 @@
     $pages = new PageData();
     $sh = new SessionHandle();
     session_start();
-    $sh->CheckActiveSession();
+    $sh->CheckActiveSession(false);
 
     $user_data_cookie = json_decode($_COOKIE['user-data']);
     $account_attributes = json_decode($_COOKIE['account-attributes']);    
@@ -45,12 +45,12 @@
             font-size: var(--font-size);
         }
         .search-page-form-flexbox input:last-child {
-            flex: 0.7;
             font-family: var(--font);
             font-size: var(--font-size);
             color: white;
             background-color: var(--button-color);
             border: 1.5px ridge;
+            flex: 0.7;
         }
         .search-page-box {            
             background-color: var(--input-color);
@@ -65,6 +65,71 @@
         }
         .window-text-dropdown {
             display: block!important;
+        }
+        .search-results-box {
+            display: flex;
+            flex-direction: column;
+        }
+        .search-result-profile {
+            flex: 1;
+            display: flex;
+            padding: 8px;
+            border-bottom: 1px solid var(--darkblue);
+        }
+        .profile-image-search-result {
+            flex: 1;
+        }
+        .profile-image-search-result img {
+            width: 85px;
+            height: 85px;
+        }
+        .personal-info-search-result {
+            flex: 4;
+        }
+        .personal-info-search-result table {
+            margin-top: 15px;
+        }
+        .personal-info-search-result table tr td {
+            font-family: var(--font);
+            font-size: var(--font-size);
+        }
+        .personal-info-search-result table tr td:last-child {
+            padding-left: 10px;
+        }
+        .personal-info-search-result-lb {
+            color: var(--lightblue);
+        }
+        .search-result-buttons {
+            flex: 2;
+        }
+        .search-result-buttons-box {
+            border: 1px solid var(--darkblue);
+            width: 90px;
+            height: 57px;
+            margin-top: 15px;            
+        }
+        .search-result-buttons-box p {
+            margin: 0;
+        }
+        .search-result-buttons-box a {
+            font-family: var(--font);
+            font-size: var(--font-size);
+            color: var(--lightblue);
+            text-decoration: none;
+            margin-left: 2px;
+        }
+        .search-result-buttons-box a:hover {
+            color: var(--hover-lightblue);
+            text-decoration: underline;
+        }
+        .search-result-buttons-box p:nth-child(even) {
+            border-top: 1px solid var(--darkblue);
+            border-bottom: 1px solid var(--darkblue);
+        }
+        .no-results p {
+            font-family: var(--font);
+            font-size: var(--font-size);
+            margin-left: 20px;
         }
     </style>
 </head>
@@ -84,16 +149,16 @@
                                         <div class="window-text window-text-dropdown">
                                             <span class="window-text-left">Search - </span>
                                             <select class="search-filter-selection" name="search-filter">
-                                                <option value="name">Name</option>
-                                                <option value="username">Username</option>
-                                                <option value="email">Email</option>
-                                                <option value="sex">Sex</option>
-                                                <option value="home-address">Home Address</option>
-                                                <option value="home-town">Home Town</option>
-                                                <option value="education-status">Education Status</option>
-                                                <option value="highschool">Highschool</option>
-                                                <option value="looking-for">Looking For</option>
-                                                <option value="interested-in">Interested In</option>
+                                                <option value="name:0">Name</option>
+                                                <option value="username:1">Username</option>
+                                                <option value="email:2">Email</option>
+                                                <option value="sex:3">Sex</option>
+                                                <option value="home_address:4">Home Address</option>
+                                                <option value="home_town:5">Home Town</option>
+                                                <option value="education_status:6">Education Status</option>
+                                                <option value="highschool:7">Highschool</option>
+                                                <option value="looking_for:8">Looking For</option>
+                                                <option value="interested_in:9">Interested In</option>
                                             </select>
                                         </div>';
                                 ?>
@@ -103,14 +168,23 @@
                                 </div>
                             </form>
                         </div>
-                        <div class="window-content">                            
+                        <div class="window-content">
                             <?php 
                                 $content->WindowText('Results');
-                                $result_count = 0;
+                                $result_count = isset($_SESSION['search-results']) ? $_SESSION['search-results-count'] : 0;
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
 
-                                
-                                $dynamic->DisplayFriendSearchResults($result_count);                                
+                                if (isset($_SESSION['search-results'])) {
+                                    $session_results = $_SESSION['search-results'];
+                                    $dynamic->DisplayFriendSearchResults($session_results, $session_results);
+                                } else {
+                                    echo '
+                                        <div class="no-results">
+                                            <p>Found 0 results.</p>
+                                        </div>
+                                    ';
+                                }
+                                $content->LightBlueWindowText("Displaying all $result_count matches.");
                             ?>
                         </div>
                     </div>

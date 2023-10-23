@@ -23,6 +23,6 @@ class Methods {
         } else if ($type == 9) {
             return date('c', time());
         }
-    }  
+    }
 }
 ?>

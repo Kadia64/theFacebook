@@ -52,12 +52,15 @@ if (isset($_FILES['profile-image'])) {
     mysqli_query($sql->connection, "UPDATE account_info SET profile_image_extension = '$extension' WHERE email = '$email';");
 
     // update the account-attributes cookie
+
+    $old_account_attributes = json_decode($_COOKIE['account-attributes']);
     $account_attributes = array(
         'profile-image' => false,
         'profile-image-id' => $dh->GetProfileImageName($sql, $id),
         'profile-image-extension' => $extension,
         'class-connection-count' => 0,
         'friend-connection-count' => 0,
+        'friends-id-list' => $old_account_attributes->{'friends-id-list'},
         'friend-message-count' => 0,
         'group-message-count' => 0
     );

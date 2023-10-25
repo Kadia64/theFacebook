@@ -115,6 +115,9 @@ class SessionHandle {
         if ($session_vars) {
             if (isset($_SESSION['search-results'])) unset($_SESSION['search-results']);            
             if (isset($_SESSION['search-results-count'])) unset($_SESSION['session-results-count']);
+            if (isset($_SESSION['displayed-results'])) unset($_SESSION['displayed-results']);
+            if (isset($_SESSION['search-results-count'])) unset($_SESSION['search-results-count']);
+            if (isset($_SESSION['refresh-count'])) unset($_SESSION['refresh-count']);
         }
         if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
             $this->SetUserTokenCookie($_GET['username'], $_GET['email']);

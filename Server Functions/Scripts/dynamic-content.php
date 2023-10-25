@@ -90,8 +90,8 @@ class DynamicContent {
         ';
     }
 
-    public function DisplayFriendSearchResults($session_array, $session_results) {
-        $result_array = json_decode($session_array);
+    public function DisplayFriendSearchResults($session_results, $start_index) {
+        $result_array = json_decode($session_results);
         $result_count = count($result_array);
 
         if ($result_array[0] == null) {
@@ -103,14 +103,22 @@ class DynamicContent {
             return;
         }
 
-        echo '<div class="search-results-box">';
         $default_counter = 0;
-        for ($i = 0; $i < $result_count; ++$i) {
+        $max_results = 30;
+        $results_count = 0;
+        $current_displayed_count = $_SESSION['displayed-results'];
+
+        for ($i = $start_index; $i < $result_count; ++$i) {
             $current_result = json_decode(json_encode($result_array[$i]));
             $account_id = $current_result->{'account_id'};
             $name = $current_result->{'full_name'};
             $email = $current_result->{'email'};
-            $residence = $current_result->{'highschool'};
+            $residence = $current_result->{'highschool'};            
+
+            // if the number of actual results that you are getting at the starting index is greater than or equal to 30, then stop displaying results
+            if ($results_count >= $max_results) {
+                break;
+            }
 
             echo '<div class="search-result-profile">';
                 echo '                    
@@ -120,7 +128,7 @@ class DynamicContent {
                     <div class="personal-info-search-result">
                         <table>
                             <tr>
-                                <td>Name:</td>
+                                <td>' . $i . ':</td>
                                 <td class="personal-info-search-result-lb">' . $name . '</td>
                             </tr>
                             <tr>
@@ -143,12 +151,17 @@ class DynamicContent {
                 ';
             echo '</div>';
 
+            ++$current_displayed_count;
+            ++$results_count;
             ++$default_counter;
             if ($default_counter == 5) {
                 $default_counter = 0;
             }
         }
-        echo '</div>';
+        //echo $current_displayed_count;
+        $_SESSION['displayed-results'] = $current_displayed_count;
+        //echo $_SESSION['displayed-results'];
+        $_SESSION['new-display-section'] = $results_count;
     }
     public function DisplayCachedDefaultProfileImage() {
         echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';

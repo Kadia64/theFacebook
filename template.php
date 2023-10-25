@@ -1,43 +1,39 @@
-<?php 
-    $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/styles.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
-    $content = new Content();
-    $styles = new Styles();
-    $pages = new PageData();
-    session_start();
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>    
-    <?php $content->Startup('Template'); ?>
-    <!-- PageStyle(); -->
-    <style>
-        .template-page-window {
-            width: calc(var(--standard-page-width) - 240px);
-            margin: 0 auto;
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action']) && $_POST['action'] === 'ScrewOff') {
+        function ScrewOff() {
+            echo "what the hell";
+            exit;
         }
-        .template-page-content {
 
-        }
-    </style>
+        ScrewOff();
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="main-pagebox">
-        <?php $content->TopContent(); ?>
-        <div class="main-page-flexbox">
-            <?php $content->LeftLoginForm(); ?>
-            <div class="right-main-window">
-                <?php $content->WindowText('Template'); ?>
-                <h4>Template</h4>
-                <div class="template-page-window">
-                    <div class="template-page-content">
-                        <!-- Content -->
-                    </div>
-                </div>
-            </div>            
-        </div>
-        <?php $content->BottomContent(); ?>        
+    <div id="search-results-box">
+        <!-- Initial content goes here -->
     </div>
+    <button id="load-more-button" type="button">Load More</button>
+
+    <script>
+    $(document).ready(function() {
+        $('#load-more-button').click(function() {
+            $.ajax({
+                type: 'POST',
+                data: { action: 'ScrewOff' },
+                success: function(response) {
+                    $('#search-results-box').html(response);
+                }
+            });
+        });
+    });
+    </script>
 </body>
 </html>

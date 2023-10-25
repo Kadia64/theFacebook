@@ -20,7 +20,7 @@
     $friend_message_count = $account_attributes->{'friend-message-count'};
     $group_message_count = $account_attributes->{'group-message-count'};
     $message_count = $friend_message_count + $group_message_count;
-    $default_profile_image = $account_attributes->{'profile-image'};    
+    $default_profile_image = $account_attributes->{'profile-image'};
 ?>
 <!DOCTYPE html>
 <html lang="en">

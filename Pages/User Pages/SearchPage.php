@@ -10,14 +10,65 @@
     $pages = new PageData();
     $sh = new SessionHandle();
     session_start();
-    $sh->CheckActiveSession(false);
+    
+    $sh->CheckActiveSession(false);    
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+        function LoadMoreResults($dynamic, $content) {
+            $session_results = $_SESSION['search-results'];
+            $dynamic->DisplayFriendSearchResults($session_results, $_SESSION['displayed-results']);
+            exit;
+        }
+        function DisplayCount($content) {
+            $result_count = $_SESSION['search-results-count'];
+            $content->LightBlueWindowText("Displaying all $result_count matches.");
+            exit;
+        }        
+        
+        $_SESSION['new-display-section'] = 0;
+        switch ($_POST['action']) {
+            case 'LoadMoreResults':
+                LoadMoreResults($dynamic, $content);
+                break;
+            case "TopDisplayResults":
+                DisplayCount($content);
+                break;
+            case "BottomDisplayResults":
+                DisplayCount($content);
+                break;
+        }
+    } else {
+        // first page load
+        if (isset($_GET['set-vars'])) {
+            $_SESSION['refresh-count'] = 0;
+            $_SESSION['displayed-results'] = 0;
+            $_SESSION['searched'] = false;
+            $sh->Redirect('Pages/User Pages/SearchPage.php?return-status=normal');
+            exit;
+        }
+    }
+
+    if ($_GET['return-status'] == 'searched') {
+        $_SESSION['refresh-count'] += 1;
+        if ($_GET['continued-search']) {
+            
+        }
+    }
+    if ($_SESSION['refresh-count'] == 2) {
+        $_SESSION['refresh-count'] = 0;
+        $sh->Redirect('Pages/User Pages/SearchPage.php?return-status=normal&set-vars=1');
+        $sh->CheckActiveSession(true);
+        exit;
+    }
 
     $user_data_cookie = json_decode($_COOKIE['user-data']);
-    $account_attributes = json_decode($_COOKIE['account-attributes']);    
+    $account_attributes = json_decode($_COOKIE['account-attributes']);
+    $max_results_limit = 30;
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>    
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <?php $content->Startup('Search'); ?>
     <!-- PageStyle(); -->
     <style>
@@ -135,7 +186,7 @@
 </head>
 <body>
     <div class="main-pagebox">
-        <?php $content->TopContent(true); ?>
+        <?php $content->TopContent(true, $_SESSION['searched']); ?>
         <div class="main-page-flexbox">
             <?php $content->LeftProfileLinks(); ?>
             <div class="right-main-window">
@@ -143,25 +194,22 @@
                 <div class="search-page-window">
                     <div class="search-page-content">
                         <div class="window-content search-window">                       
-                            <form method="POST" action="<?php echo PageData::ROOT . 'Server Functions/search.php'; ?>" class="search-page-form">
-                                <?php 
-                                    echo '
-                                        <div class="window-text window-text-dropdown">
-                                            <span class="window-text-left">Search - </span>
-                                            <select class="search-filter-selection" name="search-filter">
-                                                <option value="name:0">Name</option>
-                                                <option value="username:1">Username</option>
-                                                <option value="email:2">Email</option>
-                                                <option value="sex:3">Sex</option>
-                                                <option value="home_address:4">Home Address</option>
-                                                <option value="home_town:5">Home Town</option>
-                                                <option value="education_status:6">Education Status</option>
-                                                <option value="highschool:7">Highschool</option>
-                                                <option value="looking_for:8">Looking For</option>
-                                                <option value="interested_in:9">Interested In</option>
-                                            </select>
-                                        </div>';
-                                ?>
+                            <form method="POST" action="<?php echo PageData::ROOT . 'Server Functions/search.php?continued-search=1'; ?>" class="search-page-form">
+                                <div class="window-text window-text-dropdown">
+                                    <span class="window-text-left">Search - </span>
+                                    <select class="search-filter-selection" name="search-filter">
+                                        <option value="name:0">Name</option>
+                                        <option value="username:1">Username</option>
+                                        <option value="email:2">Email</option>
+                                        <option value="sex:3">Sex</option>
+                                        <option value="home_address:4">Home Address</option>
+                                        <option value="home_town:5">Home Town</option>
+                                        <option value="education_status:6">Education Status</option>
+                                        <option value="highschool:7">Highschool</option>
+                                        <option value="looking_for:8">Looking For</option>
+                                        <option value="interested_in:9">Interested In</option>
+                                    </select>
+                                </div>
                                 <div class="search-page-form-flexbox">
                                     <input type="text" name="search-input" class="search-page-box">
                                     <input type="submit" value="Search">
@@ -169,14 +217,20 @@
                             </form>
                         </div>
                         <div class="window-content">
-                            <?php 
-                                $content->WindowText('Results');
-                                $result_count = isset($_SESSION['search-results']) ? $_SESSION['search-results-count'] : 0;
+                            <?php
+                                $_SESSION['new-display-section'] = 0;
+                                $content->WindowText('Results');                       
+                                $result_count = $_SESSION['displayed-results'];
+                                
+                                echo '<div id="top-result-count-display">';
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
-
-                                if (isset($_SESSION['search-results'])) {
+                                echo '</div>';
+                                
+                                if (isset($_SESSION['search-results-count'])) {
+                                    echo '<div class="search-results-box" id="search-results-box">';
                                     $session_results = $_SESSION['search-results'];
-                                    $dynamic->DisplayFriendSearchResults($session_results, $session_results);
+                                    $dynamic->DisplayFriendSearchResults($session_results, 0);
+                                    echo '</div>';
                                 } else {
                                     echo '
                                         <div class="no-results">
@@ -184,8 +238,49 @@
                                         </div>
                                     ';
                                 }
+                                //echo $_SESSION['displayed-results']; 
+                                if ($_SESSION['new-display-section'] >= $max_results_limit) {
+                                    echo '<button id="load-more-button">[ Display More ]</button>';
+                                }
+
+                                echo '<div id="bottom-result-count-display">';
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
-                            ?>
+                                echo '<div>';                               
+                            ?>                            
+                            <script>
+                                $(document).ready(function() {
+                                    $('#load-more-button').click(function(e) {
+                                        e.preventDefault();
+                                        $.ajax({
+                                            type: 'POST',
+                                            data: { action: 'LoadMoreResults' },
+                                            success: function(response) {
+                                                $('#search-results-box').append(response);
+                                            }
+                                        });
+                                    });
+                                    $('#load-more-button').click(function(e) {
+                                        e.preventDefault();
+                                        $.ajax ({
+                                            type: 'POST',
+                                            data: { action: 'TopDisplayResults' },
+                                            success: function(response) {
+                                                $('#top-result-count-display').html(response);
+                                            }
+                                        });
+                                    });
+                                    $('#load-more-button').click(function(e) {
+                                        e.preventDefault();
+                                        $.ajax ({
+                                            type: 'POST',
+                                            data: { action: 'BottomDisplayResults' },
+                                            success: function(response) {
+                                                $('#bottom-result-count-display').html(response);
+                                            }
+                                        });
+                                    });
+                                });
+                            </script>
                         </div>
                     </div>
                 </div>

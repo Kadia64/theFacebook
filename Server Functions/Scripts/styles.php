@@ -877,5 +877,11 @@ class Styles {
             </style>
         ";
     }
+    public function SearchPageStyle() {
+        echo '';
+    }
+    public function ProfilePageStyle() {
+        echo '';
+    }
 }
 ?>

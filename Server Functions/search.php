@@ -9,8 +9,10 @@ $methods = new Methods();
 $sql->Connect();
 session_start();
 
+$_SESSION['refresh-count'] = 0;
+$_SESSION['displayed-results'] = 0;
+$_SESSION['load-more-pressed'] = 0;
 $account_attributes = json_decode($_COOKIE['account-attributes']);
-
 $search_filter_input = $_POST['search-filter'];
 $search_input = $_POST['search-input'];
 
@@ -40,14 +42,9 @@ while ($row = mysqli_fetch_assoc($result)) {
     $resultsArray[] = $row;
 }
 $session_results = json_encode($resultsArray);    
+
 $_SESSION['search-results'] = $session_results;
 $_SESSION['search-results-count'] = ($resultsArray[0] == null) ? 0 : count($resultsArray);
-
-// if (count($resultsArray) >= 30) {
-//     $_SESSION['search-results-count-limit'] = 30;
-// } else {
-//     $_SESSION['search-results-count-limit'] = count($resultsArray);
-// }
 
 $results_count = count($resultsArray);
 $_SESSION['search-results-count'] = $results_count;
@@ -55,11 +52,15 @@ $_SESSION['search-results-count'] = $results_count;
 if ($results_count >= 30) {
     $_SESSION['new-display-section'] = 30;    
 } else {
+    $_SESSION['displayed-results'] = $results_count;
     $_SESSION['new-display-section'] = $results_count;
 }
 
-$_SESSION['searched'] = false;
+$_SESSION['searched-session-count'] += 1;
+$_SESSION['first-searched'] = ($_SESSION['searched-session-count'] == 1) ? true : false;
 $sql->CloseConnection();
+
+//echo $_SESSION['searched-session-count'];
 $sh->Redirect('Pages/User Pages/SearchPage.php?return-status=searched&continued-search=1');
 exit;
 ?>

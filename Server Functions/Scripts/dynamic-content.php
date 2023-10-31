@@ -90,9 +90,9 @@ class DynamicContent {
         ';
     }
 
-    public function DisplayFriendSearchResults($session_results, $start_index) {
+    public function DisplayFriendSearchResults($session_results, $start_index, $button_load = false, $stop = 0) {
         $result_array = json_decode($session_results);
-        $result_count = count($result_array);
+        $result_count = count($result_array);        
 
         if ($result_array[0] == null) {
             echo '
@@ -116,12 +116,14 @@ class DynamicContent {
             $residence = $current_result->{'highschool'};            
 
             // if the number of actual results that you are getting at the starting index is greater than or equal to 30, then stop displaying results
-            if ($results_count >= $max_results) {
+            if (($results_count >= $max_results) && !$button_load) {
+                break;
+            } else if ($button_load && ($results_count >= $stop)) {
                 break;
             }
 
             echo '<div class="search-result-profile">';
-                echo '                    
+                echo '
                     <div class="profile-image-search-result">
                         <img src="' . PageData::ROOT . 'Server Functions/get-live-image.php?id=' . $account_id . '&def-index=' . $default_counter . '">
                     </div>
@@ -143,7 +145,7 @@ class DynamicContent {
                     </div>
                     <div class="search-result-buttons">
                         <div class="search-result-buttons-box">
-                            <p><a href="">View Profile</a></p>
+                            <p><a href="' . PageData::ROOT . 'Pages/User Pages/ProfilePage.php?id=' . $account_id . '">View Profile</a></p>
                             <p><a href="">View Friends</a></p>
                             <p><a href="">Send A Message</a></p>
                         </div>
@@ -158,10 +160,17 @@ class DynamicContent {
                 $default_counter = 0;
             }
         }
-        //echo $current_displayed_count;
-        $_SESSION['displayed-results'] = $current_displayed_count;
-        //echo $_SESSION['displayed-results'];
-        $_SESSION['new-display-section'] = $results_count;
+        if (!$button_load) {
+            $_SESSION['displayed-results'] = $current_displayed_count;
+            // if ($_SESSION['refresh-count'] != 0) {
+            //     $_SESSION['displayed-results'] = $current_displayed_count;
+            // }
+            if ($_SESSION['first-searched']) {
+                $_SESSION['first-searched'] = false;
+            }
+
+            $_SESSION['new-display-section'] = $results_count;
+        }
     }
     public function DisplayCachedDefaultProfileImage() {
         echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';

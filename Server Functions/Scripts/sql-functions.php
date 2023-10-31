@@ -94,6 +94,18 @@ class SQLHandle {
         $data = mysqli_fetch_assoc($result);
         return $data;
     }
+    public function GetDataByID($table, $id, $column = null,) {
+        /*
+            ex: 
+            $sql->GetDataByID('account_info', 4);
+            -> returns the entire row as an associative array
+        */
+        
+        $query = $this->JsonValuesQuery($table, 'account_id', $id, $column);
+        $result = mysqli_query($this->connection, $query);
+        $data = mysqli_fetch_assoc($result);
+        return $data;
+    }
     public function GetDataBySessionID($sessionID, $table) {
         /* 
             ex:

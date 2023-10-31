@@ -153,5 +153,14 @@ class DataHandle {
         $row = mysqli_fetch_assoc(mysqli_query($sql->connection, "SELECT profile_image_name	FROM session_data WHERE session_data_id = $id"));
         return $row['profile_image_name'];
     }
+    public function GetUserProfileInfo($sql, $id) {
+        $result = mysqli_query($sql->connection, 
+           "SELECT a.username, a.email, a.mobile, a.full_name, a.friends_id_list, p.*
+            FROM account_info a
+            INNER JOIN personal_info p ON p.personal_info_id = a.account_id
+            WHERE a.account_id = $id;"
+        );
+        return mysqli_fetch_assoc($result);
+    }
 }
 ?>

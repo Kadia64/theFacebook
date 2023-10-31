@@ -16,7 +16,7 @@
     $sql = new SQLHandle();
     $ftp = new FTPHandle();
     session_start();
-    $sh->CheckActiveSession();
+    $sh->CheckActiveSession();    
     
     // $sql->Connect();
     // $ftp->Connect();
@@ -154,7 +154,11 @@
                 <?php $content->WindowText('Profile (this is you)', $current_school); ?>
                 <div class="main-profile-page-window">
                     <div class="main-profile-page-flexbox">
+
+                        <!-- Left Side -->
                         <div class="main-profile-page-left">
+                            
+                            <!-- Profile Picture -->
                             <div class="window-content profile-image-window">                            
                                 <?php $content->WindowText('Picture', '
                                     <form method="POST" action="' . PageData::ROOT . 'Server Functions/upload-image.php" id="upload-image-form">
@@ -217,6 +221,8 @@
                                     }
                                 ?>
                             </div>
+                            
+                            <!-- Links Below Profile Image -->
                             <div class="window-content profile-links-window">
                                 <ul>
                                     <li><a href="">Visualize My Friends</a></li>
@@ -228,12 +234,16 @@
                             <?php 
                                 $connection_window = null;
                                 $friends_window = null;
+
+                                // Connection Window
                                 $connection_window = '
                                     <div class="window-content empty-connection-window">
                                         ' . $content->WindowText('Connection', null, true) . '
                                         <p>This is you</p>
                                     </div>
                                 ';
+
+                                // Other Schools Window
                                 $friends_window = '
                                     <div class="window-content other-schools-window">
                                         ' . $content->WindowText('Other Schools', null, true) . '
@@ -244,7 +254,11 @@
                                 echo $friends_window;
                             ?>
                         </div>
+
+                        <!-- Right Side -->
                         <div class="main-profile-page-right">
+
+                            <!-- Account Information Window -->
                             <div class="window-content">
                                 <?php $content->WindowText($edit_profile_button, '<a href="' . $edit_profile_link . '">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-info-grid">
@@ -323,6 +337,8 @@
                                     ?>                                    
                                 </div>                                
                             </div>
+
+                            <!-- Groups Window -->
                             <div class="window-content">
                                 <?php $content->WindowText($edit_groups_button, '<a href="">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-groups">
@@ -347,6 +363,8 @@
                                     ?>
                                 </div>
                             </div>
+
+                            <!-- Courses Window -->
                             <div class="window-content">
                                 <?php $content->WindowText('Courses', '<a href="">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-courses">
@@ -368,6 +386,8 @@
                                     ?>
                                 </div>
                             </div>
+
+                            <!-- The Wall Window -->
                             <div class="window-content">
                                 <?php $content->WindowText($cookie_data->{'first_name'} . '\'s Wall', '<a href="">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-wall">
@@ -376,6 +396,8 @@
                                     ?>
                                 </div>
                             </div>
+
+                            <!-- Friends Window -->
                             <div class="window-content">
                                 <?php $content->WindowText('Friends', '<a href="">[ edit ]</a>'); ?>
                                 <div class="main-profile-page-friends">
@@ -384,6 +406,7 @@
                                     ?>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

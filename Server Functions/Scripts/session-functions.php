@@ -7,6 +7,7 @@ class SessionHandle {
     public $_30dayExpiration;
     public $_10minExpiration;
     public $_5minExpiration;
+    public $_halfminExpiration;
     public $sessionExpirationTime;
     private $files;
     private $methods;
@@ -20,6 +21,7 @@ class SessionHandle {
         $this->_30dayExpiration = time() + (30 * 24 * 60 * 60);
         $this->_10minExpiration = time() + (10 * 60);
         $this->_5minExpiration = time() + (5 * 60);
+        $this->_halfminExpiration = $this->_10minExpiration / 2;
     }
     public function GetRegisterData() {
         return [
@@ -111,13 +113,18 @@ class SessionHandle {
         $assoc_array = mysqli_fetch_assoc($result);
         return $assoc_array;
     }
-    public function CheckActiveSession($session_vars = true) {
+    public function CheckActiveSession($session_vars = true, $profile_cookies = false) {
         if ($session_vars) {
-            if (isset($_SESSION['search-results'])) unset($_SESSION['search-results']);            
+            if (isset($_SESSION['search-results'])) unset($_SESSION['search-results']);
             if (isset($_SESSION['search-results-count'])) unset($_SESSION['session-results-count']);
             if (isset($_SESSION['displayed-results'])) unset($_SESSION['displayed-results']);
             if (isset($_SESSION['search-results-count'])) unset($_SESSION['search-results-count']);
             if (isset($_SESSION['refresh-count'])) unset($_SESSION['refresh-count']);
+            if (isset($_SESSION['load-more-pressed'])) unset($_SESSION['load-more-pressed']);
+            if (isset($_SESSION['searched-session-count'])) unset($_SESSION['searched-session-count']);
+        }
+        if (!$profile_cookies) {
+            setcookie('cached-profile-info', '', 0, '/Pages');
         }
         if ((!isset($_COOKIE['user-token'])) && ((isset($_GET['username'])) && (isset($_GET['email'])))) {
             $this->SetUserTokenCookie($_GET['username'], $_GET['email']);
@@ -207,8 +214,39 @@ class SessionHandle {
         $new_dir = $dir_name . '/' . $parts[0];
         mysqli_query($sql->connection, "UPDATE session_data SET profile_image_name = '$new_dir' WHERE session_data_id = '$id';");        
     }
-    public function CacheImageSearchResult() {
+    public function CacheProfileInformation($user_info) {
+        $user_info = json_encode($user_info);
+        // $caching_limit = 3;
 
+        
+        // $userID = $user_info['personal_info_id'];
+        // $old_cookie_data = isset($_COOKIE['cached-profile-info']) ? json_decode($_COOKIE['cached-profile-info']) : null;
+        // $old_cached_ids = isset($_COOKIE['cached-profile-info']) ? $old_cookie_data->{'cached-ids'} : [];
+        // $cached_array = isset($_COOKIE['cached-profile-info']) ? $old_cookie_data->{'cache-array'} : [];
+        
+        // $old_cached_ids[] = $userID;
+        // $cached_array[] = $user_info;
+        // //print_r($cached_array);
+        // //echo json_encode($cached_array);
+
+        // if (count($old_cached_ids) > $caching_limit) {
+        //     array_shift($old_cached_ids);
+        //     array_shift($cached_array);
+        // }
+
+        // $cached_data = [
+        //     'cache-limit' => $caching_limit,
+        //     'cached-ids' => $old_cached_ids,
+        //     'cache-array' => $cached_array
+        // ];
+
+        
+        if (!isset($_COOKIE['cached-profile-info'])) {
+            setcookie('cached-profile-info', $user_info, time() + $this->_5minExpiration, PageData::ROOT . 'Pages/User Pages/');
+        }
+
+        echo $_COOKIE['cached-profile-info'];
+        
     }
 }
 ?>

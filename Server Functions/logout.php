@@ -35,5 +35,6 @@ setcookie('user-token', '', 0, '/');
 setcookie('user-data', '', 0, '/');
 setcookie('account-attributes', '', 0, '/');
 setcookie('logout', '', 0, '/');
+setcookie('cached-profile-info', '', 0, '/');
 $sh->Redirect('Pages/Logged Out Pages/Login.php');
 ?>

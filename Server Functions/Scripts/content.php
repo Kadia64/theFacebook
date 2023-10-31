@@ -32,9 +32,8 @@ class Content {
             <title>[ theFacebook ] ' . $title . '</title>
         ';
     }
-    public function TopContent($logged_in, $search_link = true) { 
+    public function TopContent($logged_in) { 
         $links = null;                    
-        $search_param = $search_link ? 'return-status=normal&set-vars=1' : 'return-status=searched';
 
         if (!$logged_in) {
             $links = '        
@@ -45,7 +44,7 @@ class Content {
         } else {
             $links = '
                 <a href="' . PageData::ROOT . 'Pages/User Pages/UserHomePage.php?return-status=normal">home</a>
-                <a href="' . PageData::ROOT . 'Pages/User Pages/SearchPage.php?' . $search_param . '">search</a>
+                <a href="' . PageData::ROOT . 'Pages/User Pages/SearchPage.php?return-status=clear">search</a>
                 <a href="">global</a>
                 <a href="">social net</a>
                 <a href="">invite</a>

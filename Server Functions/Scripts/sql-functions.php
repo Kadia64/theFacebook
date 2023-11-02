@@ -174,7 +174,16 @@ class SQLHandle {
         if ($row) {
             return $row['account_id'];
         } else return null;
-    }    
+    }
+    public function UpdateValueByEmail($table, $email, $value) {
+
+    }
+    public function UpdateAccountStatByEmail($email, $key, $value) {
+        mysqli_query($this->connection, "UPDATE account_stats AS s JOIN account_info AS a ON s.account_stats_id = a.account_stats_id SET $key = '$value' WHERE a.email = '$email';");
+    }
+    public function UpdateSocialStatsByEmail($email, $key, $value) {
+        mysqli_query($this->connection, "UPDATE social_stats AS s JOIN account_info AS a ON s.social_stats_id = a.social_stats_id SET $key = '$value' WHERE a.email = '$email';");
+    }
     public function CheckValueNull($field, $table, $selector, $selector_value) {
         $result = mysqli_query($this->connection, $this->JsonValuesQuery($table, $selector, $selector_value));
         $values = mysqli_fetch_assoc($result);

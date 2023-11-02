@@ -372,9 +372,9 @@ namespace SQL_Terminal {
                 string query = $@"
                     INSERT INTO account_settings (allow_mentions, activity_status, suggest_account) VALUES (NULL, NULL, NULL);
                     SET @last_settings_id = LAST_INSERT_ID();
-                    INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    INSERT INTO account_stats (login_count, logout_count, last_login_timestamp, last_logout_timestamp, password_attempts, last_password_attempt_timestamp, password_change_count, last_password_changed_timestamp, member_since, last_update) VALUES (0, 0, NULL, NULL, 0, NULL, 0, NULL, NULL, NULL);
                     SET @last_account_stats_id = LAST_INSERT_ID();
-                    INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+                    INSERT INTO social_stats (friend_count, friend_email_list, blocked_count, blocked_username_list, reported_count, message_all_count, unread_message_count, message_sent_count, message_received_count, verification_request_count, verification_request_last_timestamp) VALUES (0, NULL, 0, NULL, 0, 0, 0, 0, 0, 0, NULL);
                     SET @last_social_stats_id = LAST_INSERT_ID();
                     INSERT INTO personal_info (birthday, sex, home_address, home_town, highschool, education_status, website, looking_for, interested_in, relationship_status, political_views, interests, favorite_music, favorite_movies, about_me) VALUES ('{birthday}', '{sex}', '{home_address}', '{home_town}', '{highschool}', '{status}', '{website}', '{looking_for}', '{interested_in}', '{relationship_status}', '{political_views}', '{interests}', '{favorite_music}', '{favorite_movies}', '{about}');
                     SET @last_personal_info_id = LAST_INSERT_ID();

@@ -16,6 +16,8 @@ class Methods {
             return date('Y/m/d');           
         } else if ($type == 2) {            // 2023/09/27 094029 am
             return date('Y/m/d His a');  
+        } else if ($type == 3) {            // valid for TIMESTAMP on sql
+            return date("Y-m-d H:i:s");     
         } else if ($type == 7) {            // +10 minutes from now
             $now = $time->format('Y-m-d g:i:s A');
             $time->add(new DateInterval('PT10M'));

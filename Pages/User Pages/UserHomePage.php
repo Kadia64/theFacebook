@@ -21,6 +21,23 @@
     $group_message_count = $account_attributes->{'group-message-count'};
     $message_count = $friend_message_count + $group_message_count;
     $default_profile_image = $account_attributes->{'profile-image'};
+
+
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/update-stats.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/sql-functions.php';
+    $sql = new SQLHandle();
+    $sql->Connect();
+
+    $update = new UpdateData($sql, $user_data_cookie->{'email'});
+    
+    
+
+    $update->__update_member_since_();
+    $update->__update_last_update_();
+    $update->__update_last_login_timestamp_();
+    $update->__update_last_logout_timestamp_();
+    $update->__update_last_password_attempt_timestamp_();
+    $update->__update_last_password_changed_timestamp_();
 ?>
 <!DOCTYPE html>
 <html lang="en">

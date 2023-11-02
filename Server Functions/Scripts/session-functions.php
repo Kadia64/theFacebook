@@ -135,6 +135,13 @@ class SessionHandle {
             exit;
         }
     }
+    public function CheckLoggedOutSession($methods) {
+        if (!isset($_SESSION['logged-out-session-id'])) {
+            $timestamp = microtime(true);
+            $rand = $timestamp . $methods->RandomCharacters(16);
+            $_SESSION['logged-out-session-id'] = hash('sha256', $rand);
+        }
+    }
     public function StartUserSession($sql, $dbID, $sessionID) {
         $time = new DateTime();
         $now_time = $time->format('Y-m-d g:i:s A');
@@ -214,6 +221,8 @@ class SessionHandle {
         $new_dir = $dir_name . '/' . $parts[0];
         mysqli_query($sql->connection, "UPDATE session_data SET profile_image_name = '$new_dir' WHERE session_data_id = '$id';");        
     }
+
+    // TODO
     public function CacheProfileInformation($user_info) {
         $user_info = json_encode($user_info);
         // $caching_limit = 3;

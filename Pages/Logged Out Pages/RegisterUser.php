@@ -2,15 +2,16 @@
     $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/styles.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/data-handle.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/methods.php';    
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
-    $dh = new DataHandle();
+    $methods = new Methods();
     $sh = new SessionHandle();
     session_start();
     $sh->CheckTraversal();
+    $sh->CheckLoggedOutSession($methods);
 
     if (isset($_GET['account-create-fail'])) {
         if ($_GET['account-create-fail'] == 'username') {

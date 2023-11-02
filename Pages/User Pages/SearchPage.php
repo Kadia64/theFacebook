@@ -17,6 +17,7 @@
         function LoadMoreResults($dynamic, $content) {
             $_SESSION['searched'] = true;
             $_SESSION['load-more-pressed'] += 1;
+            $_SESSION['refresh-count-per-button'] = 0;
             $session_results = $_SESSION['search-results'];
             $dynamic->DisplayFriendSearchResults($session_results, $_SESSION['displayed-results']);
             exit;
@@ -43,6 +44,7 @@
             $_SESSION['displayed-results'] = 0;
             $_SESSION['load-more-pressed'] = 0;
             $_SESSION['searched-session-count'] = 0;
+            $_SESSION['refresh-count-per-button'] = 0;
             $_SESSION['first-searched'] = false;
             unset($_SESSION['search-results']);
             unset($_SESSION['search-results-count']);
@@ -52,21 +54,21 @@
         }
     }
     $_SESSION['refresh-count'] += 1;
-
-    echo $_SESSION['displayed-results'] . "<br>";
-    echo $_SESSION['searched-session-count'] . "<br>";
-    echo $_SESSION['refresh-count'] . "<br>";
-
-    // if ($_SESSION['refresh-count'] == 2) {
-    //     $_SESSION['refresh-count'] = 0;
-    //     $sh->Redirect('Pages/User Pages/SearchPage.php?return-status=normal&set-vars=1');
-    //     $sh->CheckActiveSession(true);
-    //     exit;
-    // }
-    //print_r($_SESSION);
+    $_SESSION['refresh-count-per-button'] += 1;
 
 
-    //echo $_SESSION['load-more-pressed'];
+    //                       ~ TESTING ~
+    if (true) {
+        echo 'displayed-results: ' . $_SESSION['displayed-results'] . "<br>";
+        //echo 'searched-session-count: ' . $_SESSION['searched-session-count'] . "<br>";
+        echo 'refresh-count: ' . $_SESSION['refresh-count'] . "<br>";
+        echo 'load-more-pressed: ' . $_SESSION['load-more-pressed'] . "<br>";
+        echo 'first-searched: ' . $_SESSION['first-searched'] . "<br>";
+        //echo $_SESSION['search-results'] . "<br>";
+        echo 'search-results-count: ' . $_SESSION['search-results-count'] . "<br>";
+        echo 'new-display-section: ' . $_SESSION['new-display-section'] . "<br>";
+        echo 'refresh-count-per-button: ' . $_SESSION['refresh-count-per-button'] . '<br>';
+    }
 
     $user_data_cookie = json_decode($_COOKIE['user-data']);
     $account_attributes = json_decode($_COOKIE['account-attributes']);
@@ -228,26 +230,8 @@
                                 $page_reload = ($_SESSION['load-more-pressed'] > 0);
                                 $_SESSION['new-display-section'] = isset($_SESSION['new-display-section']) ? $_SESSION['new-display-section'] : 0;
                                 $content->WindowText('Results');
-
-                                //$result_count = ($_SESSION['search-results-count'] < 30) ? $_SESSION['displayed-results'] : $_SESSION['search-results-count'];
-                                //$result_count = isset($_SESSION['displayed-results']) ? $_SESSION['displayed-results'] : 30;
-                                //$result_count = $_SESSION['searched'] ? $_SESSION['displayed-results'] : 0;                                
-                                //if ()
-                                //$result_count = ($first_search && ($total_count));
                                 
-                                // if ($_SESSION['first-searched']) {
-                                //     $result_count = ($_SESSION['search-results-count'] >= 30) ? 30 : $_SESSION['search-results-count'];
-                                // } else {
-                                //     $result_count = $_SESSION['displayed-results'];
-                                // }
-
-                                $result_count = 0;
-
-
-                                echo $_SESSION['search-results-count'] . '<br>';
-                                echo $_SESSION['displayed-results'] . '<br>';
-                                
-
+                                $result_count = $_SESSION['displayed-results'];                                
                                 
                                 echo '<div id="top-result-count-display">';
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
@@ -266,13 +250,9 @@
                                     ';
                                 }
 
-                                //echo $_SESSION['displayed-results'];
                                 if ($_SESSION['new-display-section'] >= $max_results_limit) {
                                     echo '<button id="load-more-button">[ Display More ]</button>';
                                 }
-                                //echo $_SESSION['displayed-results'];
-                                //echo $_SESSION['new-display-section'];
-
                                 echo '<div id="bottom-result-count-display">';
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
                                 echo '<div>';                               

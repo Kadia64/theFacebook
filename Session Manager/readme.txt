@@ -13,10 +13,11 @@ directory of your environment:
 
 $ source envname/bin/activate
 
-With this command ran, you should now be able to download the mysql-connector-python library
-while your virtual environment is running:
+With this command ran, you should now be able to download the required libraries for the python
+script while your virtual environment is running:
 
 $ pip install mysql-connector-python
+$ pip install colorama
 
 If you are doing these steps more than once, you will need to still reinstall the python
 library for the script to work.

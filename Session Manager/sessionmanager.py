@@ -1,9 +1,13 @@
+import output
 import shutil
 import sys
 import os
+import colorama
 import time
 import mysql.connector
 from datetime import datetime
+from colorama import Fore
+
 
 def get_current_time(timeobj):
 	hour = timeobj.tm_hour % 12
@@ -34,7 +38,7 @@ print('Currently Logged In:', len(result), ' active\n')
 k = 0
 
 while True:
-	print('Iteration: ', k)
+	print(Fore.WHITE, 'Iteration: ', k)
 	time.sleep(UPDATE_TIME)
 
 	if (k % UPDATE_FREQ) == 0:
@@ -54,7 +58,7 @@ while True:
 		formattedExpirationTime = datetime.strptime(expirationTime, dateFormat)		
 	
 		if formattedCurrentTimestamp > formattedExpirationTime:
-			print('their session has expired:', expirationTime)
+			print(Fore.WHITE, 'their session has expired:', expirationTime)
 			deleteRow = "DELETE FROM session_data WHERE session_data_id = " + str(userID) + ";"
 			cursor.execute(deleteRow)
 			connection.commit()
@@ -63,11 +67,12 @@ while True:
 				parts = profile_image_name.split('/')
 				directory_name = parts[0]
 				shutil.rmtree('Cache/' + directory_name)
-				print('session folder successfully deleted')
+				print(Fore.GREEN, 'session folder successfully deleted')
+				#os.remove("Cache/" +  profile_image_name + ".jpg");
 			except:
-				print('failed deleting:', profile_image_name)
+				print(Fore.RED, 'failed deleting:', profile_image_name)
 		else:
-			print('user: ', userID, ' active')
+			print(Fore.WHITE, 'user: ', userID, ' active')
 
 	k += 1
 

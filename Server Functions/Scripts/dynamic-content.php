@@ -161,15 +161,13 @@ class DynamicContent {
             }
         }
         if (!$button_load) {
-            $_SESSION['displayed-results'] = $current_displayed_count;
-            // if ($_SESSION['refresh-count'] != 0) {
-            //     $_SESSION['displayed-results'] = $current_displayed_count;
-            // }
+            $_SESSION['new-display-section'] = $results_count;            
+            if ($_SESSION['refresh-count-per-button'] <= 1 && !($_SESSION['new-display-section'] < 30)) {
+                $_SESSION['displayed-results'] = $current_displayed_count;
+            }
             if ($_SESSION['first-searched']) {
                 $_SESSION['first-searched'] = false;
-            }
-
-            $_SESSION['new-display-section'] = $results_count;
+            }            
         }
     }
     public function DisplayCachedDefaultProfileImage() {

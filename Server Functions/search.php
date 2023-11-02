@@ -12,6 +12,7 @@ session_start();
 $_SESSION['refresh-count'] = 0;
 $_SESSION['displayed-results'] = 0;
 $_SESSION['load-more-pressed'] = 0;
+$_SESSION['refresh-count-per-button'] = 0;
 $account_attributes = json_decode($_COOKIE['account-attributes']);
 $search_filter_input = $_POST['search-filter'];
 $search_input = $_POST['search-input'];
@@ -50,7 +51,7 @@ $results_count = count($resultsArray);
 $_SESSION['search-results-count'] = $results_count;
 
 if ($results_count >= 30) {
-    $_SESSION['new-display-section'] = 30;    
+    $_SESSION['new-display-section'] = 30;
 } else {
     $_SESSION['displayed-results'] = $results_count;
     $_SESSION['new-display-section'] = $results_count;

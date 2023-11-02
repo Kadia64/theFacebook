@@ -2,15 +2,19 @@
     $_path = '/Projects/TheFacebook/Git/thefacebook/Server Functions/';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/content.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/styles.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/data-handle.php';
     require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/session-functions.php';
-    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/sql-functions.php';
+    require_once $_SERVER['DOCUMENT_ROOT'] . $_path . 'Scripts/methods.php';
     $content = new Content();
     $styles = new Styles();
     $pages = new PageData();
     $sh = new SessionHandle();
+    $methods = new Methods();
     session_start();
-    session_unset();
     $sh->CheckTraversal();
+    //$sh->CheckLoggedOutSession($methods);
+
+    //echo $_SESSION['logged-out-session-id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -57,7 +61,7 @@
                         </form>
                         <div class="login-page-text">
                             <p>If you have forgotton your password, click here to reset it.</p>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
             </div>            

@@ -226,10 +226,12 @@ namespace SQL_Terminal {
 
         public void CreateDefaultStructure() {
             string output = this.Query(@"
-                CREATE TABLE session_data (
+               CREATE TABLE session_data (
                     session_data_id INT PRIMARY KEY,
                     session_id VARCHAR(512),
                     profile_image_name VARCHAR(100),
+                    viewed_profile_image_name VARCHAR(100),
+                    viewed_profile_image_extension VARCHAR(100),
                     logged_in DATETIME,
                     session_expiration DATETIME
                 );

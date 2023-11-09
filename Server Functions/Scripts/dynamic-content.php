@@ -90,7 +90,7 @@ class DynamicContent {
         ';
     }
 
-    public function DisplayFriendSearchResults($session_results, $start_index, $button_load = false, $stop = 0) {
+    public function DisplayFriendSearchResults($session_results, $start_index, $button_load = false, $stop = 0) {        
         $result_array = json_decode($session_results);
         $result_count = count($result_array);        
 
@@ -107,6 +107,7 @@ class DynamicContent {
         $max_results = 30;
         $results_count = 0;
         $current_displayed_count = $_SESSION['displayed-results'];
+        $results_sub_count = $_SESSION['search-results-sub'];
 
         for ($i = $start_index; $i < $result_count; ++$i) {
             $current_result = json_decode(json_encode($result_array[$i]));
@@ -156,6 +157,11 @@ class DynamicContent {
             ++$current_displayed_count;
             ++$results_count;
             ++$default_counter;
+
+            if ($_SESSION['load-more']) {
+                $_SESSION['load-more'] = false;
+                --$results_sub_count;
+            }
             if ($default_counter == 5) {
                 $default_counter = 0;
             }
@@ -169,6 +175,7 @@ class DynamicContent {
                 $_SESSION['first-searched'] = false;
             }            
         }
+        $_SESSION['search-results-sub'] = $results_sub_count;
     }
     public function DisplayCachedDefaultProfileImage() {
         echo '<img src="' . PageData::ROOT . 'Server Functions/get-cached-image.php?def=1&def-index=0">';

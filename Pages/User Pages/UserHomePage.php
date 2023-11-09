@@ -37,7 +37,7 @@
     $update->__update_last_login_timestamp_();
     $update->__update_last_logout_timestamp_();
     $update->__update_last_password_attempt_timestamp_();
-    $update->__update_last_password_changed_timestamp_();
+    $update->__update_last_password_changed_timestamp_();    
 ?>
 <!DOCTYPE html>
 <html lang="en">

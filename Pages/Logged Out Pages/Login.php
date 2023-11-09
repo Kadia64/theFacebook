@@ -15,6 +15,7 @@
     //$sh->CheckLoggedOutSession($methods);
 
     //echo $_SESSION['logged-out-session-id'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -49,6 +49,7 @@ $_SESSION['search-results-count'] = ($resultsArray[0] == null) ? 0 : count($resu
 
 $results_count = count($resultsArray);
 $_SESSION['search-results-count'] = $results_count;
+$_SESSION['search-results-sub'] = $results_count;
 
 if ($results_count >= 30) {
     $_SESSION['new-display-section'] = 30;
@@ -59,6 +60,7 @@ if ($results_count >= 30) {
 
 $_SESSION['searched-session-count'] += 1;
 $_SESSION['first-searched'] = ($_SESSION['searched-session-count'] == 1) ? true : false;
+$_SESSION['load-more'] = true;
 $sql->CloseConnection();
 
 //echo $_SESSION['searched-session-count'];

@@ -9,15 +9,16 @@
     $styles = new Styles();
     $pages = new PageData();
     $sh = new SessionHandle();
-    session_start();
+    session_start();    
     
     $sh->CheckActiveSession(false);    
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         function LoadMoreResults($dynamic, $content) {
             $_SESSION['searched'] = true;
+            $_SESSION['load-more'] = true;
             $_SESSION['load-more-pressed'] += 1;
-            $_SESSION['refresh-count-per-button'] = 0;
+            $_SESSION['refresh-count-per-button'] = 0;            
             $session_results = $_SESSION['search-results'];
             $dynamic->DisplayFriendSearchResults($session_results, $_SESSION['displayed-results']);
             exit;
@@ -44,8 +45,10 @@
             $_SESSION['displayed-results'] = 0;
             $_SESSION['load-more-pressed'] = 0;
             $_SESSION['searched-session-count'] = 0;
+            $_SESSION['search-results-sub'] = 0;
             $_SESSION['refresh-count-per-button'] = 0;
             $_SESSION['first-searched'] = false;
+            $_SESSION['load-more'] = false;
             unset($_SESSION['search-results']);
             unset($_SESSION['search-results-count']);
             unset($_SESSION['new-display-section']);
@@ -64,12 +67,14 @@
         echo 'refresh-count: ' . $_SESSION['refresh-count'] . "<br>";
         echo 'load-more-pressed: ' . $_SESSION['load-more-pressed'] . "<br>";
         echo 'first-searched: ' . $_SESSION['first-searched'] . "<br>";
+        echo 'load-more: ' . $_SESSION['load-more'] . "<br>";
         //echo $_SESSION['search-results'] . "<br>";
         echo 'search-results-count: ' . $_SESSION['search-results-count'] . "<br>";
+        echo 'search-results-sub: ' . $_SESSION['search-results-sub'] . '<br>';
         echo 'new-display-section: ' . $_SESSION['new-display-section'] . "<br>";
         echo 'refresh-count-per-button: ' . $_SESSION['refresh-count-per-button'] . '<br>';
     }
-
+    
     $user_data_cookie = json_decode($_COOKIE['user-data']);
     $account_attributes = json_decode($_COOKIE['account-attributes']);
     $max_results_limit = 30;
@@ -250,9 +255,10 @@
                                     ';
                                 }
 
-                                if ($_SESSION['new-display-section'] >= $max_results_limit) {
+                                if ((isset($_SESSION['search-results-count'])) && $_SESSION['search-results-count'] >= $max_results_limit) {
                                     echo '<button id="load-more-button">[ Display More ]</button>';
                                 }
+
                                 echo '<div id="bottom-result-count-display">';
                                 $content->LightBlueWindowText("Displaying all $result_count matches.");
                                 echo '<div>';                               

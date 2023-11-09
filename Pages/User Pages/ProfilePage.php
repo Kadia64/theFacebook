@@ -13,9 +13,18 @@
     $sql = new SQLHandle();
     
     session_start();
-    $sql->Connect();
-
     
+    if (isset($_GET['id'])) {        
+        $sql->Connect();
+        $user_data = $sql->GetDataByEmail('account_info', $sql->GetEmailByID($_GET['id']));
+        print_r($user_data);
+
+    }
+
+    $id = isset($_GET['id']) ? $_GET['id'] : '';
+
+    //echo $id;
+
     //$user_data = $dh->GetUserProfileInfo($sql, $_GET['id']);    
     //$sh->CacheProfileInformation($user_data);
     //echo $_COOKIE['cached-profile-info'];
@@ -30,11 +39,19 @@
     <!-- PageStyle(); -->
     <style>
         .profile-page-window {
-            width: calc(var(--standard-page-width) - 240px);
+            width: calc(var(--standard-page-width) - 200px);
             margin: 0 auto;
         }
-        .profile-page-content {
-
+        .profile-page-window {
+            border: 1px solid black;
+            display: flex;
+            
+        }
+        .profile-page-left {
+            flex: 1;
+        }
+        .profile-page-right {
+            flex: 1;
         }
     </style>
 </head>
@@ -46,10 +63,18 @@
             <div class="right-main-window">
                 <?php $content->WindowText('Template'); ?>
                 <div class="profile-page-window">
-                    <div class="profile-page-content">
-
+                    
+                    <!-- Left Side -->
+                    <div class="profile-page-left">
 
                     </div>
+
+                    <!-- Right Side -->
+                    <div class="profile-page-right">
+
+                    </div>
+
+
                 </div>
             </div>            
         </div>
